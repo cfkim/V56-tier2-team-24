@@ -1,0 +1,19 @@
+GET http://localhost:4004/auth/users
+###
+
+POST http://localhost:4004/auth/register
+Content-Type: application/json
+
+{
+    "email": "fifth@re.doc",
+    "password": "password"
+}
+
+###
+POST http://localhost:4004/auth/login
+Content-Type: application/json
+
+{
+    "email": "fourth@re.doc",
+    "password": "hiw"
+}
