@@ -1,4 +1,9 @@
+import { useState } from "react";
+import { Link } from "react-router-dom";
+
 export default function Login() {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   return (
     <>
       <div className="w-full bg-[#ECECEC] flex flex-row justify-between outline">
@@ -9,17 +14,20 @@ export default function Login() {
             <div className="flex flex-col mb-3 gap-1">
               <label htmlFor="email">Email Address</label>
               <input
-                type="text"
-                placeholder=""
-                className="bg-gray-100 rounded-[12px] h-10 p-3"
+                type="email"
+                autoFocus
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className="bg-gray-100 rounded-[12px] h-10 p-3 outline"
               />
             </div>
             <div className="flex flex-col mb-4 gap-1">
               <label htmlFor="password">Password</label>
               <input
-                type="text"
-                placeholder=""
-                className="bg-gray-100 rounded-[12px] h-10 p-3"
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="bg-gray-100 rounded-[12px] h-10 p-3 outline"
               />
             </div>
             <div className="flex flex-row mb-4 justify-between">
@@ -28,9 +36,12 @@ export default function Login() {
                 <label htmlFor="remember">Remember Me</label>
               </div>
 
-              <p>Forgot Password?</p>
+              <Link to="/password/forgot">Forgot Password?</Link>
             </div>
-            <button className="bg-[#555555] text-white rounded-[12px] py-[13px] w-full mb-75">
+            <button
+              className="bg-[#555555] text-white rounded-[12px] py-[13px] w-full mb-75 disabled:bg-[#b3b3b3]"
+              disabled={!email || password.length < 6}
+            >
               Login
             </button>
           </form>
