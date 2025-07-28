@@ -20,8 +20,18 @@
     --font-nunito-bold: Nunito-bold, "sans-serif";
     --font-roboto: Roboto, "sans-serif";
 
-    --color-background: #F2F4F8;
-    --color-bg-text: #555555;
+    --color-base: #FFFFFF;
+    --color-header-text: #4D4D4D;
+    --color-bg-text: #082332;
     --color-text: #8C92AC/90;
-    --color-primary: #3E98D0;
+    --color-primary: #082368;
+    --color-accent: #FFFCCD;
+
+    --color-checked-in: #80BBEF;
+    --color-pre-procedure: #FFF265;
+    --color-in-progress: #FFAA32;
+    --color-closing: #D6A9F8;
+    --color-recovery: #A7D1C9;
+    --color-complete: #279C49;
+    --color-dismissal: #D9D9D9;
 }
