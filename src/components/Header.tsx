@@ -16,7 +16,7 @@ export default function Header() {
         <header className="font-roboto bg-background text-bg-text h-20 flex align-center px-10 md:px-16">
             <nav className="w-full max-w-7xl mx-auto flex items-center justify-between">
                 <Link to="/" className="text-xl font-semibold">
-                    Lumo
+                    Beacon
                 </Link>
                 {isLoggedIn && (
                     <ul className="flex gap-2 text-text font-bold h-full items-center">
