@@ -15,7 +15,8 @@ export default function Login() {
   } = useMutation({
     mutationFn: login,
 
-    onSuccess: () => {
+    onSuccess: (response) => {
+      window.localStorage.setItem("accessToken", response.accessToken);
       navigate("/", { replace: true });
     },
   });

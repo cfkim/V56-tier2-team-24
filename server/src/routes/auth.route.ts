@@ -40,7 +40,13 @@ authRoutes.post("/login", async (req, res) => {
       const refreshToken = jwt.sign(user, JWT_REFRESH_SECRET);
       refreshTokens.push(refreshToken);
       console.log("signign in");
-      res.status(200).send({ session_user, accessToken, refreshToken });
+      res
+        .status(200)
+        .send({
+          session_user: session_user,
+          accessToken: accessToken,
+          refreshToken: refreshToken,
+        });
     } else {
       console.log("wrong password");
       res.status(401).send("invalid password");
