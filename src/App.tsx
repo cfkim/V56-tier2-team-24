@@ -6,6 +6,7 @@ import Login from "./pages/Login";
 function App() {
   return (
     <Routes>
+      <Route path="/" element={<Footer />}></Route>
       <Route path="/login" element={<Login />}></Route>
     </Routes>
     // <>

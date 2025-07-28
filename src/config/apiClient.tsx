@@ -10,8 +10,11 @@ const API = axios.create(options);
 
 // -
 API.interceptors.response.use(
-  (response) => response.data,
+  (response) => {
+    return response.data;
+  },
   (error) => {
+    console.log(error.response);
     const { status, data } = error.response;
     return Promise.reject({ status, ...data });
   }
