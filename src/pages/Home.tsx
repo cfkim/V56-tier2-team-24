@@ -47,7 +47,7 @@ export default function Home({
           {!isLoggedIn && (
             <div className="flex gap-3 text-xl font-semibold">
               <Link
-                className="bg-primary text-background flex gap-2 rounded-xl px-8 py-5"
+                className="bg-primary text-background flex items-center gap-2 rounded-xl px-8 py-5"
                 to={"/login"}
               >
                 Authorization Login
