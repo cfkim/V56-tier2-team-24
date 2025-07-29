@@ -19,7 +19,7 @@ let users: User[] = [];
 let refreshTokens: string[] = [];
 
 authRoutes.get("/users", (req, res) => {
-  res.json(refreshTokens);
+  res.json(users);
 });
 
 authRoutes.delete("/users/delete", (req, res) => {
@@ -42,10 +42,10 @@ authRoutes.post("/login", async (req, res) => {
       // get tokens
       const email = req.body.email;
       const session_user = { email: email };
-      const accessToken = generateAccessToken(user);
+      const accessToken = generateAccessToken(session_user);
       const refreshToken = jwt.sign(user, JWT_REFRESH_SECRET);
       refreshTokens.push(refreshToken);
-      console.log("signign in");
+      console.log("signign in with: " + accessToken);
       res.status(200).send({ session_user, accessToken, refreshToken });
     } else {
       console.log("wrong password");
@@ -56,7 +56,8 @@ authRoutes.post("/login", async (req, res) => {
   }
 });
 
-function generateAccessToken(user: User) {
+function generateAccessToken(user:any) {
+  console.log(user)
   return jwt.sign(user, JWT_SECRET, { expiresIn: "15s" });
 }
 
@@ -69,7 +70,7 @@ authRoutes.post("/register", async (req, res) => {
     // get tokens
     const email = req.body.email;
     const session_user = { email: email };
-    const accessToken = generateAccessToken(user);
+    const accessToken = generateAccessToken(session_user);
     const refreshToken = jwt.sign(user, JWT_REFRESH_SECRET);
     refreshTokens.push(refreshToken);
     res.json({ accessToken: accessToken, refreshToken: refreshToken });
@@ -87,8 +88,8 @@ authRoutes.get("/refresh", async (req, res) => {
   jwt.verify(refreshToken, JWT_REFRESH_SECRET, (err:any, user:any) => {
     
     if(err) return res.sendStatus(403); // Invalid token
-    const accessToken = generateAccessToken(user);
-    console.log("server new at" + accessToken)
+    const accessToken = generateAccessToken({email: user.email});
+    console.log("server new AT: " + accessToken)
     res.json({ accessToken: accessToken});
   })
 });

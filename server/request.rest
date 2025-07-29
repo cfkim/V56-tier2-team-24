@@ -17,6 +17,10 @@ POST http://localhost:4005/auth/login
 Content-Type: application/json
 
 {
-    "email": "fourth@re.doc",
-    "password": "hiw"
+    "email": "test@test",
+    "password": "wompwomp"
 }
+
+###
+GET http://localhost:4005/auth/refresh
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InRlc3RAdGVzdCIsInBhc3N3b3JkIjoiJDJiJDEwJFU5MU5waW9iNHJIN045a3F6SzFIWS5vVmM4bEw0blpvcFoxSnlFWUJJM0FMSzI0Q3hCd3ZXIiwiaWF0IjoxNzUzODA3OTE3fQ.gIdKRpuGwhpEXyuIUlFv80YbhdzcGjWkIl4RYCDBLIU
