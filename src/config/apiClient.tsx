@@ -33,7 +33,7 @@ API.interceptors.response.use(
             Authorization: `Bearer ${localStorage.getItem("refreshToken")}`
           }
         });
-        
+
         const newAccessToken = res.accessToken;
         localStorage.setItem("accessToken", newAccessToken);
         console.log('got new access token')
@@ -45,6 +45,8 @@ API.interceptors.response.use(
         return TokenRefreshClient(config);
       }catch (error) {
         console.error("Token refresh failed:", error);
+        // TODO route it back to sign in
+        navigate("/login", {state: {redirectUrl: window.location.pathname}})
         queryClient.clear();
       }
     return Promise.reject({ status, ...data });
