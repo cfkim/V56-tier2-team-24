@@ -20,15 +20,15 @@ export default function Home({
     navigate("/");
   };
   return (
-    <section className="px-1.5 md:px-6">
+    <section className="mb-[-0.5rem] px-1.5 md:px-6">
       <div className="relative flex w-full items-center">
         <img
           src="/static/images/hero.svg"
           alt="Hero"
           className="z-[-1] h-auto w-full rounded-t-[3.125rem] object-top"
         />
-        <div className="text-bg-text font-nunito absolute inset-0 flex w-1/2 flex-col justify-between py-24 pl-14">
-          <div className="flex flex-col gap-3.5">
+        <div className="text-bg-text font-nunito absolute inset-0 flex w-1/2 flex-col justify-between py-28 pl-14">
+          <div className="my-auto flex flex-col gap-3.5">
             {role && (
               <h2 className="font-kaisei text-lg font-bold md:text-3xl">
                 Hi, {capitalize(role)}
@@ -45,12 +45,21 @@ export default function Home({
             </p>
           </div>
           {!isLoggedIn && (
-            <div className="flex gap-3">
+            <div className="flex gap-3 text-xl font-semibold">
               <Link
-                className="bg-primary text-background rounded-xl px-8 py-5"
+                className="bg-primary text-background flex gap-2 rounded-xl px-8 py-5"
                 to={"/login"}
               >
                 Authorization Login
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  height="24px"
+                  viewBox="0 -960 960 960"
+                  width="24px"
+                  fill="currentColor"
+                >
+                  <path d="M647-440H160v-80h487L423-744l57-56 320 320-320 320-57-56 224-224Z" />
+                </svg>
               </Link>
               <button
                 className="bg-background/50 text-primary border-primary cursor-pointer rounded-xl border border-2 px-8 py-5"
