@@ -17,6 +17,7 @@ interface User {
 // testing
 const users: User[] = [];
 let refreshTokens: string[] = [];
+
 authRoutes.get("/users", (req, res) => {
   res.json(users);
 });
@@ -72,7 +73,17 @@ authRoutes.post("/register", async (req, res) => {
   }
 });
 
-// authRoutes.get("/refresh");
+authRoutes.get("/refresh", async (req, res) => {
+  const refreshToken = req.body.token;
+  if(refreshToken == null) return res.sendStatus(401); // No token provided
+  if (!refreshTokens.includes(refreshToken)) return res.sendStatus(403); // Invalid token
+  jwt.verify(refreshToken, JWT_REFRESH_SECRET, (err:any, user:any) => {
+    if(err) return res.sendStatus(403); // Invalid token
+    const accessToken = generateAccessToken(user);
+    res.json({ accessToken: accessToken});
+  })
+});
+
 authRoutes.get("/logout", async (req, res) => {
   refreshTokens = refreshTokens.filter((token) => token !== req.body.token);
   res.sendStatus(204);
