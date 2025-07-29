@@ -10,17 +10,11 @@
     src: url("../src/assets/fonts/Nunito-Bold.ttf");
 }
 
-@font-face {
-    font-family: Roboto;
-    src: url("../src/assets/fonts/Roboto-Variable.ttf");
-}
-
 @theme {
     --font-nunito: Nunito, "sans-serif";
     --font-nunito-bold: Nunito-bold, "sans-serif";
-    --font-roboto: Roboto, "sans-serif";
 
-    --color-base: #FFFFFF;
+    --color-background: #FFFFFF;
     --color-header-text: #4D4D4D;
     --color-bg-text: #082332;
     --color-text: #8C92AC/90;
