@@ -17,6 +17,7 @@ export default function Login() {
 
     onSuccess: (response) => {
       window.localStorage.setItem("accessToken", response.accessToken);
+      window.localStorage.setItem("refreshToken", response.refreshToken);
       navigate("/", { replace: true });
     },
   });
