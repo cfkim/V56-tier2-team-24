@@ -1,16 +1,19 @@
-GET http://localhost:4004/auth/users
+GET http://localhost:4005/auth/users
 ###
 
-POST http://localhost:4004/auth/register
+DELETE http://localhost:4005/auth/users/delete
+
+###
+POST http://localhost:4005/auth/register
 Content-Type: application/json
 
 {
-    "email": "test2@test2",
-    "password": "password"
+    "email": "test@test",
+    "password": "wompwomp"
 }
 
 ###
-POST http://localhost:4004/auth/login
+POST http://localhost:4005/auth/login
 Content-Type: application/json
 
 {

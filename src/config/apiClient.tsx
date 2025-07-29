@@ -21,31 +21,45 @@ API.interceptors.response.use(
   },
   async (error) => {
     const { config, response } = error;
-    console.log(error.response);
+    console.log("error resposjne" + error.response.data);
     const { status, data } = error.response;
-
-    if (status == 401 && data?.errorCode === "TOKEN_EXPIRED") {
+    console.log(status)
+    console.log(config)
+    if (status === 403) {
       try{
+        console.log("trying to refresh")
         const res = await TokenRefreshClient.get("/auth/refresh", {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("refreshToken")}`
           }
         });
-
+        
         const newAccessToken = res.accessToken;
         localStorage.setItem("accessToken", newAccessToken);
-        console.log('refreshed token')
+        console.log('got new access token')
         // try the same request again with the new token
         config.headers = config.headers || {};
         config.headers.Authorization = `Bearer ${newAccessToken}`;
-        return API(config);
+        console.log(config.headers.Authorization)
+        console.log(newAccessToken)
+        return TokenRefreshClient(config);
       }catch (error) {
-        queryClient.clear();
         console.error("Token refresh failed:", error);
-        
+        queryClient.clear();
       }
     return Promise.reject({ status, ...data });
   }}
 );
+
+// API.interceptors.response.use(
+//   (response) => {
+//     return response.data;
+//   },
+//   (error) => {
+//     console.log(error.response);
+//     const { status, data } = error.response;
+//     return Promise.reject({ status, ...data });
+//   }
+// );
 
 export default API;

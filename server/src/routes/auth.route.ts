@@ -15,11 +15,16 @@ interface User {
 }
 
 // testing
-const users: User[] = [];
+let users: User[] = [];
 let refreshTokens: string[] = [];
 
 authRoutes.get("/users", (req, res) => {
-  res.json(users);
+  res.json(refreshTokens);
+});
+
+authRoutes.delete("/users/delete", (req, res) => {
+  users = []
+  res.status(200).json({message: "success deleted"})
 });
 
 authRoutes.post("/login", async (req, res) => {
@@ -52,7 +57,7 @@ authRoutes.post("/login", async (req, res) => {
 });
 
 function generateAccessToken(user: User) {
-  return jwt.sign(user, JWT_SECRET, { expiresIn: "15m" });
+  return jwt.sign(user, JWT_SECRET, { expiresIn: "15s" });
 }
 
 authRoutes.post("/register", async (req, res) => {
@@ -74,12 +79,16 @@ authRoutes.post("/register", async (req, res) => {
 });
 
 authRoutes.get("/refresh", async (req, res) => {
-  const refreshToken = req.body.token;
+  console.log("refreshinf")
+  const authHeader = req.headers['authorization'];
+  const refreshToken = authHeader && authHeader.split(' ')[1];
   if(refreshToken == null) return res.sendStatus(401); // No token provided
   if (!refreshTokens.includes(refreshToken)) return res.sendStatus(403); // Invalid token
   jwt.verify(refreshToken, JWT_REFRESH_SECRET, (err:any, user:any) => {
+    
     if(err) return res.sendStatus(403); // Invalid token
     const accessToken = generateAccessToken(user);
+    console.log("server new at" + accessToken)
     res.json({ accessToken: accessToken});
   })
 });
