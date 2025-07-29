@@ -7,6 +7,7 @@ export default function Login() {
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [rememberMe, setRememberMe] = useState(Boolean)
 
   const {
     mutate: signIn,
@@ -17,7 +18,12 @@ export default function Login() {
 
     onSuccess: (response) => {
       window.localStorage.setItem("accessToken", response.accessToken);
-      window.localStorage.setItem("refreshToken", response.refreshToken);
+      console.log('refresh token NOT stored')
+      if(rememberMe){
+        console.log('refresh token stored')
+        window.localStorage.setItem("refreshToken", response.refreshToken);
+      }
+      
       navigate("/", { replace: true });
     },
   });
@@ -61,7 +67,7 @@ export default function Login() {
             </div>
             <div className="flex flex-row mb-4 justify-between">
               <div className="flex gap-2">
-                <input type="checkbox" id="remember" />
+                <input type="checkbox" id="remember" onChange={(e) => setRememberMe(e.target.checked)}/>
                 <label htmlFor="remember">Remember Me</label>
               </div>
 

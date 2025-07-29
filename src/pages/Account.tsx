@@ -19,10 +19,13 @@ export default function Account() {
   }, []);
 
   return (
-   
+   <>
     <h1 className="text-2xl">
-        {user ? `Welcome, ${user.user.email}` : "Loading user data..."}
+          {user ? `Welcome, ${user.user.email}` : "Loading user data..."}
     </h1>
+    <button>Sign out</button>
+  </>
+    
       
   );
 }

@@ -1,4 +1,7 @@
+import { useNavigate } from "react-router-dom";
+
 export default function Hero() {
+  const navigate = useNavigate()
   return (
     <>
       <div className="w-full bg-[#ECECEC] flex flex-row py-40 px-40 gap-40">
@@ -18,7 +21,7 @@ export default function Hero() {
             </div>
           </div>
           <div className="flex flex-row gap-4 text-2xl">
-            <button className="bg-[#555555] text-white rounded-[12px] py-[16px] px-[19px] flex flex-row gap-6">
+            <button className="bg-[#555555] text-white rounded-[12px] py-[16px] px-[19px] flex flex-row gap-6 cursor-pointer" onClick={() => navigate('/login')}>
               Authorization login
               <img
                 src="./public/static/images/arrow.png"

@@ -9,7 +9,7 @@ function App() {
   setNavigate(navigate)
   return (
     <Routes>
-      <Route path="/" element={<Account />}></Route>
+      <Route path="/" element={<Hero />}></Route>
       <Route path="/login" element={<Login />}></Route>
       <Route path="/user" element={<Account />}></Route>
     </Routes>

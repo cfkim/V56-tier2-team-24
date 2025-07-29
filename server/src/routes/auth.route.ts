@@ -46,6 +46,7 @@ authRoutes.post("/login", async (req, res) => {
       const refreshToken = jwt.sign(user, JWT_REFRESH_SECRET);
       refreshTokens.push(refreshToken);
       console.log("signign in with: " + accessToken);
+      console.log(refreshTokens)
       res.status(200).send({ session_user, accessToken, refreshToken });
     } else {
       console.log("wrong password");
@@ -96,8 +97,11 @@ authRoutes.get("/refresh", async (req, res) => {
 
 authRoutes.get("/logout", async (req, res) => {
   refreshTokens = refreshTokens.filter((token) => token !== req.body.token);
+  console.log(refreshTokens)
   res.sendStatus(204);
+
 });
+
 // authRoutes.post("/password/forgot");
 // authRoutes.post("/password/reset");
 
