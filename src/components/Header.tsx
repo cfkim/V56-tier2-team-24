@@ -40,9 +40,9 @@ export default function Header({
   ];
 
   return (
-    <header className="font-nunito bg-background text-header-text align-center flex h-14 px-6 text-xs md:h-20 md:px-16 md:text-base">
-      <nav className="mx-auto flex w-full max-w-7xl items-center justify-between">
-        <Link to="/" className="text-xl font-semibold">
+    <header className="font-nunito bg-background text-header-text align-center flex h-14 px-1.5 text-xs md:h-20 md:px-6 md:text-base">
+      <nav className="mx-auto flex w-full items-center justify-between">
+        <Link to="/" className="px-6 text-xl font-semibold md:px-16">
           Beacon
         </Link>
         <ul className="text-text hidden h-full items-center gap-2 font-bold md:flex">
