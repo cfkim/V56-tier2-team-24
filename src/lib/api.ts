@@ -15,7 +15,7 @@ export const getUser = async () => {
       Authorization: `Bearer ${token}`,
     },
   });
-  
+  console.log(res)
   return res;
 };
 

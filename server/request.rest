@@ -8,8 +8,9 @@ POST http://localhost:4004/auth/register
 Content-Type: application/json
 
 {
-    "email": "test@test",
-    "password": "wompwomp"
+    "email": "testadmin@test",
+    "password": "wompwomp",
+    "role": "admin"
 }
 
 ###
@@ -18,7 +19,8 @@ Content-Type: application/json
 
 {
     "email": "test@test",
-    "password": "wompwomp"
+    "password": "wompwomp",
+    
 }
 
 ###

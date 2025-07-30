@@ -68,10 +68,10 @@ authRoutes.post("/register", async (req, res) => {
     }
     
     // Creates user in db
-    const user = await UserModel.create({ email: inputEmail, password: hashedPassword });
+    const user = await UserModel.create({ email: inputEmail, password: hashedPassword, role: "admin" });
 
     // Creates session (tokens)
-    const session_user = { email: user.email};
+    const session_user = { id: user._id, email: user.email};
     const accessToken = generateAccessToken(session_user);
     const refreshToken = jwt.sign(session_user, JWT_REFRESH_SECRET, { expiresIn: "30d" });
     
