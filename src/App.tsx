@@ -11,7 +11,11 @@ function App() {
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
   return (
     <BrowserRouter>
-      <Header role={role} isLoggedIn={isLoggedIn} />
+      <Header
+        role={role}
+        isLoggedIn={isLoggedIn}
+        setIsLoggedIn={setIsLoggedIn}
+      />
       <main>
         <Routes>
           <Route

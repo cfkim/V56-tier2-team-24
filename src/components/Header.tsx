@@ -7,9 +7,11 @@ import ProfileIcon from "./ProfileIcon";
 export default function Header({
   role,
   isLoggedIn,
+  setIsLoggedIn,
 }: {
   role: Role | undefined;
   isLoggedIn: boolean;
+  setIsLoggedIn: React.Dispatch<React.SetStateAction<boolean>>;
 }) {
   const date = useMemo(() => new Date(), []);
 
@@ -65,7 +67,7 @@ export default function Header({
         </ul>
         <div className="flex items-center gap-4">
           <p>{currentDate}</p>
-          {isLoggedIn && <ProfileIcon />}
+          {isLoggedIn && <ProfileIcon setIsLoggedIn={setIsLoggedIn} />}
         </div>
       </nav>
     </header>
