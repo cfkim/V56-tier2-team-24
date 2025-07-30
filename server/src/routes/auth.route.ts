@@ -30,31 +30,34 @@ authRoutes.delete("/users/delete", (req, res) => {
 });
 
 authRoutes.post("/login", async (req, res) => {
-  const user = users.find((user) => user.email === req.body.email);
+  const inputEmail = req.body.email;
+  const inputPassword = req.body.password;
+  
+  // finds user from email
+  const user = await UserModel.findOne({ email: inputEmail });
 
+  // if user does not exist, returns error
   if (user == null) {
-    console.log("sending null user found");
+    console.log("Could not find user");
     return res.status(401).send("Cannot find user");
   }
 
   try {
-    console.log("made it here");
-    if (await bcrypt.compare(req.body.password, user.password)) {
-      console.log("getting tokens");
-      // get tokens
-      const email = req.body.email;
-      const session_user = { email: email };
+    // compares password with hashed password
+    if (await bcrypt.compare(inputPassword, user.password)) {
+      // create session (tokens)
+      const session_user = { email: inputEmail, id: user._id };
       const accessToken = generateAccessToken(session_user);
-      const refreshToken = jwt.sign(user, JWT_REFRESH_SECRET);
+      const refreshToken = jwt.sign(session_user, JWT_REFRESH_SECRET, { expiresIn: "30d" })
+      
       refreshTokens.push(refreshToken);
-      console.log("signign in with: " + accessToken);
-      console.log(refreshTokens)
       res.status(200).send({ session_user, accessToken, refreshToken });
     } else {
-      console.log("wrong password");
+      // if password does not match, returns error
       res.status(401).send("invalid password");
     }
   } catch {
+    // if compare fails
     res.status(500).send("auth failed");
   }
 });
@@ -66,7 +69,6 @@ function generateAccessToken(user:any) {
 
 authRoutes.post("/register", async (req, res) => {
   try {
-    console.log('try')
     // Gets email and password from request body and hashes password
     const inputEmail = req.body.email;
     const hashedPassword = await bcrypt.hash(req.body.password, 10);
@@ -74,16 +76,16 @@ authRoutes.post("/register", async (req, res) => {
     // Checks if user exists in db
     const existingUser = await UserModel.exists({ email: inputEmail });
     if(existingUser) {
-      throw new Error("User already exists");
+      res.status(500).json({ message: "User already exists" });
     }
     
     // Creates user in db
     const user = await UserModel.create({ email: inputEmail, password: hashedPassword });
 
     // Creates session (tokens)
-    const session_user = { email: inputEmail };
+    const session_user = { email: user.email};
     const accessToken = generateAccessToken(session_user);
-    const refreshToken = jwt.sign(user, JWT_REFRESH_SECRET, { expiresIn: "30d" });
+    const refreshToken = jwt.sign(session_user, JWT_REFRESH_SECRET, { expiresIn: "30d" });
     
     // "saves" refresh tokens in memory for testing
     // TODO: implement with http cookies
@@ -99,7 +101,7 @@ authRoutes.post("/register", async (req, res) => {
 });
 
 authRoutes.get("/refresh", async (req, res) => {
-  console.log("refreshinf")
+  
   const authHeader = req.headers['authorization'];
   const refreshToken = authHeader && authHeader.split(' ')[1];
   if(refreshToken == null) return res.sendStatus(401); // No token provided
