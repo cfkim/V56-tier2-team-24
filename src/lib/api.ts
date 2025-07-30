@@ -2,12 +2,15 @@ import API from "../config/apiClient";
 import queryClient from "../config/queryClient";
 import { navigate } from "./navigation";
 
-interface data {
+// Sign in data
+interface signInData {
   email: string;
   password: string;
 }
 
-export const login = async (data: data) => API.post("/auth/login", data);
+// -- FUNCTIONS FOR MAKING API REQUESTS -- 
+export const login = async (data: signInData) => API.post("/auth/login", data);
+
 export const getUser = async () => {
   const token = localStorage.getItem("accessToken");
   const res = await API.get("/user", {
@@ -15,7 +18,6 @@ export const getUser = async () => {
       Authorization: `Bearer ${token}`,
     },
   });
-  console.log(res)
   return res;
 };
 
@@ -26,9 +28,14 @@ export const logout = async () => {
       Authorization: `Bearer ${token}`,
     },
   });
+
+  // Ends session by removing tokens from browser
   localStorage.removeItem("accessToken");
   localStorage.removeItem("refreshToken");
+
+  // Redirects user to login page
   navigate("/login");
   queryClient.clear();
+
   return res;
 }

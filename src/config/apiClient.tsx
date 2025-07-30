@@ -8,59 +8,49 @@ const options = {
   withCredentials: true,
 };
 
-// returns an axios instance to communicate w backend
+// to communicate w backend
 const API = axios.create(options);
 
 const TokenRefreshClient = axios.create(options);
 TokenRefreshClient.interceptors.response.use((response) => response.data);
 
-// -
+// Funnels requests
 API.interceptors.response.use(
   (response) => {
     return response.data;
   },
-  async (error) => {
-    const { config, response } = error;
-    console.log("error resposjne" + error.response.data);
+  async (error) => { 
+    const { config } = error;
     const { status, data } = error.response;
-    console.log(status)
-    console.log(config)
+    
+    // If access token expires
     if (status === 403) {
       try{
-        console.log("trying to refresh")
+        
+        // Attempts to refresh the token
         const res = await TokenRefreshClient.get("/auth/refresh", {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("refreshToken")}`
           }
         });
 
+        // Sets new access token in local storage
         const newAccessToken = res.accessToken;
         localStorage.setItem("accessToken", newAccessToken);
-        console.log('got new access token')
-        // tries the same request again with the new token
+
+        // Tries the original request again with the new token
         config.headers = config.headers || {};
         config.headers.Authorization = `Bearer ${newAccessToken}`;
-        console.log(config.headers.Authorization)
-        console.log(newAccessToken)
+          // console.log(config.headers.Authorization)
+          // console.log(newAccessToken)
         return TokenRefreshClient(config);
       }catch (error) {
-        console.error("Token refresh failed:", error);
+        // If token refresh fails navigate back to login
         navigate("/login", {state: {redirectUrl: window.location.pathname}})
         queryClient.clear();
       }
     return Promise.reject({ status, ...data });
   }}
 );
-
-// API.interceptors.response.use(
-//   (response) => {
-//     return response.data;
-//   },
-//   (error) => {
-//     console.log(error.response);
-//     const { status, data } = error.response;
-//     return Promise.reject({ status, ...data });
-//   }
-// );
 
 export default API;

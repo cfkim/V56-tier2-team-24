@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { getUser, logout } from "../lib/api";
 
+// basic profile page to validate login
 export default function Account() {
   const [user, setUser] = useState(null);
 
@@ -8,7 +9,6 @@ export default function Account() {
     const fetchUser = async () => {
       try {
         const data = await getUser();
-        console.log("fetched user:", data);
         setUser(data);
       } catch (err) {
         console.error("failed to fetch user:", err);

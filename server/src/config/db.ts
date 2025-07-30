@@ -1,7 +1,7 @@
 import mongoose from "mongoose"
 import { MONGO_URI } from "../constants/env"
 
-
+// Connects to MongoDB Atlas Database
 const connectToDatabase = async () => {
     try{
         await mongoose.connect(MONGO_URI)

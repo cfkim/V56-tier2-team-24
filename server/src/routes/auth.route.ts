@@ -1,22 +1,21 @@
 import { Router } from "express";
-import { errorMonitor } from "node:events";
 import { JWT_REFRESH_SECRET, JWT_SECRET } from "../constants/env";
 import UserModel from "../models/user.model";
 
-const express = require("express");
-const app = express();
+// const express = require("express");
+// const app = express();
+
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 
-app.use(express.json());
+// app.use(express.json());
 
 const authRoutes = Router();
 
-// This is a simple in-memory store for refresh tokens.
+// This is a simple in-memory store for refresh tokens
 let refreshTokens: string[] = [];
 
 function generateAccessToken(user:any) {
-  console.log(user)
   return jwt.sign(user, JWT_SECRET, { expiresIn: "15s" });
 }
 
@@ -30,7 +29,6 @@ authRoutes.post("/login", async (req, res) => {
 
   // if user does not exist, returns error
   if (user == null) {
-    console.log("Could not find user");
     return res.status(401).send("Cannot find user");
   }
 
@@ -75,11 +73,11 @@ authRoutes.post("/register", async (req, res) => {
     const accessToken = generateAccessToken(session_user);
     const refreshToken = jwt.sign(session_user, JWT_REFRESH_SECRET, { expiresIn: "30d" });
     
-    // "saves" refresh tokens in memory for testing
-    // TODO: implement with http cookies
+    // "Saves" refresh tokens in memory for testing
+    // TODO: implement tokens with http cookies instead of local storage
     refreshTokens.push(refreshToken);
 
-    // returns the access token and refresh token
+    // Returns the access token and refresh token
     // 201 means created
     res.status(201).json({ accessToken: accessToken, refreshToken: refreshToken });
 
@@ -97,22 +95,21 @@ authRoutes.get("/refresh", async (req, res) => {
   jwt.verify(refreshToken, JWT_REFRESH_SECRET, (err:any, user:any) => {
     
     if(err) return res.sendStatus(403); // Invalid token
-    const accessToken = generateAccessToken({email: user.email});
-    console.log("server new AT: " + accessToken)
+    const session_user = { id: user.id, email: user.email};
+    const accessToken = generateAccessToken(session_user);
+    
     res.json({ accessToken: accessToken});
   })
 });
 
+// -- LOGOUT HANDLER --
 authRoutes.get("/logout", async (req, res) => {
-  // removes the refresh token to effectively log out the user
+  // Removes the refresh token to effectively log out the user
   const authHeader = req.headers['authorization'];
   const refreshToken = authHeader && authHeader.split(' ')[1];
   refreshTokens = refreshTokens.filter((token) => token !== refreshToken);
-  console.log("User logged out");
+  
   res.sendStatus(204);
 });
-
-// authRoutes.post("/password/forgot");
-// authRoutes.post("/password/reset");
 
 export default authRoutes;

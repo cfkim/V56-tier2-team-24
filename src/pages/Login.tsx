@@ -9,6 +9,7 @@ export default function Login() {
   const [password, setPassword] = useState("");
   const [rememberMe, setRememberMe] = useState(Boolean)
 
+  // Handles the function call to sign in
   const {
     mutate: signIn,
     isPending,
@@ -17,16 +18,18 @@ export default function Login() {
     mutationFn: login,
 
     onSuccess: (response) => {
+      // Saves tokens to storage
       window.localStorage.setItem("accessToken", response.accessToken);
-      console.log('refresh token NOT stored')
+      
+      // Only saves refresh token if rememberMe checked
       if(rememberMe){
-        console.log('refresh token stored')
         window.localStorage.setItem("refreshToken", response.refreshToken);
       }
       
       navigate("/user", { replace: true });
     },
   });
+
   return (
     <>
       <div className="w-full bg-[#ECECEC] flex flex-row justify-between outline">
@@ -59,9 +62,6 @@ export default function Login() {
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                // onKeyDown={(e) =>
-                //   e.key === "Enter" && signIn({ email, password })
-                // }
                 className="bg-gray-100 rounded-[12px] h-10 p-3 outline"
               />
             </div>
@@ -81,25 +81,6 @@ export default function Login() {
               {isPending ? <p>pending</p> : <p>Login</p>}
             </button>
           </form>
-          {/* Commenting out since no longer doing OAuth Google and Apple */}
-          {/* <div className="flex w-full flex-row gap-3 mb-25">
-            <button className="border outline-[1.5px] border-[#929292] text-[#929292] rounded-[12px] py-[3px] w-full flex flex-row justify-center items-center gap-3 text-sm">
-              <img
-                src="./public/static/images/google.png"
-                alt=""
-                className="p-1"
-              />
-              <p>Login with Google</p>
-            </button>
-            <button className="border outline-[1.5px] border-[#929292] text-[#929292] rounded-[12px] py-[3px] w-full flex flex-row justify-center items-center gap-3 text-sm">
-              <img
-                src="./public/static/images/apple.png"
-                alt=""
-                className="p-1"
-              />
-              <p>Login with Apple</p>
-            </button>
-          </div> */}
           <hr className="border-[#DDE1E6] w-full mb-10" />
           <div className="w-full flex">
             <p>
