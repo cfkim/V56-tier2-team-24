@@ -1,6 +1,8 @@
 import { Router } from "express";
 import { errorMonitor } from "node:events";
 import { JWT_REFRESH_SECRET, JWT_SECRET } from "../constants/env";
+import UserModel from "../models/user.model";
+
 const express = require("express");
 const app = express();
 const bcrypt = require("bcrypt");
@@ -64,17 +66,33 @@ function generateAccessToken(user:any) {
 
 authRoutes.post("/register", async (req, res) => {
   try {
+    console.log('try')
+    // Gets email and password from request body and hashes password
+    const inputEmail = req.body.email;
     const hashedPassword = await bcrypt.hash(req.body.password, 10);
-    const user = { email: req.body.email, password: hashedPassword };
-    users.push(user);
 
-    // get tokens
-    const email = req.body.email;
-    const session_user = { email: email };
+    // Checks if user exists in db
+    const existingUser = await UserModel.exists({ email: inputEmail });
+    if(existingUser) {
+      throw new Error("User already exists");
+    }
+    
+    // Creates user in db
+    const user = await UserModel.create({ email: inputEmail, password: hashedPassword });
+
+    // Creates session (tokens)
+    const session_user = { email: inputEmail };
     const accessToken = generateAccessToken(session_user);
-    const refreshToken = jwt.sign(user, JWT_REFRESH_SECRET);
+    const refreshToken = jwt.sign(user, JWT_REFRESH_SECRET, { expiresIn: "30d" });
+    
+    // "saves" refresh tokens in memory for testing
+    // TODO: implement with http cookies
     refreshTokens.push(refreshToken);
-    res.json({ accessToken: accessToken, refreshToken: refreshToken });
+
+    // returns the access token and refresh token
+    // 201 means created
+    res.status(201).json({ accessToken: accessToken, refreshToken: refreshToken });
+
   } catch {
     res.status(500).send();
   }
