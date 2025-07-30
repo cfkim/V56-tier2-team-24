@@ -21,7 +21,7 @@ export default function Account() {
   return (
    <>
     <h1 className="text-2xl">
-          {user ? `Welcome, ${user.user.email}. you are an ${user.user.role}` : "Loading user data..."}
+        {user ? `Welcome, ${user.user.email}. You are an ${user.user.role}.` : "Loading user data..."}
     </h1>
     <button className="bg-blue-500 text-white px-4 py-2 rounded cursor-pointer" onClick={() => logout()}>Sign out</button>
   </>

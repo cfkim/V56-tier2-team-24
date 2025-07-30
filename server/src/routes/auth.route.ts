@@ -68,7 +68,7 @@ authRoutes.post("/register", async (req, res) => {
     }
     
     // Creates user in db
-    const user = await UserModel.create({ email: inputEmail, password: hashedPassword, role: "admin" });
+    const user = await UserModel.create({ email: inputEmail, password: hashedPassword, role: req.body.role });
 
     // Creates session (tokens)
     const session_user = { id: user._id, email: user.email};
