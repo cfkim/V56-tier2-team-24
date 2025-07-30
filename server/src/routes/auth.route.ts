@@ -7,28 +7,20 @@ const express = require("express");
 const app = express();
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+
 app.use(express.json());
 
 const authRoutes = Router();
 
-interface User {
-  email: string;
-  password: string;
-}
-
-// testing
-let users: User[] = [];
+// This is a simple in-memory store for refresh tokens.
 let refreshTokens: string[] = [];
 
-authRoutes.get("/users", (req, res) => {
-  res.json(users);
-});
+function generateAccessToken(user:any) {
+  console.log(user)
+  return jwt.sign(user, JWT_SECRET, { expiresIn: "15s" });
+}
 
-authRoutes.delete("/users/delete", (req, res) => {
-  users = []
-  res.status(200).json({message: "success deleted"})
-});
-
+// -- LOGIN HANDLER --
 authRoutes.post("/login", async (req, res) => {
   const inputEmail = req.body.email;
   const inputPassword = req.body.password;
@@ -62,11 +54,7 @@ authRoutes.post("/login", async (req, res) => {
   }
 });
 
-function generateAccessToken(user:any) {
-  console.log(user)
-  return jwt.sign(user, JWT_SECRET, { expiresIn: "15s" });
-}
-
+// -- REGISTER HANDLER --
 authRoutes.post("/register", async (req, res) => {
   try {
     // Gets email and password from request body and hashes password
@@ -100,8 +88,8 @@ authRoutes.post("/register", async (req, res) => {
   }
 });
 
+// -- REFRESH TOKEN HANDLER --
 authRoutes.get("/refresh", async (req, res) => {
-  
   const authHeader = req.headers['authorization'];
   const refreshToken = authHeader && authHeader.split(' ')[1];
   if(refreshToken == null) return res.sendStatus(401); // No token provided
@@ -116,10 +104,12 @@ authRoutes.get("/refresh", async (req, res) => {
 });
 
 authRoutes.get("/logout", async (req, res) => {
-  refreshTokens = refreshTokens.filter((token) => token !== req.body.token);
-  console.log(refreshTokens)
+  // removes the refresh token to effectively log out the user
+  const authHeader = req.headers['authorization'];
+  const refreshToken = authHeader && authHeader.split(' ')[1];
+  refreshTokens = refreshTokens.filter((token) => token !== refreshToken);
+  console.log("User logged out");
   res.sendStatus(204);
-
 });
 
 // authRoutes.post("/password/forgot");

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { getUser } from "../lib/api";
+import { getUser, logout } from "../lib/api";
 
 export default function Account() {
   const [user, setUser] = useState(null);
@@ -23,7 +23,7 @@ export default function Account() {
     <h1 className="text-2xl">
           {user ? `Welcome, ${user.user.email}` : "Loading user data..."}
     </h1>
-    <button>Sign out</button>
+    <button className="bg-blue-500 text-white px-4 py-2 rounded cursor-pointer" onClick={() => logout()}>Sign out</button>
   </>
     
       

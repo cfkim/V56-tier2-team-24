@@ -37,7 +37,7 @@ API.interceptors.response.use(
         const newAccessToken = res.accessToken;
         localStorage.setItem("accessToken", newAccessToken);
         console.log('got new access token')
-        // try the same request again with the new token
+        // tries the same request again with the new token
         config.headers = config.headers || {};
         config.headers.Authorization = `Bearer ${newAccessToken}`;
         console.log(config.headers.Authorization)
@@ -45,7 +45,6 @@ API.interceptors.response.use(
         return TokenRefreshClient(config);
       }catch (error) {
         console.error("Token refresh failed:", error);
-        // TODO route it back to sign in
         navigate("/login", {state: {redirectUrl: window.location.pathname}})
         queryClient.clear();
       }

@@ -1,4 +1,6 @@
 import API from "../config/apiClient";
+import queryClient from "../config/queryClient";
+import { navigate } from "./navigation";
 
 interface data {
   email: string;
@@ -16,3 +18,17 @@ export const getUser = async () => {
   
   return res;
 };
+
+export const logout = async () => {
+  const token = localStorage.getItem("refreshToken");
+  const res = await API.get("/auth/logout", {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  localStorage.removeItem("accessToken");
+  localStorage.removeItem("refreshToken");
+  navigate("/login");
+  queryClient.clear();
+  return res;
+}

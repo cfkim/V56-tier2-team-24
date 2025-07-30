@@ -24,7 +24,7 @@ export default function Login() {
         window.localStorage.setItem("refreshToken", response.refreshToken);
       }
       
-      navigate("/", { replace: true });
+      navigate("/user", { replace: true });
     },
   });
   return (
