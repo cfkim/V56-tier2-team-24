@@ -3,12 +3,16 @@ import { APP_ORIGIN, PORT } from "./constants/env";
 import authRoutes from "./routes/auth.route";
 import cors from "cors";
 import userRoutes from "./routes/user.route";
-import authenticate from "./middleware/authenticate";
 import connectToDatabase from "./config/db";
+import cookieParser from "cookie-parser";
+import authenticate from "./middleware/authenticate";
 
 const express = require("express");
 const app = express();
+
 app.use(cors({ origin: APP_ORIGIN, credentials: true }));
+app.use(cookieParser());
+
 app.use(express.json());
 app.use("/auth", authRoutes);
 app.use("/user", authenticate, userRoutes);

@@ -1,6 +1,7 @@
 import { Router } from "express";
 import { JWT_REFRESH_SECRET, JWT_SECRET } from "../constants/env";
 import UserModel from "../models/user.model";
+import { clearAuthCookies, getAccessTokenCookieOptions, setAuthCookies } from "../utils/cookies";
 
 // const express = require("express");
 // const app = express();
@@ -23,7 +24,8 @@ function generateAccessToken(user:any) {
 authRoutes.post("/login", async (req, res) => {
   const inputEmail = req.body.email;
   const inputPassword = req.body.password;
-  
+  const rememberMe = req.body.rememberMe;
+
   // finds user from email
   const user = await UserModel.findOne({ email: inputEmail });
 
@@ -41,7 +43,13 @@ authRoutes.post("/login", async (req, res) => {
       const refreshToken = jwt.sign(session_user, JWT_REFRESH_SECRET, { expiresIn: "30d" })
       
       refreshTokens.push(refreshToken);
+
+      setAuthCookies({res, accessToken, refreshToken, rememberMe})
+      
       res.status(200).send({ session_user, accessToken, refreshToken });
+      
+      
+
     } else {
       // if password does not match, returns error
       res.status(401).send("invalid password");
@@ -79,7 +87,10 @@ authRoutes.post("/register", async (req, res) => {
 
     // Returns the access token and refresh token
     // 201 means created
+    setAuthCookies({res, accessToken, refreshToken})
+
     res.status(201).json({ accessToken: accessToken, refreshToken: refreshToken });
+
 
   } catch {
     res.status(500).send();
@@ -88,17 +99,23 @@ authRoutes.post("/register", async (req, res) => {
 
 // -- REFRESH TOKEN HANDLER --
 authRoutes.get("/refresh", async (req, res) => {
+  console.log("getting refresh token form cookie")
+  const cookieToken = req.cookies.refreshToken 
+
   const authHeader = req.headers['authorization'];
   const refreshToken = authHeader && authHeader.split(' ')[1];
-  if(refreshToken == null) return res.sendStatus(401); // No token provided
-  if (!refreshTokens.includes(refreshToken)) return res.sendStatus(403); // Invalid token
+  console.log("checking if null")
+  if(cookieToken == null) return res.sendStatus(401); // No token provided
+  if (!refreshTokens.includes(cookieToken)) return res.sendStatus(403); // Invalid token
+  console.log("valid token")
   jwt.verify(refreshToken, JWT_REFRESH_SECRET, (err:any, user:any) => {
     
     if(err) return res.sendStatus(403); // Invalid token
+    console.log("verify succeeded")
     const session_user = { id: user.id, email: user.email};
     const accessToken = generateAccessToken(session_user);
-    
-    res.json({ accessToken: accessToken});
+    console.log('trying refresh with a cookie')
+    res.cookie("accessToken", accessToken, getAccessTokenCookieOptions()).json({ accessToken: accessToken});
   })
 });
 
@@ -108,8 +125,10 @@ authRoutes.get("/logout", async (req, res) => {
   const authHeader = req.headers['authorization'];
   const refreshToken = authHeader && authHeader.split(' ')[1];
   refreshTokens = refreshTokens.filter((token) => token !== refreshToken);
-  
+  clearAuthCookies(res)
   res.sendStatus(204);
+
+  
 });
 
 export default authRoutes;

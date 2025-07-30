@@ -43,7 +43,7 @@ export default function Login() {
             className="w-full"
             onSubmit={(e) => {
               e.preventDefault();
-              signIn({ email, password });
+              signIn({ email, password, rememberMe });
             }}
           >
             <div className="flex flex-col mb-3 gap-1">

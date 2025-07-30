@@ -6,12 +6,14 @@ import { navigate } from "./navigation";
 interface signInData {
   email: string;
   password: string;
+  rememberMe: Boolean
 }
 
 // -- FUNCTIONS FOR MAKING API REQUESTS -- 
 export const login = async (data: signInData) => API.post("/auth/login", data);
 
 export const getUser = async () => {
+  
   const token = localStorage.getItem("accessToken");
   const res = await API.get("/user", {
     headers: {
