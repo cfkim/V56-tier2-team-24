@@ -1,5 +1,6 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
+<<<<<<< HEAD
 import "./index.css";
 import App from "./App.tsx";
 import { BrowserRouter } from "react-router-dom";
@@ -16,4 +17,13 @@ createRoot(document.getElementById("root")!).render(
       </BrowserRouter>
     </QueryClientProvider>
   </StrictMode>
+=======
+import App from "./App.tsx";
+import "./index.css";
+
+createRoot(document.getElementById("root")!).render(
+    <StrictMode>
+        <App />
+    </StrictMode>
+>>>>>>> 8c8715c8266f7a30c2d45ab54d9954254776f357
 );
