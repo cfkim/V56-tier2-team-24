@@ -99,22 +99,16 @@ authRoutes.post("/register", async (req, res) => {
 
 // -- REFRESH TOKEN HANDLER --
 authRoutes.get("/refresh", async (req, res) => {
-  console.log("getting refresh token form cookie")
   const cookieToken = req.cookies.refreshToken 
-
   const authHeader = req.headers['authorization'];
   const refreshToken = authHeader && authHeader.split(' ')[1];
-  console.log("checking if null")
   if(cookieToken == null) return res.sendStatus(401); // No token provided
   if (!refreshTokens.includes(cookieToken)) return res.sendStatus(403); // Invalid token
-  console.log("valid token")
   jwt.verify(refreshToken, JWT_REFRESH_SECRET, (err:any, user:any) => {
     
     if(err) return res.sendStatus(403); // Invalid token
-    console.log("verify succeeded")
     const session_user = { id: user.id, email: user.email};
     const accessToken = generateAccessToken(session_user);
-    console.log('trying refresh with a cookie')
     res.cookie("accessToken", accessToken, getAccessTokenCookieOptions()).json({ accessToken: accessToken});
   })
 });
