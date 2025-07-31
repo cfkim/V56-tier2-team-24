@@ -10,9 +10,34 @@
     src: url("../src/assets/fonts/Nunito-Bold.ttf");
 }
 
+@font-face {
+    font-family: KaiseiOpti;
+    font-style: normal;
+    font-weight: 400;
+    font-display: swap;
+    src: url("../src/assets/fonts/KaiseiOpti-Regular.ttf") format("truetype");
+}
+
+@font-face {
+    font-family: KaiseiOpti;
+    font-style: normal;
+    font-weight: 500;
+    font-display: swap;
+    src: url("../src/assets/fonts/KaiseiOpti-Medium.ttf") format("truetype");
+}
+
+@font-face {
+    font-family: KaiseiOpti;
+    font-style: normal;
+    font-weight: 700;
+    font-display: swap;
+    src: url("../src/assets/fonts/KaiseiOpti-Bold.ttf") format("truetype");
+}
+
 @theme {
     --font-nunito: Nunito, "sans-serif";
     --font-nunito-bold: Nunito-bold, "sans-serif";
+    --font-kaisei: KaiseiOpti, "serif";
 
     --color-background: #FFFFFF;
     --color-header-text: #4D4D4D;
