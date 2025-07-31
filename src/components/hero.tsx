@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 
-export default function Hero({user}: {user: any}) {
+export default function Hero({user, isLoading}: {user: any, isLoading: boolean}) {
   const navigate = useNavigate()
   return (
     <>
@@ -23,7 +23,7 @@ export default function Hero({user}: {user: any}) {
               </p>
             </div>
           </div>
-          {!user &&  
+          {!isLoading && !user &&  
           <div className="flex flex-row gap-4 text-2xl">
             <button className="bg-[#555555] text-white rounded-[12px] py-[16px] px-[19px] flex flex-row gap-6 cursor-pointer" onClick={() => navigate('/login')}>
               Authorization login

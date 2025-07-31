@@ -4,12 +4,13 @@ import { getUser } from "../lib/api";
 
 export default function Home() {
     const [user, setUser] = useState(null);
-    
+    const [loading, setLoading] = useState(true);
       useEffect(() => {
         const fetchUser = async () => {
           try {
             const data = await getUser();
             setUser(data);
+            setLoading(false);
             console.log("User data fetched:", data);
           } catch (err) {
             console.error("failed to fetch user:", err);
@@ -19,5 +20,5 @@ export default function Home() {
         fetchUser();
 
       }, []);
-    return <Hero user={user}></Hero>
+    return <Hero user={user} isLoading={loading}></Hero>
 }
