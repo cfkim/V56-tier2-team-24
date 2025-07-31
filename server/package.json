@@ -6,6 +6,9 @@
     "devStart": "nodemon src/server.ts",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
+  "engines": {
+  "node": ">=18.17.0"
+  },
   "keywords": [],
   "author": "",
   "license": "ISC",

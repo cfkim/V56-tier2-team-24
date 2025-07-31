@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { getUser, logout } from "../lib/api";
+import Hero from "../components/hero";
 
 // basic profile page to validate login
 export default function Account() {

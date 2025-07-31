@@ -26,13 +26,13 @@ export default function Login() {
         window.localStorage.setItem("refreshToken", response.refreshToken);
       }
       
-      navigate("/user", { replace: true });
+      navigate("/", { replace: true });
     },
   });
 
   return (
     <>
-      <div className="w-full bg-[#ECECEC] flex flex-row justify-between outline">
+      <div className="w-full bg-[#ECECEC] flex flex-row justify-between">
         <div className="h-full py-40"></div>
         <div className="w-1/2 bg-white py-40 flex flex-col justify-center items-center p-30">
           <h1 className="w-full text-5xl mb-12 font-semibold">Log In</h1>

@@ -1,3 +1,23 @@
+import { useEffect, useState } from "react";
+import Hero from "../components/hero";
+import { getUser } from "../lib/api";
+
 export default function Home() {
-    return <section className="h-screen"> Main Content </section>;
+    const [user, setUser] = useState(null);
+    
+      useEffect(() => {
+        const fetchUser = async () => {
+          try {
+            const data = await getUser();
+            setUser(data);
+            console.log("User data fetched:", data);
+          } catch (err) {
+            console.error("failed to fetch user:", err);
+          }
+        };
+    
+        fetchUser();
+
+      }, []);
+    return <Hero user={user}></Hero>
 }

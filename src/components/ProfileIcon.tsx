@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { logout } from "../lib/api";
 
 export default function ProfileIcon() {
     const [isOpen, setIsOpen] = useState(false);
@@ -37,7 +38,7 @@ export default function ProfileIcon() {
                         </svg>
                         <div className="absolute top-full right-0 mt-2 w-36 h-12 px-4 text-background bg-primary flex items-center justify-between rounded-xl text-xl">
                             <span
-                                onClick={handleLogout}
+                                onClick={() => logout()}
                                 className="flex-1 text-center">
                                 Log out
                             </span>

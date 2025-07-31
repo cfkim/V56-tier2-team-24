@@ -1,5 +1,6 @@
-export let navigate = (p0: string, p1: { state: { redirectUrl: string; }; }) => {};
+export let navigate = (route: string, redirect: { state: { redirectUrl: string; }; }) => {};
 
-export const setNavigate = (fn) => {
+export const setNavigate = (fn: (route: string, redirect: { state: { redirectUrl: string; }; }) => void) => {
+  console.log("setNavigate called with function:", fn);
   navigate = fn;
 };

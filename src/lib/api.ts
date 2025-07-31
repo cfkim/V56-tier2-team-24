@@ -24,6 +24,7 @@ export const getUser = async () => {
 };
 
 export const logout = async () => {
+  console.log("logout clicked")
   const token = localStorage.getItem("refreshToken");
   const res = await API.get("/auth/logout", {
     headers: {
@@ -36,7 +37,7 @@ export const logout = async () => {
   localStorage.removeItem("refreshToken");
 
   // Redirects user to login page
-  navigate("/login");
+  navigate("/login", { state: { redirectUrl: window.location.pathname } });
   queryClient.clear();
 
   return res;
