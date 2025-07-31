@@ -11,24 +11,18 @@
   },
   "dependencies": {
     "@tailwindcss/vite": "^4.1.11",
-<<<<<<< HEAD
     "@tanstack/react-query": "^5.83.0",
     "@tanstack/react-query-devtools": "^5.83.0",
     "axios": "^1.11.0",
     "bcrypt": "^6.0.0",
+    "clsx": "^2.1.1",
     "cors": "^2.8.5",
     "express": "^5.1.0",
     "mongoose": "^8.16.5",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
     "react-router-dom": "^7.7.1",
-=======
-    "clsx": "^2.1.1",
-    "react": "^19.1.0",
-    "react-dom": "^19.1.0",
-    "react-router-dom": "^7.7.0",
     "tailwind-merge": "^3.3.1",
->>>>>>> 8c8715c8266f7a30c2d45ab54d9954254776f357
     "tailwindcss": "^4.1.11"
   },
   "devDependencies": {
