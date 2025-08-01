@@ -45,7 +45,10 @@ API.interceptors.response.use(
         return TokenRefreshClient(config);
       }catch (error) {
         // If token refresh fails navigate back to login
-        navigate("/login", {state: {redirectUrl: window.location.pathname}})
+        if (window.location.pathname !== "/"){
+          navigate("/login", {state: {redirectUrl: window.location.pathname}})
+        }
+        
         queryClient.clear();
       }
     return Promise.reject({ status, ...data });
