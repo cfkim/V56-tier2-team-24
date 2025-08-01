@@ -10,24 +10,42 @@ import Account from "./pages/Account";
 import { setNavigate } from "./lib/navigation";
 
 function App() {
-    const navigate = useNavigate()
-    setNavigate(navigate)
+  const [role, setRole] = useState<Role | undefined>("admin");
+  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
+  
+  const navigate = useNavigate()
+  setNavigate(navigate)
 
-    const [role, setRole] = useState<Role | undefined>("admin");
-    const [isLoggedIn, setIsLoggedIn] = useState<boolean>(true);
-    return (
-        <>
-            <Header role={role} isLoggedIn={isLoggedIn} />
-            <main>
-                <Routes>
-                    <Route path="/" element={<Home />} />
-                    <Route path="/login" element={<Login />} />
-                    <Route path="/user" element={<Account />} />
-                </Routes>
-            </main>
-            <Footer />
-        </>
-    );
+//   const setLoggedIn = (loggedIn:boolean) => {
+//     setIsLoggedIn(loggedIn)
+//   }
+
+  return (
+   <>
+      <Header
+        role={role}
+        isLoggedIn={isLoggedIn}
+        setIsLoggedIn={setIsLoggedIn}
+      />
+      <main>
+        <Routes>
+          <Route
+            path="/"
+            element={
+              <Home
+                role={role}
+                isLoggedIn={isLoggedIn}
+                setIsLoggedIn={setIsLoggedIn}
+              />
+            }
+          />
+            <Route path="/login" element={<Login setIsLoggedIn={setIsLoggedIn} setRole={setRole}/>} />
+            <Route path="/user" element={<Account />} />
+        </Routes>
+      </main>
+      <Footer />
+    </>
+  );
 }
 
 export default App;

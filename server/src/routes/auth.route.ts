@@ -46,7 +46,7 @@ authRoutes.post("/login", async (req, res) => {
 
       setAuthCookies({res, accessToken, refreshToken, rememberMe})
       
-      res.status(200).send({ session_user, accessToken, refreshToken });
+      res.status(200).send({ user, accessToken, refreshToken });
       
       
 

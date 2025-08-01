@@ -2,8 +2,9 @@ import { useMutation } from "@tanstack/react-query";
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { login } from "../lib/api";
+import type { Role } from "../types/Role";
 
-export default function Login() {
+export default function Login({setIsLoggedIn, setRole}: {setIsLoggedIn: React.Dispatch<React.SetStateAction<boolean>>, setRole: React.Dispatch<React.SetStateAction<Role | undefined>>}) {
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -26,6 +27,10 @@ export default function Login() {
         window.localStorage.setItem("refreshToken", response.refreshToken);
       }
       
+      // Set App's logged in state and the role of the user
+      setIsLoggedIn(true);
+      setRole(response.user.role)
+
       navigate("/", { replace: true });
     },
   });
