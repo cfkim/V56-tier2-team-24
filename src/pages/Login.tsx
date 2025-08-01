@@ -37,9 +37,10 @@ export default function Login({setIsLoggedIn, setRole}: {setIsLoggedIn: React.Di
 
   return (
     <>
-      <div className="w-full bg-[#ECECEC] flex flex-row justify-between">
-        <div className="h-full py-40"></div>
-        <div className="w-1/2 bg-white py-40 flex flex-col justify-center items-center p-30">
+      <div className="w-full  flex flex-row justify-between">
+        <div className="flex justify-center w-1/2 h-full">
+        <img src="static/images/login.svg" alt="" className="rounded-t-[3.125rem] h-auto mb-8"/></div>
+        <div className="w-1/2 bg-white flex flex-col justify-center items-center px-30">
           <h1 className="w-full text-5xl mb-12 font-semibold">Log In</h1>
           {isError && (
             <div className=" text-red-500">Invalid email or password.</div>
@@ -80,19 +81,16 @@ export default function Login({setIsLoggedIn, setRole}: {setIsLoggedIn: React.Di
             </div>
             <button
               type="submit"
-              className="bg-[#555555] text-white rounded-[12px] py-[13px] w-full mb-75 disabled:bg-[#b3b3b3]"
+              className="bg-[#555555] text-white rounded-[12px] py-[13px] w-full mb-20 disabled:bg-[#b3b3b3]"
               disabled={!email || password.length < 6}
             >
-              {isPending ? <p>pending</p> : <p>Login</p>}
+              {isPending ? <p>...</p> : <p>Log In</p>}
             </button>
           </form>
           <hr className="border-[#DDE1E6] w-full mb-10" />
           <div className="w-full flex">
             <p>
-              No account yet?{" "}
-              <Link to="/register" className="text-sky-600 hover:underline">
-                Sign up
-              </Link>
+              No account yet? Please visit the <strong>reception area</strong>
             </p>
           </div>
         </div>
