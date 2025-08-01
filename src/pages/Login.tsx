@@ -4,7 +4,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { login } from "../lib/api";
 import type { Role } from "../types/Role";
 
-export default function Login({setIsLoggedIn, setRole}: {setIsLoggedIn: React.Dispatch<React.SetStateAction<boolean>>, setRole: React.Dispatch<React.SetStateAction<Role | undefined>>}) {
+export default function Login({setUser, setIsLoggedIn, setRole}: {setUser: React.Dispatch<React.SetStateAction<any>>, setIsLoggedIn: React.Dispatch<React.SetStateAction<boolean>>, setRole: React.Dispatch<React.SetStateAction<Role | undefined>>}) {
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -27,10 +27,10 @@ export default function Login({setIsLoggedIn, setRole}: {setIsLoggedIn: React.Di
         window.localStorage.setItem("refreshToken", response.refreshToken);
       }
       
-      // Set App's logged in state and the role of the user
+      // Sets App's logged in state and the role of the user
       setIsLoggedIn(true);
+      setUser(response.user)
       setRole(response.user.role)
-
       navigate("/", { replace: true });
     },
   });
@@ -40,8 +40,8 @@ export default function Login({setIsLoggedIn, setRole}: {setIsLoggedIn: React.Di
       <div className="w-full  flex flex-row justify-between">
         <div className="flex justify-center w-1/2 h-full">
         <img src="static/images/login.svg" alt="" className="rounded-t-[3.125rem] h-auto mb-8"/></div>
-        <div className="w-1/2 bg-white flex flex-col justify-center items-center px-30">
-          <h1 className="w-full text-5xl mb-12 font-semibold">Log In</h1>
+        <div className="font-nunito w-1/2 bg-white flex flex-col justify-center items-center px-30">
+          <h1 className="w-full font-kaisei text-xl font-bold md:text-4xl mb-12">Log In</h1>
           {isError && (
             <div className=" text-red-500">Invalid email or password.</div>
           )}
@@ -59,7 +59,7 @@ export default function Login({setIsLoggedIn, setRole}: {setIsLoggedIn: React.Di
                 autoFocus
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="bg-gray-100 rounded-[12px] h-10 p-3 outline"
+                className="bg-gray-100 rounded-[12px] h-10 p-3 drop-shadow-sm/25 focus:outline-blue-500"
               />
             </div>
             <div className="flex flex-col mb-4 gap-1">
@@ -68,7 +68,7 @@ export default function Login({setIsLoggedIn, setRole}: {setIsLoggedIn: React.Di
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="bg-gray-100 rounded-[12px] h-10 p-3 outline"
+                className="bg-gray-100 rounded-[12px] h-10 p-3 drop-shadow-sm/25 focus:outline-blue-500"
               />
             </div>
             <div className="flex flex-row mb-4 justify-between">
@@ -81,7 +81,7 @@ export default function Login({setIsLoggedIn, setRole}: {setIsLoggedIn: React.Di
             </div>
             <button
               type="submit"
-              className="bg-[#555555] text-white rounded-[12px] py-[13px] w-full mb-20 disabled:bg-[#b3b3b3]"
+              className="bg-primary text-white rounded-[12px] py-[13px] w-full mb-20 disabled:opacity-50"
               disabled={!email || password.length < 6}
             >
               {isPending ? <p>...</p> : <p>Log In</p>}

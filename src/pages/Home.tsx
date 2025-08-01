@@ -22,21 +22,6 @@ export default function Home({
     navigate("/");
   };
   
-  // const [user, setUser] = useState(null)
-  // const [loading, setLoading] = useState(true)
-  // useEffect(() => {
-  //   const fetchUser = async () => {
-  //     try {
-  //       const data = await getUser()
-  //       setUser(data)
-  //       setLoading(false)
-  //     } catch(err) {
-  //       console.log("failed to fetch user")
-  //     }
-  //   }
-  //   fetchUser();
-  // }, [])
-
   return (
     <section className="mb-[-0.5rem] px-1.5 md:px-6">
       <div className="relative flex w-full items-center">
@@ -47,7 +32,7 @@ export default function Home({
         />
         <div className="text-bg-text font-nunito absolute inset-0 flex w-1/2 flex-col justify-between py-28 pl-14">
           <div className="my-auto flex flex-col gap-3.5">
-            {role && (
+            {isLoggedIn && role && (
               <h2 className="font-kaisei text-lg font-bold md:text-3xl">
                 Hi, {capitalize(role)}
               </h2>

@@ -41,8 +41,7 @@ API.interceptors.response.use(
         // Tries the original request again with the new token
         config.headers = config.headers || {};
         config.headers.Authorization = `Bearer ${newAccessToken}`;
-          // console.log(config.headers.Authorization)
-          // console.log(newAccessToken)
+        
         return TokenRefreshClient(config);
       }catch (error) {
         // If token refresh fails navigate back to login

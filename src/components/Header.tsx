@@ -8,10 +8,12 @@ export default function Header({
   role,
   isLoggedIn,
   setIsLoggedIn,
+  setUser
 }: {
   role: Role | undefined;
   isLoggedIn: boolean;
   setIsLoggedIn: React.Dispatch<React.SetStateAction<boolean>>;
+  setUser: React.Dispatch<React.SetStateAction<any>>;
 }) {
   const date = useMemo(() => new Date(), []);
 
@@ -67,7 +69,7 @@ export default function Header({
         </ul>
         <div className="flex items-center gap-4">
           <p>{currentDate}</p>
-          {isLoggedIn && <ProfileIcon setIsLoggedIn={setIsLoggedIn} />}
+          {isLoggedIn && <ProfileIcon setIsLoggedIn={setIsLoggedIn} setUser={setUser}/>}
         </div>
       </nav>
     </header>

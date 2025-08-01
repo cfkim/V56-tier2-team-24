@@ -4,8 +4,10 @@ import { logout } from "../lib/api";
 
 export default function ProfileIcon({
   setIsLoggedIn,
+  setUser,
 }: {
   setIsLoggedIn: React.Dispatch<React.SetStateAction<boolean>>;
+  setUser: React.Dispatch<React.SetStateAction<any>>;
 }) {
   const [isOpen, setIsOpen] = useState(false);
 
@@ -14,10 +16,10 @@ export default function ProfileIcon({
   const handleLogout = () => {
     setIsLoggedIn(false);
     setIsOpen(!isOpen);
-    // clear session tokens
+    setUser(null);
+    // clears session tokens
     logout();
     navigate("/");
-    console.log("logout");
   };
 
   return (
