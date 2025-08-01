@@ -1,6 +1,6 @@
 export default function Footer() {
   return (
-    <div className="w-full bg-[#697077] text-white">
+    <div className="w-full bg-[#082368] text-white">
       <div
         id="footer-content"
         className="flex flex-col h-full justify-between items-center p-10 md:p-15 lg:p-15 font-nunito text-[14px]"
