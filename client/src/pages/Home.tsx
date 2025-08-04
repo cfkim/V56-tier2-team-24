@@ -1,7 +1,5 @@
 import { Link, useNavigate } from "react-router-dom";
 import type { Role } from "../types/Role";
-import { useEffect, useState } from "react";
-import { getUser } from "../lib/api";
 
 function capitalize(role: Role) {
   return role.charAt(0).toUpperCase() + role.slice(1);
@@ -21,7 +19,7 @@ export default function Home({
     setIsLoggedIn(true);
     navigate("/");
   };
-  
+
   return (
     <section className="mb-[-0.5rem] px-1.5 md:px-6">
       <div className="relative flex w-full items-center">

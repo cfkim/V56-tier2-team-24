@@ -8,7 +8,7 @@ export default function Header({
   role,
   isLoggedIn,
   setIsLoggedIn,
-  setUser
+  setUser,
 }: {
   role: Role | undefined;
   isLoggedIn: boolean;
@@ -69,7 +69,9 @@ export default function Header({
         </ul>
         <div className="flex items-center gap-4">
           <p>{currentDate}</p>
-          {isLoggedIn && <ProfileIcon setIsLoggedIn={setIsLoggedIn} setUser={setUser}/>}
+          {isLoggedIn && (
+            <ProfileIcon setIsLoggedIn={setIsLoggedIn} setUser={setUser} />
+          )}
         </div>
       </nav>
     </header>

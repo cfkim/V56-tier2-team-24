@@ -1,21 +1,22 @@
 import API from "../config/apiClient";
 import queryClient from "../config/queryClient";
+import type { LoginResponse } from "../types/LoginResponse";
 import { navigate } from "./navigation";
 
 // Sign in data
 interface signInData {
   email: string;
   password: string;
-  rememberMe: Boolean
+  rememberMe: Boolean;
 }
 
-// -- FUNCTIONS FOR MAKING API REQUESTS -- 
-export const login = async (data: signInData) => API.post("/auth/login", data);
+// -- FUNCTIONS FOR MAKING API REQUESTS --
+export const login = async (data: signInData): Promise<LoginResponse> =>
+  API.post("/auth/login", data);
 
 export const getUser = async () => {
-  
   const token = localStorage.getItem("accessToken");
-  const res = await API.get("/user", {
+  const res = await API("/user", {
     headers: {
       Authorization: `Bearer ${token}`,
     },
@@ -24,7 +25,7 @@ export const getUser = async () => {
 };
 
 export const logout = async () => {
-  console.log("logout clicked")
+  console.log("logout clicked");
   const token = localStorage.getItem("refreshToken");
   const res = await API.get("/auth/logout", {
     headers: {
@@ -41,4 +42,4 @@ export const logout = async () => {
   queryClient.clear();
 
   return res;
-}
+};
