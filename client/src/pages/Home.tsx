@@ -9,14 +9,17 @@ export default function Home({
   role,
   isLoggedIn,
   setIsLoggedIn,
+  setRole,
 }: {
   role: Role | undefined;
   isLoggedIn: boolean;
   setIsLoggedIn: React.Dispatch<React.SetStateAction<boolean>>;
+  setRole: React.Dispatch<React.SetStateAction<Role | undefined>>;
 }) {
   const navigate = useNavigate();
   const guestLogin = () => {
     setIsLoggedIn(true);
+    setRole("guest");
     navigate("/");
   };
 

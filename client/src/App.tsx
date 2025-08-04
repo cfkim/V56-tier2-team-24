@@ -54,6 +54,7 @@ function App() {
                 role={role}
                 isLoggedIn={isLoggedIn}
                 setIsLoggedIn={setIsLoggedIn}
+                setRole={setRole}
               />
             }
           />
