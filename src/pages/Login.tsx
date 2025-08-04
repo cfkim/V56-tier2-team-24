@@ -1,19 +1,9 @@
-// src/pages/ForgotPassword.tsx
-import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { format } from "date-fns";
-import loginImg from "/static/images/login.svg"; 
+import loginImg from "/static/images/login.svg";
 
-export default function ForgotPassword() {
+export default function Login() {
   const today = format(new Date(), "MMMM d, yyyy");
-  const [email, setEmail] = useState("");
-  const navigate = useNavigate();
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    // TODO: send request to backend
-    navigate("/password/reset-link-sent");
-  };
 
   return (
     <div className="flex-1 flex flex-col bg-white">
@@ -35,12 +25,8 @@ export default function ForgotPassword() {
           <div className="w-full lg:w-1/2 p-8 flex flex-col justify-center">
             <div className="mb-8">
               <h2 className="text-4xl font-nunito font-bold text-[#3A3A3A] mb-6">Log In</h2>
-              <h3 className="text-2xl font-nunito font-semibold text-[#3A3A3A] ">Forgot password?</h3>
             </div>
-            <p className="text-gray-600 mb-6 font-nunito text-base">
-              Enter your email and we'll send you a link to reset your password.
-            </p>
-            <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+            <form className="flex flex-col gap-4">
               <div className="flex flex-col gap-2">
                 <label htmlFor="email" className="font-nunito font-semibold text-[#3A3A3A]">
                   Email Address
@@ -48,25 +34,35 @@ export default function ForgotPassword() {
                 <input
                   type="email"
                   id="email"
-                  value={email}
                   required
-                  onChange={(e) => setEmail(e.target.value)}
                   className="p-4 rounded-lg border border-gray-300 font-nunito focus:outline-none focus:border-[#082368]"
                   placeholder="Enter your email"
+                />
+              </div>
+              <div className="flex flex-col gap-2">
+                <label htmlFor="password" className="font-nunito font-semibold text-[#3A3A3A]">
+                  Password
+                </label>
+                <input
+                  type="password"
+                  id="password"
+                  required
+                  className="p-4 rounded-lg border border-gray-300 font-nunito focus:outline-none focus:border-[#082368]"
+                  placeholder="Enter your password"
                 />
               </div>
               <button
                 type="submit"
                 className="bg-[#082368] text-white rounded-lg py-4 font-nunito font-semibold hover:bg-[#061a4a] transition-colors"
               >
-                Reset Password
+                Log In
               </button>
               <div className="flex justify-center mt-4">
                 <Link
-                  to="/login"
+                  to="/password/forgot"
                   className="text-[#082368] font-nunito underline hover:no-underline"
                 >
-                  Back to Login page
+                  Forgot password?
                 </Link>
               </div>
             </form>
@@ -75,4 +71,4 @@ export default function ForgotPassword() {
       </div>
     </div>
   );
-}
+} 
