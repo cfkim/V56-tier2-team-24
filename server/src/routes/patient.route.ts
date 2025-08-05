@@ -26,6 +26,8 @@ patientRoutes.get('/all', async(req:any, res) => {
             message:"Patients found",
             patients: allPatients
         })
+    }else{
+        res.status(500).json({message: "Error occurred while fetching patient data"})
     }
 })
 
@@ -67,7 +69,11 @@ patientRoutes.post('/create', async(req, res) => {
 patientRoutes.delete('/delete', async (req, res) => {
     const idToDelete = req.body.id
     try {
-        await PatientModel.deleteOne({patientID: idToDelete})
+        const result = await PatientModel.deleteOne({patientID: idToDelete})
+
+        if(result.deletedCount === 0){
+            return res.status(404).json({message: "No record with ID to delete"})
+        }
         res.status(200).json({message: "Patient record successfully deleted"})
     }catch {
         res.status(404).json({message: "Could not delete user."})

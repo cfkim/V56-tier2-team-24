@@ -17,6 +17,6 @@ app.use(cookieParser());
 app.use(express.json());
 app.use("/auth", authRoutes);
 app.use("/user", authenticate, userRoutes);
-app.use("/patient", patientRoutes);
+app.use("/patient", authenticate, patientRoutes);
 
 app.listen(PORT, async () => { await connectToDatabase(); console.log(`Server is running on port ${PORT}`); });

@@ -43,3 +43,17 @@ export const logout = async () => {
 
   return res;
 };
+
+
+// gets all patients
+
+export const getPatients = async () => {
+  console.log("Getting patients")
+  const token = localStorage.getItem("refreshToken");
+  const res = await API.get("/patient/all", {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  return res;
+}
