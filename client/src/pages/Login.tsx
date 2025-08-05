@@ -2,13 +2,22 @@ import { useMutation } from "@tanstack/react-query";
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { login } from "../lib/api";
+import type { LoginResponse } from "../types/LoginResponse";
 import type { Role } from "../types/Role";
 
-export default function Login({setUser, setIsLoggedIn, setRole}: {setUser: React.Dispatch<React.SetStateAction<any>>, setIsLoggedIn: React.Dispatch<React.SetStateAction<boolean>>, setRole: React.Dispatch<React.SetStateAction<Role | undefined>>}) {
+export default function Login({
+  setUser,
+  setIsLoggedIn,
+  setRole,
+}: {
+  setUser: React.Dispatch<React.SetStateAction<any>>;
+  setIsLoggedIn: React.Dispatch<React.SetStateAction<boolean>>;
+  setRole: React.Dispatch<React.SetStateAction<Role | undefined>>;
+}) {
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [rememberMe, setRememberMe] = useState(Boolean)
+  const [rememberMe, setRememberMe] = useState(Boolean);
 
   // Handles the function call to sign in
   const {
@@ -18,32 +27,40 @@ export default function Login({setUser, setIsLoggedIn, setRole}: {setUser: React
   } = useMutation({
     mutationFn: login,
 
-    onSuccess: (response) => {
+    onSuccess: (response: LoginResponse) => {
       // Saves tokens to storage
+      console.log(response);
       window.localStorage.setItem("accessToken", response.accessToken);
-      
+
       // Only saves refresh token if rememberMe checked
-      if(rememberMe){
+      if (rememberMe) {
         window.localStorage.setItem("refreshToken", response.refreshToken);
       }
-      
+
       // Sets App's logged in state and the role of the user
       setIsLoggedIn(true);
-      setUser(response.user)
-      setRole(response.user.role)
+      setUser(response.user);
+      setRole(response.user.role);
       navigate("/", { replace: true });
     },
   });
 
   return (
     <>
-      <div className="w-full  flex flex-row justify-between">
-        <div className="flex justify-center w-1/2 h-full">
-        <img src="static/images/login.svg" alt="" className="rounded-t-[3.125rem] h-auto mb-8"/></div>
-        <div className="font-nunito w-1/2 bg-white flex flex-col justify-center items-center px-30">
-          <h1 className="w-full font-kaisei text-xl font-bold md:text-4xl mb-12">Log In</h1>
+      <div className="flex w-full flex-row justify-between">
+        <div className="flex h-full w-1/2 justify-center">
+          <img
+            src="static/images/login.svg"
+            alt=""
+            className="mb-8 h-auto rounded-t-[3.125rem]"
+          />
+        </div>
+        <div className="font-nunito flex w-1/2 flex-col items-center justify-center bg-white px-30">
+          <h1 className="font-kaisei mb-12 w-full text-xl font-bold md:text-4xl">
+            Log In
+          </h1>
           {isError && (
-            <div className=" text-red-500">Invalid email or password.</div>
+            <div className="text-red-500">Invalid email or password.</div>
           )}
           <form
             className="w-full"
@@ -52,28 +69,32 @@ export default function Login({setUser, setIsLoggedIn, setRole}: {setUser: React
               signIn({ email, password, rememberMe });
             }}
           >
-            <div className="flex flex-col mb-3 gap-1">
+            <div className="mb-3 flex flex-col gap-1">
               <label htmlFor="email">Email Address</label>
               <input
                 type="email"
                 autoFocus
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="bg-gray-100 rounded-[12px] h-10 p-3 drop-shadow-sm/25 focus:outline-blue-500"
+                className="h-10 rounded-[12px] bg-gray-100 p-3 drop-shadow-sm/25 focus:outline-blue-500"
               />
             </div>
-            <div className="flex flex-col mb-4 gap-1">
+            <div className="mb-4 flex flex-col gap-1">
               <label htmlFor="password">Password</label>
               <input
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="bg-gray-100 rounded-[12px] h-10 p-3 drop-shadow-sm/25 focus:outline-blue-500"
+                className="h-10 rounded-[12px] bg-gray-100 p-3 drop-shadow-sm/25 focus:outline-blue-500"
               />
             </div>
-            <div className="flex flex-row mb-4 justify-between">
+            <div className="mb-4 flex flex-row justify-between">
               <div className="flex gap-2">
-                <input type="checkbox" id="remember" onChange={(e) => setRememberMe(e.target.checked)}/>
+                <input
+                  type="checkbox"
+                  id="remember"
+                  onChange={(e) => setRememberMe(e.target.checked)}
+                />
                 <label htmlFor="remember">Remember Me</label>
               </div>
 
@@ -81,14 +102,14 @@ export default function Login({setUser, setIsLoggedIn, setRole}: {setUser: React
             </div>
             <button
               type="submit"
-              className="bg-primary text-white rounded-[12px] py-[13px] w-full mb-20 disabled:opacity-50"
+              className="bg-primary mb-20 w-full rounded-[12px] py-[13px] text-white disabled:opacity-50"
               disabled={!email || password.length < 6}
             >
               {isPending ? <p>...</p> : <p>Log In</p>}
             </button>
           </form>
-          <hr className="border-[#DDE1E6] w-full mb-10" />
-          <div className="w-full flex">
+          <hr className="mb-10 w-full border-[#DDE1E6]" />
+          <div className="flex w-full">
             <p>
               No account yet? Please visit the <strong>reception area</strong>
             </p>
