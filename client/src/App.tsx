@@ -10,6 +10,7 @@ import Home from "./pages/Home";
 import Login from "./pages/Login";
 import type { User } from "./types/LoginResponse";
 import type { Role } from "./types/Role";
+import PatientStatus from "./pages/PatientStatus";
 
 function App() {
   const [role, setRole] = useState<Role | undefined>();
@@ -69,6 +70,7 @@ function App() {
             }
           />
           <Route path="/user" element={<Account user={user} />} />
+          <Route path="/status" element={<PatientStatus />} />
         </Routes>
       </main>
       <Footer />
