@@ -4,7 +4,11 @@ import loginImg from "/static/images/login.svg";
 import apiService from "../services/api";
 
 export default function ResetPassword() {
-  const today = format(new Date(), "MMMM d, yyyy");
+  const today = new Date().toLocaleDateString('en-US', { 
+    year: 'numeric', 
+    month: 'long', 
+    day: 'numeric' 
+  });
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   

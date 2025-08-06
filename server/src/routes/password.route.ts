@@ -71,10 +71,20 @@ router.post('/forgot',
         return res.status(500).json({ error: 'Failed to send reset email' });
       }
 
-      res.json({ 
-        message: 'Password reset link sent successfully',
-        email: email // For development, remove in production
-      });
+      // In development mode, also return the reset URL for testing
+      if (process.env.NODE_ENV === 'development') {
+        res.json({ 
+          message: 'Password reset link sent successfully',
+          email: email,
+          resetUrl: resetUrl, // Include reset URL in development mode
+          note: 'Email sent successfully. Use the reset URL above for testing.'
+        });
+      } else {
+        res.json({ 
+          message: 'Password reset link sent successfully',
+          email: email
+        });
+      }
 
     } catch (error) {
       console.error('Forgot password error:', error);
