@@ -6,9 +6,15 @@ const resend = new Resend(process.env.RESEND_API_KEY);
 // Send password reset email using Resend
 const sendPasswordResetEmail = async (email, resetUrl) => {
   try {
+    // In test mode, only send to verified email addresses
+    const fromEmail = process.env.FROM_EMAIL || 'onboarding@resend.dev';
+    const toEmail = process.env.NODE_ENV === 'development' && !process.env.RESEND_VERIFIED_EMAIL 
+      ? (process.env.TEST_EMAIL || 'liu00637@algonquinlive.com') 
+      : email;
+    
     const { data, error } = await resend.emails.send({
-      from: process.env.FROM_EMAIL || 'noreply@yourdomain.com',
-      to: email,
+      from: fromEmail,
+      to: toEmail,
       subject: 'Reset Your Password - Lumo',
       html: `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">

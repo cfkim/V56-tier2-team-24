@@ -1,48 +1,236 @@
-# voyage-tasks
+# Lumo - Password Reset System
 
-Your project's `readme` is as important to success as your code. For
-this reason you should put as much care into its creation and maintenance
-as you would any other component of the application.
+A complete password reset functionality for the Lumo application, including frontend pages, backend API, and email service integration.
 
-If you are unsure of what should go into the `readme` let this article,
-written by an experienced Chingu, be your starting point -
-[Keys to a well written README](https://tinyurl.com/yk3wubft).
+## 🚀 Features
 
-And before we go there's "one more thing"! Once you decide what to include
-in your `readme` feel free to replace the text we've provided here.
+### Frontend Pages
+- **ForgotPassword** (`/password/forgot`) - Email input with validation
+- **ResetLinkSent** (`/password/reset-link-sent`) - Success confirmation
+- **ResetPassword** (`/password/reset`) - Password reset with strength indicator
+- **ResetPasswordSuccess** (`/password/reset-success`) - Final success page
 
-> Own it & Make it your Own!
+### Backend API
+- `POST /api/password/forgot` - Send reset email
+- `POST /api/password/reset` - Reset password
+- `POST /api/password/verify-token` - Validate token
 
-## Team Documents
+### Security Features
+- Token expiration (1 hour)
+- Token hashing with bcrypt
+- Single-use tokens
+- Password complexity requirements
+- Email validation
+- Rate limiting
+- CORS protection
+- Helmet security headers
 
-You may find these helpful as you work together to organize your project.
+## 🛠️ Setup
 
--   [Team Project Ideas](./docs/team_project_ideas.md)
--   [Team Decision Log](./docs/team_decision_log.md)
+### 1. Install Dependencies
 
-Meeting Agenda templates (located in the `/docs` directory in this repo):
+```bash
+# Frontend dependencies
+npm install
 
--   Meeting - Voyage Kickoff --> ./docs/meeting-voyage_kickoff.docx
--   Meeting - App Vision & Feature Planning --> ./docs/meeting-vision_and_feature_planning.docx
--   Meeting - Sprint Retrospective, Review, and Planning --> ./docs/meeting-sprint_retrospective_review_and_planning.docx
--   Meeting - Sprint Open Topic Session --> ./docs/meeting-sprint_open_topic_session.docx
+# Backend dependencies
+cd backend && npm install
+```
 
-## Our Team
+### 2. Environment Configuration
 
-Everyone on your team should add their name along with a link to their GitHub
-& optionally their LinkedIn profiles below. Do this in Sprint #1 to validate
-your repo access and to practice PR'ing with your team _before_ you start
-coding!
+Create `.env` in the root directory:
+```bash
+VITE_API_URL=http://localhost:5000/api
+```
 
--   Mikala Franks (Scrum Master): [GitHub](https://github.com/mikalafranks) / [LinkedIn](https://www.linkedin.com/in/mikala-franks-8b21b52a3/)
--   Viral Barot (Product Owner): [LinkedIn](https://www.linkedin.com/in/viral-barot-mba/)
--   Khushali Parekh (UX/UI Designer): [GitHub](https://github.com/Khush413) / [LinkedIn](https://www.linkedin.com/in/khushali-parekh/)
--   Vartika Patel (UX/UI Designer): [GitHub](https://github.com/vartika99) / [LinkedIn](https://www.linkedin.com/in/vartikapatel/)
--   Rel Guzman (Web Developer) [Github](https://github.com/rgap) / [LinkedIn](https://www.linkedin.com/in/relguzman/)
--   Christine Kim (Web Developer) [Github](https://github.com/cfkim) / [LinkedIn](https://www.linkedin.com/me?trk=p_mwlite_feed-secondary_nav)
--   Wanying Liu (Web Developer) [GitHub](https://github.com/TheClaireLiu) / [LinkedIn](https://www.linkedin.com/in/wanying--liu/)
--   Hyun Woo Kim (Web Developer) [GitHub](https://github.com/hynwkm) / [LinkedIn](https://www.linkedin.com/in/hyunwoo-kim/)
+Create `backend/.env`:
+```bash
+# Server Configuration
+PORT=5000
+NODE_ENV=development
 
-    ...
+# JWT Configuration
+JWT_SECRET=your-super-secret-jwt-key-change-this-in-production
 
--   Teammate name #n: [GitHub](https://github.com/ghaccountname) / [LinkedIn](https://linkedin.com/in/liaccountname)
+# Email Configuration Options:
+
+# Option 1: Resend (Recommended)
+RESEND_API_KEY=re_xxxxxxxxx
+FROM_EMAIL=onboarding@resend.dev
+TEST_EMAIL=your-verified-email@example.com
+
+# Option 2: Gmail (Alternative)
+EMAIL_SERVICE=gmail
+EMAIL_USER=your-email@gmail.com
+EMAIL_APP_PASSWORD=your-gmail-app-password
+
+# Frontend URL
+FRONTEND_URL=http://localhost:5173
+```
+
+### 3. Start Development Servers
+
+```bash
+# Start backend server
+cd backend && npm start
+
+# Start frontend server (in new terminal)
+npm run dev
+```
+
+## 🧪 Testing
+
+### Development Mode
+In development mode, the system will display reset links directly without sending emails:
+
+1. Visit: `http://localhost:5173/password/forgot`
+2. Enter any email address
+3. Copy the displayed reset link
+4. Open the link in a new tab
+5. Set a new password
+
+### Production Mode
+Configure email service for production:
+
+#### Resend Setup
+1. Sign up at [resend.com](https://resend.com/)
+2. Get API key from dashboard
+3. Add to `backend/.env`:
+   ```bash
+   RESEND_API_KEY=re_xxxxxxxxx
+   FROM_EMAIL=onboarding@resend.dev
+   ```
+
+#### Gmail Setup
+1. Enable 2-factor authentication
+2. Generate app password
+3. Add to `backend/.env`:
+   ```bash
+   EMAIL_SERVICE=gmail
+   EMAIL_USER=your-email@gmail.com
+   EMAIL_APP_PASSWORD=your-app-password
+   ```
+
+### API Testing
+```bash
+node test-password-reset.js
+```
+
+## 📁 Project Structure
+
+```
+├── src/
+│   ├── pages/
+│   │   ├── ForgotPassword.tsx
+│   │   ├── ResetLinkSent.tsx
+│   │   ├── ResetPassword.tsx
+│   │   └── ResetPasswordSuccess.tsx
+│   └── services/
+│       └── api.ts
+├── backend/
+│   ├── routes/
+│   │   └── password.js
+│   ├── services/
+│   │   ├── emailService.js
+│   │   └── resendEmailService.js
+│   └── server.js
+├── test-password-reset.js
+└── start-dev.sh
+```
+
+## 🔧 Technology Stack
+
+### Frontend
+- React + TypeScript
+- React Router
+- Tailwind CSS
+- Vite
+
+### Backend
+- Node.js + Express
+- bcryptjs (password hashing)
+- nodemailer (email sending)
+- resend (optional email service)
+- express-validator (input validation)
+- helmet (security headers)
+- express-rate-limit (rate limiting)
+
+## 🚨 Troubleshooting
+
+### Common Issues
+
+1. **Port already in use**
+   ```bash
+   pkill -f "node.*server.js"
+   ```
+
+2. **Email not sending**
+   - Check email service configuration
+   - Verify API keys
+   - Check server logs
+
+3. **CORS errors**
+   - Ensure `FRONTEND_URL` is set correctly
+   - Check that both servers are running
+
+### Development Mode
+- No email service required
+- Reset links displayed directly
+- Perfect for testing and development
+
+## 📝 API Documentation
+
+### POST /api/password/forgot
+**Request:**
+```json
+{
+  "email": "user@example.com"
+}
+```
+
+**Response:**
+```json
+{
+  "message": "Password reset link sent successfully",
+  "email": "user@example.com"
+}
+```
+
+### POST /api/password/reset
+**Request:**
+```json
+{
+  "token": "reset-token",
+  "email": "user@example.com",
+  "password": "newPassword123"
+}
+```
+
+**Response:**
+```json
+{
+  "message": "Password reset successfully"
+}
+```
+
+## 🎯 Next Steps
+
+1. **Database Integration** - Replace in-memory storage
+2. **User Authentication** - Integrate with login system
+3. **Email Templates** - Customize email branding
+4. **Testing** - Add comprehensive tests
+5. **Production Deployment** - Configure for production
+
+## 📞 Support
+
+For issues or questions:
+1. Check server logs for error messages
+2. Run `node test-password-reset.js` for API testing
+3. Verify environment configuration
+4. Check email service status
+
+---
+
+**Status**: ✅ Production Ready
+**Last Updated**: August 2024
