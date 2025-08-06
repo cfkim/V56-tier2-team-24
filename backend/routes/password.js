@@ -3,7 +3,6 @@ const { body, validationResult } = require('express-validator');
 const crypto = require('crypto');
 const bcrypt = require('bcryptjs');
 const emailService = require('../services/emailService');
-const resendEmailService = require('../services/resendEmailService');
 
 const router = express.Router();
 
@@ -51,17 +50,10 @@ router.post('/forgot',
       // Create reset URL
       const resetUrl = `${process.env.FRONTEND_URL || 'http://localhost:5173'}/password/reset?token=${resetToken}&email=${encodeURIComponent(email)}`;
 
-      // Send email - try Resend first, fallback to Gmail
+      // Send email using Gmail
       let emailSent = false;
       
-      if (process.env.RESEND_API_KEY) {
-        // Try Resend first
-        emailSent = await resendEmailService.sendPasswordResetEmail(email, resetUrl);
-        console.log('Resend email attempt:', emailSent ? 'success' : 'failed');
-      }
-      
-      if (!emailSent && process.env.EMAIL_USER) {
-        // Fallback to Gmail
+      if (process.env.EMAIL_SERVICE === 'gmail' && process.env.EMAIL_USER) {
         emailSent = await emailService.sendPasswordResetEmail(email, resetUrl);
         console.log('Gmail email attempt:', emailSent ? 'success' : 'failed');
       }

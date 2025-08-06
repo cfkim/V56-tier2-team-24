@@ -1,11 +1,17 @@
 const { Resend } = require('resend');
 
-// Initialize Resend
-const resend = new Resend(process.env.RESEND_API_KEY);
+// Initialize Resend (only if API key is provided)
+const resend = process.env.RESEND_API_KEY ? new Resend(process.env.RESEND_API_KEY) : null;
 
 // Send password reset email using Resend
 const sendPasswordResetEmail = async (email, resetUrl) => {
   try {
+    // Check if Resend is configured
+    if (!resend) {
+      console.log('Resend not configured, skipping...');
+      return false;
+    }
+
     // In test mode, only send to verified email addresses
     const fromEmail = process.env.FROM_EMAIL || 'onboarding@resend.dev';
     const toEmail = process.env.NODE_ENV === 'development' && !process.env.RESEND_VERIFIED_EMAIL 
