@@ -45,16 +45,15 @@ export default function Header({
 
   return (
     <header className="font-nunito bg-background text-header-text align-center flex h-14 px-1.5 text-xs md:h-20 md:px-6 md:text-base">
-      <nav className="mx-auto flex w-full items-center justify-center relative">
-        <div className="flex items-center gap-8">
+      <nav className="mx-auto flex w-full items-center justify-between">
+        <div className="flex items-center gap-4 px-4 md:px-8">
           <Link to="/" className="text-xl font-semibold">
             Beacon
           </Link>
-          <p>{currentDate}</p>
         </div>
         
         {isLoggedIn && (
-          <ul className="text-text hidden h-full items-center gap-2 font-bold md:flex absolute left-6">
+          <ul className="text-text hidden h-full items-center gap-2 font-bold md:flex">
             <HeaderLinks to="/" label="Home" />
             {navLinks
               .filter((link) => link.roles.includes(role!))
@@ -70,11 +69,12 @@ export default function Header({
           </ul>
         )}
         
-        {isLoggedIn && (
-          <div className="absolute right-6">
+        <div className="flex items-center gap-4 px-4 md:px-8">
+          <p>{currentDate}</p>
+          {isLoggedIn && (
             <ProfileIcon setIsLoggedIn={setIsLoggedIn} setUser={setUser} />
-          </div>
-        )}
+          )}
+        </div>
       </nav>
     </header>
   );
