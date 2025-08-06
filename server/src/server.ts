@@ -2,6 +2,7 @@ import "dotenv/config";
 import { APP_ORIGIN, PORT } from "./constants/env";
 import authRoutes from "./routes/auth.route";
 import cors from "cors";
+import passwordRoutes from "./routes/password.route";
 import userRoutes from "./routes/user.route";
 import connectToDatabase from "./config/db";
 import cookieParser from "cookie-parser";
@@ -15,6 +16,7 @@ app.use(cookieParser());
 
 app.use(express.json());
 app.use("/auth", authRoutes);
+app.use("/password", passwordRoutes);
 app.use("/user", authenticate, userRoutes);
 
 app.listen(PORT, async () => { await connectToDatabase(); console.log(`Server is running on port ${PORT}`); });
