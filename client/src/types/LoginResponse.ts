@@ -10,13 +10,13 @@ export type User = {
   password?: string;
 };
 
-export type LoginResponse = {
-  accessToken: string;
-  refreshToken: string;
-  user: User;
-};
+// export type LoginResponse = {
+//   accessToken: string;
+//   refreshToken: string;
+//   user: User;
+// };
 
-export type GetUserResponse = {
-  message: string;
-  user: User | null;
-};
+// export type GetUserResponse = {
+//   message: string;
+//   user: User | null;
+// };
