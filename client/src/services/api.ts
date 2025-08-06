@@ -19,7 +19,7 @@ class ApiService {
   ): Promise<ApiResponse<T>> {
     try {
       const url = `${this.baseURL}${endpoint}`;
-      console.log('Making API request to:', url);
+
       
       const config: RequestInit = {
         headers: {
@@ -38,12 +38,12 @@ class ApiService {
         };
       }
 
-      console.log('Request config:', config);
+
       const response = await fetch(url, config);
-      console.log('Response status:', response.status);
+
       
       const data = await response.json();
-      console.log('Response data:', data);
+
 
       if (!response.ok) {
         return {

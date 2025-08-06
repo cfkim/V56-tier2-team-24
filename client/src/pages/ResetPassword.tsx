@@ -28,6 +28,8 @@ export default function ResetPassword() {
   const token = searchParams.get('token');
   const email = searchParams.get('email');
 
+
+
   // Password strength checker
   const checkPasswordStrength = (password: string) => {
     let score = 0;

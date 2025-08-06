@@ -26,6 +26,13 @@ function App() {
   useEffect(() => {
     console.log("auth useEffect triggered!");
 
+    // Skip authentication check for password reset pages
+    const currentPath = window.location.pathname;
+    if (currentPath.startsWith('/password/')) {
+      setIsLoggedIn(false);
+      return;
+    }
+
     const fetchUser = async () => {
       try {
         const user = await getUser();

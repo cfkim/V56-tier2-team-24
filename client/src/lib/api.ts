@@ -15,7 +15,8 @@ export const login = async (data: signInData): Promise<LoginResponse> =>
   API.post("/auth/login", data);
 
 export const getUser = async () => {
-  const token = localStorage.getItem("accessToken");
+  // Try accessToken first, then fallback to token
+  const token = localStorage.getItem("accessToken") || localStorage.getItem("token");
   const res = await API("/user", {
     headers: {
       Authorization: `Bearer ${token}`,
