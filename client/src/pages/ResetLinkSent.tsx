@@ -1,6 +1,5 @@
 
 import { Link } from "react-router-dom";
-import { format } from "date-fns";
 import loginImg from "/static/images/login.svg";
 
 export default function ResetLinkSent() {

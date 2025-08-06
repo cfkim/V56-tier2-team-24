@@ -1,12 +1,15 @@
 // src/pages/ForgotPassword.tsx
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { format } from "date-fns";
 import loginImg from "/static/images/login.svg";
-import apiService from "../services/api"; 
+import apiService from "../services/api";
 
 export default function ForgotPassword() {
-  const today = format(new Date(), "MMMM d, yyyy");
+  const today = new Date().toLocaleDateString('en-US', { 
+    year: 'numeric', 
+    month: 'long', 
+    day: 'numeric' 
+  });
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");

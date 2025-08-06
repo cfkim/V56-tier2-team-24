@@ -12,7 +12,7 @@ const createTransporter = () => {
 };
 
 // Send password reset email
-const sendPasswordResetEmail = async (email, resetUrl) => {
+const sendPasswordResetEmail = async (email: string, resetUrl: string) => {
   try {
     const transporter = createTransporter();
 

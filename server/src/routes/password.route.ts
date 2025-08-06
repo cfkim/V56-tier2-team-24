@@ -2,7 +2,7 @@ import express from 'express';
 import { body, validationResult } from 'express-validator';
 import crypto from 'crypto';
 import bcrypt from 'bcryptjs';
-import emailService from '../services/emailService';
+import { sendPasswordResetEmail } from '../services/emailService';
 
 const router = express.Router();
 
@@ -17,7 +17,7 @@ router.post('/forgot',
       .normalizeEmail()
       .withMessage('Please provide a valid email address')
   ],
-  async (req, res) => {
+  async (req: express.Request, res: express.Response) => {
     try {
       // Check validation errors
       const errors = validationResult(req);
@@ -54,7 +54,7 @@ router.post('/forgot',
       let emailSent = false;
       
       if (process.env.EMAIL_SERVICE === 'gmail' && process.env.EMAIL_USER) {
-        emailSent = await emailService.sendPasswordResetEmail(email, resetUrl);
+        emailSent = await sendPasswordResetEmail(email, resetUrl);
         console.log('Gmail email attempt:', emailSent ? 'success' : 'failed');
       }
       
@@ -94,7 +94,7 @@ router.post('/reset',
       .matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/)
       .withMessage('Password must contain at least one uppercase letter, one lowercase letter, and one number')
   ],
-  async (req, res) => {
+  async (req: express.Request, res: express.Response) => {
     try {
       // Check validation errors
       const errors = validationResult(req);
@@ -155,7 +155,7 @@ router.post('/verify-token',
     body('token').notEmpty().withMessage('Reset token is required'),
     body('email').isEmail().normalizeEmail().withMessage('Valid email is required')
   ],
-  async (req, res) => {
+  async (req: express.Request, res: express.Response) => {
     try {
       const errors = validationResult(req);
       if (!errors.isEmpty()) {
