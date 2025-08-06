@@ -1,9 +1,8 @@
-
 import { Link } from "react-router-dom";
 import { format } from "date-fns";
 import loginImg from "/static/images/login.svg";
 
-export default function ResetLinkSent() {
+export default function ResetPasswordSuccess() {
   const today = format(new Date(), "MMMM d, yyyy");
 
   return (
@@ -35,31 +34,25 @@ export default function ResetLinkSent() {
                   </svg>
                 </div>
                 <h3 className="text-2xl font-nunito font-semibold text-[#3A3A3A] mb-2">
-                  Password reset link sent!
+                  Password reset successfully!
                 </h3>
                 <p className="text-gray-600 font-nunito text-base">
-                  Please check your email to reset your password. The link will expire in 1 hour.
+                  Your password has been updated. You can now log in with your new password.
                 </p>
               </div>
               
-              <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-                <p className="text-blue-800 text-sm font-nunito">
-                  <strong>Didn't receive the email?</strong> Check your spam folder or try requesting a new link.
+              <div className="bg-green-50 border border-green-200 rounded-lg p-4">
+                <p className="text-green-800 text-sm font-nunito">
+                  <strong>Security tip:</strong> Make sure to use a strong, unique password and never share it with anyone.
                 </p>
               </div>
 
-              <div className="flex flex-col gap-3">
-                <Link
-                  to="/password/forgot"
-                  className="bg-[#082368] text-white rounded-lg py-3 px-6 font-nunito font-semibold hover:bg-[#061a4a] transition-colors text-center"
-                >
-                  Send Another Link
-                </Link>
+              <div className="flex justify-center">
                 <Link
                   to="/login"
-                  className="text-[#082368] font-nunito underline hover:no-underline text-center"
+                  className="bg-[#082368] text-white rounded-lg py-3 px-8 font-nunito font-semibold hover:bg-[#061a4a] transition-colors"
                 >
-                  Back to Login
+                  Continue to Login
                 </Link>
               </div>
             </div>
@@ -68,4 +61,4 @@ export default function ResetLinkSent() {
       </div>
     </div>
   );
-}
+} 

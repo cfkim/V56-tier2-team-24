@@ -2,17 +2,52 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { format } from "date-fns";
-import loginImg from "/static/images/login.svg"; 
+import loginImg from "/static/images/login.svg";
+import apiService from "../services/api"; 
 
 export default function ForgotPassword() {
   const today = format(new Date(), "MMMM d, yyyy");
   const [email, setEmail] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
   const navigate = useNavigate();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // TODO: send request to backend
-    navigate("/password/reset-link-sent");
+    
+    // Basic email validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      setError('Please enter a valid email address');
+      return;
+    }
+    
+    setLoading(true);
+    setError("");
+
+    try {
+      const response = await apiService.forgotPassword(email);
+      
+      if (response.error) {
+        setError(response.error);
+        return;
+      }
+
+      // In development mode, show the reset URL if provided
+      const data = response.data as any;
+      if (data && data.resetUrl) {
+        setError(`Development Mode: Reset URL - ${data.resetUrl}`);
+        return;
+      }
+
+      // Navigate to reset link sent page
+      navigate("/password/reset-link-sent");
+      
+    } catch (error) {
+      setError('An unexpected error occurred. Please try again.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -41,6 +76,11 @@ export default function ForgotPassword() {
               Enter your email and we'll send you a link to reset your password.
             </p>
             <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+              {error && (
+                <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg">
+                  {error}
+                </div>
+              )}
               <div className="flex flex-col gap-2">
                 <label htmlFor="email" className="font-nunito font-semibold text-[#3A3A3A]">
                   Email Address
@@ -53,13 +93,15 @@ export default function ForgotPassword() {
                   onChange={(e) => setEmail(e.target.value)}
                   className="p-4 rounded-lg border border-gray-300 font-nunito focus:outline-none focus:border-[#082368]"
                   placeholder="Enter your email"
+                  disabled={loading}
                 />
               </div>
               <button
                 type="submit"
-                className="bg-[#082368] text-white rounded-lg py-4 font-nunito font-semibold hover:bg-[#061a4a] transition-colors"
+                disabled={loading}
+                className="bg-[#082368] text-white rounded-lg py-4 font-nunito font-semibold hover:bg-[#061a4a] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                Reset Password
+                {loading ? "Sending..." : "Reset Password"}
               </button>
               <div className="flex justify-center mt-4">
                 <Link
