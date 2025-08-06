@@ -3,6 +3,7 @@ import { body, validationResult } from 'express-validator';
 import crypto from 'crypto';
 import bcrypt from 'bcryptjs';
 import { sendPasswordResetEmail } from '../services/emailService';
+import UserModel from '../models/user.model';
 
 const router = express.Router();
 
@@ -138,14 +139,19 @@ router.post('/reset',
       // Hash new password
       const hashedPassword = await bcrypt.hash(password, 12);
 
-      // TODO: Update user password in database
-      // await User.findOneAndUpdate(
-      //   { email },
-      //   { 
-      //     password: hashedPassword,
-      //     passwordChangedAt: new Date()
-      //   }
-      // );
+      // Update user password in database
+      const updatedUser = await UserModel.findOneAndUpdate(
+        { email },
+        { 
+          password: hashedPassword,
+          updatedAt: new Date()
+        },
+        { new: true }
+      );
+
+      if (!updatedUser) {
+        return res.status(404).json({ error: 'User not found' });
+      }
 
       // Remove used token
       resetTokens.delete(email);
