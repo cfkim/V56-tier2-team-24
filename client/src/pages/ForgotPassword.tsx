@@ -36,17 +36,24 @@ export default function ForgotPassword() {
         return;
       }
 
-      // In development mode, show the reset URL if provided
-      const data = response.data as any;
-      if (data && data.resetUrl) {
-        setError(`Development Mode: Reset URL - ${data.resetUrl}`);
-        return;
+      // Check if we got a successful response
+      if (response.data) {
+        const data = response.data as any;
+        
+        // In development mode, show the reset URL if provided
+        if (data.resetUrl) {
+          setError(`Development Mode: Reset URL - ${data.resetUrl}`);
+          return;
+        }
+        
+        // If no resetUrl but successful, navigate to confirmation page
+        navigate("/password/reset-link-sent");
+      } else {
+        setError('Unexpected response format');
       }
-
-      // Navigate to reset link sent page
-      navigate("/password/reset-link-sent");
       
     } catch (error) {
+      console.error('API Error:', error);
       setError('An unexpected error occurred. Please try again.');
     } finally {
       setLoading(false);
