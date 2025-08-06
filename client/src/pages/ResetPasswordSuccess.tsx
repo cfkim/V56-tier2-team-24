@@ -2,15 +2,8 @@ import { Link } from "react-router-dom";
 import loginImg from "/static/images/login.svg";
 
 export default function ResetPasswordSuccess() {
-  const today = format(new Date(), "MMMM d, yyyy");
-
   return (
     <div className="flex-1 flex flex-col bg-white">
-      {/* Header */}
-      <div className="flex justify-between items-center px-8 pt-6">
-        <h1 className="text-xl font-nunito font-bold text-[#3A3A3A]">Lumo</h1>
-        <p className="text-sm font-nunito text-gray-500">{today}</p>
-      </div>
 
       {/* Main content */}
       <div className="flex flex-1 items-center justify-center px-4 py-4 min-h-0">

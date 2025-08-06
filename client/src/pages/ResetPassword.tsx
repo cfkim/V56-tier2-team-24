@@ -132,10 +132,6 @@ export default function ResetPassword() {
   if (validating) {
     return (
       <div className="flex-1 flex flex-col bg-white">
-        <div className="flex justify-between items-center px-8 pt-6">
-          <h1 className="text-xl font-nunito font-bold text-[#3A3A3A]">Lumo</h1>
-          <p className="text-sm font-nunito text-gray-500">{today}</p>
-        </div>
         <div className="flex flex-1 items-center justify-center">
           <div className="text-center">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#082368] mx-auto mb-4"></div>
@@ -149,10 +145,6 @@ export default function ResetPassword() {
   if (!tokenValid) {
     return (
       <div className="flex-1 flex flex-col bg-white">
-        <div className="flex justify-between items-center px-8 pt-6">
-          <h1 className="text-xl font-nunito font-bold text-[#3A3A3A]">Lumo</h1>
-          <p className="text-sm font-nunito text-gray-500">{today}</p>
-        </div>
         <div className="flex flex-1 items-center justify-center px-4 py-4 min-h-0">
           <div className="flex flex-col lg:flex-row w-full max-w-7xl bg-white rounded-lg overflow-hidden">
             <div className="w-full lg:w-2/3 flex justify-center items-center p-6 pr-16">
@@ -187,10 +179,6 @@ export default function ResetPassword() {
 
   return (
     <div className="flex-1 flex flex-col bg-white">
-      <div className="flex justify-between items-center px-8 pt-6">
-        <h1 className="text-xl font-nunito font-bold text-[#3A3A3A]">Lumo</h1>
-        <p className="text-sm font-nunito text-gray-500">{today}</p>
-      </div>
 
       <div className="flex flex-1 items-center justify-center px-4 py-4 min-h-0">
         <div className="flex flex-col lg:flex-row w-full max-w-7xl bg-white rounded-lg overflow-hidden">
