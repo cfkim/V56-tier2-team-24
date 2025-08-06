@@ -7,7 +7,6 @@ export default function ResetLinkSent() {
 
   return (
     <div className="flex-1 flex flex-col bg-white">
-      {/* Main content */}
 
       {/* Main content */}
       <div className="flex flex-1 items-center justify-center px-4 py-4 min-h-0">

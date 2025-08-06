@@ -17,13 +17,13 @@ const sendPasswordResetEmail = async (email: string, resetUrl: string) => {
     const transporter = createTransporter();
 
     const mailOptions = {
-      from: `"Lumo Team" <${process.env.EMAIL_USER}>`,
+      from: `"Beacon Team" <${process.env.EMAIL_USER}>`,
       to: email,
-      subject: 'Reset Your Password - Lumo',
+      subject: 'Reset Your Password - Beacon',
       html: `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
           <div style="background-color: #082368; color: white; padding: 20px; text-align: center; border-radius: 8px 8px 0 0;">
-            <h1 style="margin: 0; font-size: 24px;">Lumo</h1>
+            <h1 style="margin: 0; font-size: 24px;">Beacon</h1>
           </div>
           
           <div style="background-color: #f8f9fa; padding: 30px; border-radius: 0 0 8px 8px;">
@@ -61,12 +61,12 @@ const sendPasswordResetEmail = async (email: string, resetUrl: string) => {
           </div>
           
           <div style="text-align: center; margin-top: 20px; color: #666; font-size: 12px;">
-            <p>This email was sent by Lumo. Please do not reply to this email.</p>
+            <p>This email was sent by Beacon. Please do not reply to this email.</p>
           </div>
         </div>
       `,
       text: `
-Reset Your Password - Lumo
+Reset Your Password - Beacon
 
 You requested to reset your password. Click the link below to create a new password:
 
@@ -79,7 +79,7 @@ Important:
 - If you didn't request this password reset, please ignore this email
 - For security, this link can only be used once
 
-This email was sent by Lumo. Please do not reply to this email.
+This email was sent by Beacon. Please do not reply to this email.
       `
     };
 
