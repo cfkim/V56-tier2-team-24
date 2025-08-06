@@ -101,7 +101,7 @@ export default function ForgotPassword() {
                 disabled={loading}
                 className="bg-[#082368] text-white rounded-lg py-4 font-nunito font-semibold hover:bg-[#061a4a] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                {loading ? "Sending..." : "Reset Password"}
+                {loading ? "Sending..." : "Send Link"}
               </button>
               <div className="flex justify-center mt-4">
                 <Link
