@@ -1,37 +1,47 @@
-# Beacon ☀️
-Supporting your loved ones in every step of the surgery process, made easier.
+# V56-tier2-team-24 - Forgot Password Feature 🔐
+
+A complete forgot password and reset password functionality for the Lumo application.
+
 ## 💬 Purpose
-This app displays the status of ongoing surgeries from check-in to recovery so that patient family/friends can be in the loop at every step, from anywhere --- not just the waiting room.
+This feature provides a secure and user-friendly way for users to reset their passwords when they forget them. It includes email-based password reset with secure token validation.
+
+## ⚙️ Major Functions
+- **Forgot Password**: Users can request a password reset by entering their email
+- **Email Notifications**: Secure password reset links are sent via email
+- **Password Reset**: Users can set new passwords with strength validation
+- **Token Security**: Time-limited, single-use tokens for security
+- **Password Strength**: Real-time password strength indicator
 
 ## ⚙️ Major Functions
 - Surgical Team Members can update the status of ongoing surgeries (i.e. Checked-in, In-progress, etc.)
 - Guests can view a status board of all ongoing operations without needing to create an account
 - Patient information is protected, to ensure anonymity and HIPAA compliance (guests for the patient will know their patient #, which is displayed on the board)
 
-## 📦 Dependencies
+## 📦 Tech Stack
 
-This project follows a typical MERN stack setup:
+This project follows a modern full-stack setup:
 
-- **MongoDB** – Database
-	*The database for the live website is hosted on MongoDB Atlas*
-- **Express** – Back-end framework
-- **React (with Vite)** – Front-end library + build tool
-- **Node.js** – runs the Express server
+- **Frontend**: React + TypeScript + Vite + Tailwind CSS
+- **Backend**: Node.js + Express + TypeScript
+- **Email Service**: Nodemailer with Gmail
+- **Security**: bcryptjs for password hashing, JWT for tokens
 
-### Dependencies
+### Key Dependencies
 
-    @tailwindcss/vite@4.1.11
-    @tanstack/react-query-devtools@5.83.0
-    @tanstack/react-query@5.83.0
-    axios@1.11.0
-    bcrypt@6.0.0
-    cors@2.8.5
-    express@5.1.0
-    mongoose@8.16.5
-    react-dom@19.1.0
-    react-router-dom@7.7.1
-    react@19.1.0
-    tailwindcss@4.1.11
+**Frontend:**
+- React 19.1.0
+- TypeScript
+- Vite 7.0.5
+- Tailwind CSS 4.1.11
+- React Router DOM 7.7.1
+- Axios 1.11.0
+
+**Backend:**
+- Express 5.1.0
+- TypeScript
+- bcryptjs 2.4.3
+- nodemailer 6.9.7
+- express-validator 7.0.1
 
 ## 🛠️ How to Run the Project
 View the live site [here]
@@ -47,31 +57,106 @@ yarn install
 
 3. Set up your Environment Variables
 
-- `server/.env` > `MONGO_URI=`  
-  You can set up a Mongo database **locally** or through the cloud with **MongoDB Atlas**. Change the `MONGO_URI` variable in the `server/.env` file accordingly.
+**Server Environment (`server/.env`):**
+```bash
+NODE_ENV=development
+APP_ORIGIN=http://localhost:5173/
+MONGO_URI=mongodb://localhost:27017/test
+JWT_SECRET=your-super-secret-jwt-key-change-this-in-production
+JWT_REFRESH_SECRET=your-super-secret-refresh-key-change-this-in-production
+PORT=4004
 
-- `server/.env` > `APP_ORIGIN=`  
-  Ensure that the `APP_ORIGIN` variable is set to the URL of your running client (i.e. `APP_ORIGIN=http://localhost:5173`).
+# Email Configuration (Gmail)
+EMAIL_SERVICE=gmail
+EMAIL_USER=your-email@gmail.com
+EMAIL_APP_PASSWORD=your-gmail-app-password
+FROM_EMAIL=your-email@gmail.com
+```
 
-- `client/.env` > `VITE_API_URL=`  
-  Ensure that the `VITE_API_URL` variable is set to the URL where you are running the server (i.e. `VITE_API_URL=http://localhost:4004`).
+**Client Environment (`client/.env`):**
+```bash
+VITE_API_URL=http://localhost:4004
+```
+
+**Note:** For Gmail setup, you need to:
+1. Enable 2-factor authentication
+2. Generate an App Password
+3. Use the App Password in EMAIL_APP_PASSWORD
 
 
-4. Start/Run the project locally  
-In separate terminals, to run back-end and front-end simultaneously:
+4. Start/Run the project locally
 
-`client` folder
+**Option 1: Using the start script (Recommended)**
+```bash
+./start-dev.sh
+```
+
+**Option 2: Manual start**
+In separate terminals:
+
+`client` folder:
 ```bash
 npm run dev
 ```
-`server` folder
+
+`server` folder:
 ```bash
 npm run devStart
 ```
-View the now locally hosted website at your client url (i.e. https://localhost:5173)
 
-5. Deployment
-Rails or Render are popular deployment options since it has the ability to host all three main parts of an application (front-end, back-end, and database)
+View the application at: http://localhost:5173
+
+**Available Routes:**
+- `/password/forgot` - Forgot password page
+- `/password/reset-link-sent` - Confirmation page
+- `/password/reset` - Reset password page (with token)
+- `/password/reset-success` - Success page
+
+## 🔌 API Endpoints
+
+### Password Reset Endpoints
+
+**POST** `/password/forgot`
+- Request body: `{ "email": "user@example.com" }`
+- Response: `{ "message": "Password reset link sent successfully", "email": "user@example.com", "resetUrl": "http://localhost:5173/password/reset?token=...&email=..." }`
+
+**POST** `/password/reset`
+- Request body: `{ "token": "reset-token", "email": "user@example.com", "password": "newPassword123" }`
+- Response: `{ "message": "Password reset successfully" }`
+
+**POST** `/password/verify-token`
+- Request body: `{ "token": "reset-token", "email": "user@example.com" }`
+- Response: `{ "message": "Token is valid" }`
+
+**GET** `/health`
+- Response: `{ "status": "OK", "message": "Server is running" }`
+
+## 🧪 Testing
+
+Test the API endpoints:
+```bash
+# Health check
+curl http://localhost:4004/health
+
+# Forgot password
+curl -X POST http://localhost:4004/password/forgot \
+  -H "Content-Type: application/json" \
+  -d '{"email":"test@example.com"}'
+```
+
+## 🚀 Deployment
+
+For production deployment:
+1. Update environment variables with production values
+2. Use a proper email service (SendGrid, AWS SES, etc.)
+3. Set up a production database
+4. Configure proper JWT secrets
+5. Enable HTTPS
+
+Popular deployment options:
+- **Frontend**: Vercel, Netlify, AWS S3
+- **Backend**: Railway, Render, Heroku, AWS EC2
+- **Database**: MongoDB Atlas, AWS DocumentDB
 
 ## 🧑‍💻 Our Team
 -   Mikala Franks (Scrum Master):  [GitHub](https://github.com/mikalafranks)  /  [LinkedIn](https://www.linkedin.com/in/mikala-franks-8b21b52a3/)
