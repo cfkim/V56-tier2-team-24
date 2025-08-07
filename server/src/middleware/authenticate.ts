@@ -8,6 +8,9 @@ interface Request {
 
 // Authenticates request before reaching endpoint
 const authenticate: RequestHandler = (req, res, next) => {
+    if (req.method === "OPTIONS") {
+        return next();
+    }
     // const cookieToken = req.cookies.accessToken
     const authHeader = req.headers["authorization"];
     const token = authHeader && authHeader.split(" ")[1];
