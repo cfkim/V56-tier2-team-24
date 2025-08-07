@@ -3,7 +3,11 @@ import { Link } from "react-router-dom";
 import loginImg from "/static/images/login.svg";
 
 export default function ResetLinkSent() {
-  const today = format(new Date(), "MMMM d, yyyy");
+  const today = new Date().toLocaleDateString("en-US", {
+    year: "numeric",
+    month: "long",
+    day: "numeric"
+  });
 
   return (
     <div className="flex-1 flex flex-col bg-white">

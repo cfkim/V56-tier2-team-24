@@ -17,12 +17,12 @@ export const login = async (data: signInData): Promise<LoginResponse> =>
 export const getUser = async () => {
   // Try accessToken first, then fallback to token
   const token = localStorage.getItem("accessToken") || localStorage.getItem("token");
-  const res = await API("/user", {
+  const response = await API("/user", {
     headers: {
       Authorization: `Bearer ${token}`,
     },
   });
-  return res;
+  return response;
 };
 
 export const logout = async () => {
