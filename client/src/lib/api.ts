@@ -22,6 +22,8 @@ export const getUser = async () => {
       Authorization: `Bearer ${token}`,
     },
   });
+  console.log("API endpoint");
+  console.log(response);
   return response;
 };
 
