@@ -69,7 +69,7 @@ export default function Header({
         </ul>
         <div className="flex items-center gap-4">
           <p>{currentDate}</p>
-          {isLoggedIn && (
+          {isLoggedIn && role!=="guest" && (
             <ProfileIcon setIsLoggedIn={setIsLoggedIn} setUser={setUser} />
           )}
         </div>
