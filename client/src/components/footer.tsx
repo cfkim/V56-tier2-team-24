@@ -1,6 +1,6 @@
 export default function Footer() {
   return (
-    <div className="bg-primary w-full text-white">
+    <div className="bg-primary relative z-20 w-full text-white">
       <div
         id="footer-content"
         className="font-nunito flex h-full flex-col items-center justify-between p-10 text-[14px] md:p-15 lg:p-15"

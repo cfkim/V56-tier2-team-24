@@ -38,18 +38,35 @@ export default function Header({
     {
       to: "/info",
       label: "Patient Information",
-      roles: ["surgeon", "admin"],
+      roles: ["admin"],
     },
-    { to: "/update", label: "Update Patient Status", roles: ["admin"] },
+    {
+      to: "/update",
+      label: "Update Patient Status",
+      roles: ["admin", "surgeon"],
+    },
   ];
 
   return (
-    <header className="font-nunito bg-background text-header-text align-center flex h-14 px-1.5 text-xs md:h-20 md:px-6 md:text-base">
+    <header className="font-nunito bg-background text-header-text align-center flex h-14 px-6 text-xs sm:h-20 sm:text-base">
       <nav className="mx-auto flex w-full items-center justify-between">
-        <Link to="/" className="px-6 text-xl font-semibold md:px-16">
-          Beacon
-        </Link>
-        <ul className="text-text hidden h-full items-center gap-2 font-bold md:flex">
+        <div className="flex items-center">
+          <button className="text-bg-text z-10 block cursor-pointer sm:hidden">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              height="24px"
+              viewBox="0 -960 960 960"
+              width="24px"
+              fill="currentColor"
+            >
+              <path d="M120-240v-80h720v80H120Zm0-200v-80h720v80H120Zm0-200v-80h720v80H120Z" />
+            </svg>
+          </button>
+          <Link to="/" className="px-4 text-xl font-semibold sm:px-16">
+            Beacon
+          </Link>
+        </div>
+        <ul className="text-text hidden h-full items-center gap-2 font-bold sm:flex">
           {isLoggedIn && (
             <>
               <HeaderLinks to="/" label="Home" />
@@ -70,7 +87,11 @@ export default function Header({
         <div className="flex items-center gap-4">
           <p>{currentDate}</p>
           {isLoggedIn && (
-            <ProfileIcon setIsLoggedIn={setIsLoggedIn} setUser={setUser} />
+            <ProfileIcon
+              role={role}
+              setIsLoggedIn={setIsLoggedIn}
+              setUser={setUser}
+            />
           )}
         </div>
       </nav>

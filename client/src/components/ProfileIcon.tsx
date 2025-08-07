@@ -1,13 +1,16 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { logout } from "../lib/api";
+import type { Role } from "../types/Role";
 
 export default function ProfileIcon({
   setIsLoggedIn,
   setUser,
+  role,
 }: {
   setIsLoggedIn: React.Dispatch<React.SetStateAction<boolean>>;
   setUser: React.Dispatch<React.SetStateAction<any>>;
+  role: Role | undefined;
 }) {
   const [isOpen, setIsOpen] = useState(false);
 
@@ -18,13 +21,16 @@ export default function ProfileIcon({
     setIsOpen(!isOpen);
     setUser(null);
     // clears session tokens
-    logout();
-    navigate("/");
+    if (role === "guest") {
+      navigate("/");
+    } else {
+      logout();
+    }
   };
 
   return (
     <>
-      <button className="z-10 hidden cursor-pointer md:block">
+      <button className="z-10 hidden cursor-pointer sm:block">
         {isOpen ? (
           <div className="relative cursor-pointer flex-col">
             <svg
@@ -85,17 +91,6 @@ export default function ProfileIcon({
             />
           </svg>
         )}
-      </button>
-      <button className="text-bg-text z-10 block cursor-pointer md:hidden">
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          height="24px"
-          viewBox="0 -960 960 960"
-          width="24px"
-          fill="currentColor"
-        >
-          <path d="M120-240v-80h720v80H120Zm0-200v-80h720v80H120Zm0-200v-80h720v80H120Z" />
-        </svg>
       </button>
     </>
   );
