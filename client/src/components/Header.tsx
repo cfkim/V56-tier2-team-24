@@ -46,30 +46,28 @@ export default function Header({
   return (
     <header className="font-nunito bg-background text-header-text align-center flex h-14 px-1.5 text-xs md:h-20 md:px-6 md:text-base">
       <nav className="mx-auto flex w-full items-center justify-between">
-        <div className="flex items-center gap-4 px-4 md:px-8">
-          <Link to="/" className="text-xl font-semibold">
-            Beacon
-          </Link>
-        </div>
-        
-        {isLoggedIn && (
-          <ul className="text-text hidden h-full items-center gap-2 font-bold md:flex">
-            <HeaderLinks to="/" label="Home" />
-            {navLinks
-              .filter((link) => link.roles.includes(role!))
-              .map((link) => {
-                return (
-                  <HeaderLinks
-                    key={link.to}
-                    to={link.to}
-                    label={link.label}
-                  />
-                );
-              })}
-          </ul>
-        )}
-        
-        <div className="flex items-center gap-4 px-4 md:px-8">
+        <Link to="/" className="px-6 text-xl font-semibold md:px-16">
+          Beacon
+        </Link>
+        <ul className="text-text hidden h-full items-center gap-2 font-bold md:flex">
+          {isLoggedIn && (
+            <>
+              <HeaderLinks to="/" label="Home" />
+              {navLinks
+                .filter((link) => link.roles.includes(role!))
+                .map((link) => {
+                  return (
+                    <HeaderLinks
+                      key={link.to}
+                      to={link.to}
+                      label={link.label}
+                    />
+                  );
+                })}
+            </>
+          )}
+        </ul>
+        <div className="flex items-center gap-4">
           <p>{currentDate}</p>
           {isLoggedIn && (
             <ProfileIcon setIsLoggedIn={setIsLoggedIn} setUser={setUser} />
