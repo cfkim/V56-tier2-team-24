@@ -2,7 +2,7 @@ import { useMutation } from "@tanstack/react-query";
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { login } from "../lib/api";
-import type { LoginResponse } from "../types/LoginResponse";
+// import type { LoginResponse } from "../types/LoginResponse";
 import type { Role } from "../types/Role";
 
 export default function Login({
@@ -27,20 +27,20 @@ export default function Login({
   } = useMutation({
     mutationFn: login,
 
-    onSuccess: (response: LoginResponse) => {
+    onSuccess: (response) => {
       // Saves tokens to storage
       console.log(response);
-      window.localStorage.setItem("accessToken", response.accessToken);
+      window.localStorage.setItem("accessToken", response.data.accessToken);
 
       // Only saves refresh token if rememberMe checked
       if (rememberMe) {
-        window.localStorage.setItem("refreshToken", response.refreshToken);
+        window.localStorage.setItem("refreshToken", response.data.refreshToken);
       }
 
       // Sets App's logged in state and the role of the user
       setIsLoggedIn(true);
-      setUser(response.user);
-      setRole(response.user.role);
+      setUser(response.data.user);
+      setRole(response.data.user.role);
       navigate("/", { replace: true });
     },
   });

@@ -35,9 +35,9 @@ function App() {
 
     const fetchUser = async () => {
       try {
-        const user = await getUser();
-        setUser(user.user);
-        setRole(user.user.role);
+        const response = await getUser();
+        setUser(response.data.user);
+        setRole(response.data.user.role);
         setIsLoggedIn(true);
       } catch (err) {
         console.log("auth failed to fetch data: ", err);
