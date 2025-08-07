@@ -21,9 +21,9 @@ type Params = {
 
 export const setAuthCookies = ({res, accessToken, refreshToken, rememberMe}: Params) => {
     if (rememberMe) {
-        res.cookie("refreshToken", refreshToken, getAccessTokenCookieOptions())
+        res.cookie("refreshToken", refreshToken, getRefreshTokenCookieOptions())
     }
-    res.cookie("accessToken", accessToken, getRefreshTokenCookieOptions())
+    res.cookie("accessToken", accessToken, getAccessTokenCookieOptions())
     return res
 }
 
