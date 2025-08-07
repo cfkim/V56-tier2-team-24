@@ -4,7 +4,7 @@ import PatientModel from "../models/patient.model";
 const statusRoutes = Router()
 
 statusRoutes.get("/", async(req, res) => {
-    const statusList = await PatientModel.find({})
+    const statusList = await PatientModel.find({}).select('_id patientID medicalStatus')
 
     if(statusList) {
         res.status(200).json({message:"successfully fetched status list", statusList: statusList})
