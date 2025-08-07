@@ -9,8 +9,8 @@ const defaults: CookieOptions = {
     secure
 }
 
-export const getAccessTokenCookieOptions = (): CookieOptions => ({...defaults, expires: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000)})
-export const getRefreshTokenCookieOptions = (): CookieOptions => ({...defaults, expires: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000)})
+export const getAccessTokenCookieOptions = (): CookieOptions => ({...defaults, expires: new Date(Date.now() + 15 * 1000)}) // 15 s
+export const getRefreshTokenCookieOptions = (): CookieOptions => ({...defaults, expires: new Date(Date.now() + 30 * 60 * 1000)}) // 30 m
 
 type Params = {
     res: Response,
@@ -23,7 +23,7 @@ export const setAuthCookies = ({res, accessToken, refreshToken, rememberMe}: Par
     if (rememberMe) {
         res.cookie("refreshToken", refreshToken, getAccessTokenCookieOptions())
     }
-    res.cookie("accessToken", accessToken, getAccessTokenCookieOptions())
+    res.cookie("accessToken", accessToken, getRefreshTokenCookieOptions())
     return res
 }
 
