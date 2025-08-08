@@ -9,13 +9,15 @@ export default function HeaderLinks({
   label: string;
 }) {
   return (
-    <li className="flex h-full items-center">
+    <li className="flex items-center sm:h-full">
       <NavLink
         to={to}
         className={({ isActive }) =>
           cn(
-            "flex h-full items-center px-4 pt-1",
-            isActive ? "text-primary" : "hover:text-primary",
+            "flex h-full items-center sm:px-4 sm:pt-1",
+            isActive
+              ? "text-primary font-bold"
+              : "hover:text-primary hover:font-bold",
           )
         }
       >

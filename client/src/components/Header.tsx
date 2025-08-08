@@ -1,8 +1,9 @@
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import type { Role } from "../types/Role";
 import HeaderLinks from "./HeaderLinks";
 import ProfileIcon from "./ProfileIcon";
+import Sidebar from "./Sidebar";
 
 export default function Header({
   role,
@@ -16,6 +17,7 @@ export default function Header({
   setUser: React.Dispatch<React.SetStateAction<any>>;
 }) {
   const date = useMemo(() => new Date(), []);
+  const [isOpen, setIsOpen] = useState(false);
 
   const currentDate = date.toLocaleDateString(undefined, {
     month: "long",
@@ -51,7 +53,10 @@ export default function Header({
     <header className="font-nunito bg-background text-header-text align-center flex h-14 px-6 text-xs sm:h-20 sm:text-base">
       <nav className="mx-auto flex w-full items-center justify-between">
         <div className="flex items-center">
-          <button className="text-bg-text z-10 block cursor-pointer sm:hidden">
+          <button
+            className="text-bg-text z-10 block cursor-pointer sm:hidden"
+            onClick={() => setIsOpen(!isOpen)}
+          >
             <svg
               xmlns="http://www.w3.org/2000/svg"
               height="24px"
@@ -66,7 +71,7 @@ export default function Header({
             Beacon
           </Link>
         </div>
-        <ul className="text-text hidden h-full items-center gap-2 font-bold sm:flex">
+        <ul className="text-text hidden h-full items-center gap-2 sm:flex">
           {isLoggedIn && (
             <>
               <HeaderLinks to="/" label="Home" />
@@ -94,6 +99,52 @@ export default function Header({
             />
           )}
         </div>
+        <Sidebar isOpen={isOpen} onClose={() => setIsOpen(false)}>
+          <nav className="flex h-full flex-col">
+            <button
+              className="text-header-black mb-7 cursor-pointer"
+              onClick={() => setIsOpen(false)}
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                height="34px"
+                viewBox="0 -960 960 960"
+                width="34px"
+                fill="currentColor"
+              >
+                <path d="m256-200-56-56 224-224-224-224 56-56 224 224 224-224 56 56-224 224 224 224-56 56-224-224-224 224Z" />
+              </svg>
+            </button>
+            <ul className="text-text flex flex-1 flex-col gap-2">
+              {isLoggedIn && (
+                <>
+                  <HeaderLinks to="/" label="Home" />
+                  {navLinks
+                    .filter((link) => link.roles.includes(role!))
+                    .map((link) => {
+                      return (
+                        <HeaderLinks
+                          key={link.to}
+                          to={link.to}
+                          label={link.label}
+                        />
+                      );
+                    })}
+                </>
+              )}
+            </ul>
+            {isLoggedIn && (
+              <div className="border-t border-[#D3D3D3] py-5">
+                <ProfileIcon
+                  role={role}
+                  setIsLoggedIn={setIsLoggedIn}
+                  setUser={setUser}
+                  forSidebar={true}
+                />
+              </div>
+            )}
+          </nav>
+        </Sidebar>
       </nav>
     </header>
   );
