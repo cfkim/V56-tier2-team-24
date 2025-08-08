@@ -67,6 +67,7 @@ patientRoutes.post('/create', async(req, res) => {
 
 // deletes patient record
 patientRoutes.delete('/delete', async (req, res) => {
+    // console.log("delete patient attempt BE")
     const idToDelete = req.body.id
     try {
         const result = await PatientModel.deleteOne({patientID: idToDelete})
@@ -74,6 +75,7 @@ patientRoutes.delete('/delete', async (req, res) => {
         if(result.deletedCount === 0){
             return res.status(404).json({message: "No record with ID to delete"})
         }
+        // console.log("successful deletion BE")
         res.status(200).json({message: "Patient record successfully deleted"})
     }catch {
         res.status(404).json({message: "Could not delete user."})

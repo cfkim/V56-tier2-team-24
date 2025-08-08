@@ -1,15 +1,35 @@
 import { useEffect, useState } from "react";
 import { getPatients } from "../lib/api";
 import Search from "../components/search";
+import API from "../config/apiClient";
 
 export default function PatientInfo() {
     const [patients, setPatients] = useState([])
     
+    const deletePatient = async (patientID: string) => {
+
+        console.log("deleting user attempt: " + patientID)
+        const token = localStorage.getItem("accessToken");
+        
+        try{ 
+            await API.delete("/patient/delete", {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+                data: { id: patientID },
+            });
+            setPatients(prev => prev.filter(p => p.patientID !== patientID));
+        }catch{
+            console.log("error deleting patient")
+        }
+      }
+
     useEffect(() => {
         const fetchPatients = async () => {
             const result = await getPatients()
             const patients = result.data.patients
             setPatients(patients)
+            
         }
 
         fetchPatients();
@@ -71,6 +91,9 @@ export default function PatientInfo() {
                         <th scope="col">
                             Phone Number
                         </th>
+                        <th scope="col">
+                            Delete Action
+                        </th>
                     </tr>
                 </thead>
                 <tbody>
@@ -82,6 +105,8 @@ export default function PatientInfo() {
                             <td>{patient.phoneNumber}</td>
                             <td>{patient.email}</td>
                             <td>{patient.medicalStatus}</td>
+                            <td><button onClick={() => deletePatient(patient.patientID)}>X</button></td>
+                            
                         </tr>
 
                     ))}
