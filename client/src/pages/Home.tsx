@@ -26,21 +26,18 @@ export default function Home({
   return (
     <section className="mb-[-0.5rem] px-1.5 sm:px-6">
       <div className="relative flex w-full flex-col items-center overflow-hidden sm:flex-row">
-        <div
-          className="absolute inset-0 z-0 hidden w-1/2 overflow-visible bg-white/60 blur-[80px] filter sm:block"
-          style={{ WebkitFilter: "blur(80px)" }}
-        />
-        <div className="text-header-black font-nunito flex flex-col sm:absolute sm:inset-0 sm:w-1/2 sm:gap-10 sm:py-20 sm:pl-14">
-          <div className="mx-auto flex w-3/4 flex-col gap-3 py-6 text-center sm:w-full sm:gap-3.5 sm:text-start">
+        <div className="absolute inset-0 z-0 hidden w-1/2 overflow-visible bg-white/60 blur-[80px] filter sm:block" />
+        <div className="text-header-black font-nunito flex flex-col sm:absolute sm:inset-0 sm:w-1/2 sm:gap-2 sm:py-4 sm:pl-2 md:gap-4 md:py-10 md:pl-6 lg:gap-6 lg:py-14 lg:pl-10 xl:gap-10 xl:py-20 xl:pl-14">
+          <div className="mx-auto flex w-3/4 flex-col gap-3 py-6 text-center sm:w-full sm:text-start md:gap-3.5">
             {isLoggedIn && role && (
-              <h2 className="font-kaisei text-xl font-bold sm:text-3xl">
+              <h2 className="font-kaisei text-xl font-bold md:text-2xl lg:text-3xl">
                 Hi, {capitalize(role)}
               </h2>
             )}
-            <h1 className="font-kaisei text-2xl font-bold sm:text-6xl">
+            <h1 className="font-kaisei text-2xl font-bold md:text-3xl lg:text-4xl xl:text-6xl">
               Track Surgery Patient Status in Real-Time
             </h1>
-            <p className="text-sm font-semibold sm:text-xl">
+            <p className="text-sm font-semibold md:text-base lg:text-lg xl:text-xl">
               Surgical procedures can be stressful for loved ones waiting
               nearby. Beacon shows real-time patient progress from check-in to
               recovery so you're less anxious and more in tune with what's
@@ -49,9 +46,9 @@ export default function Home({
           </div>
           <div className="relative">
             {!isLoggedIn && (
-              <div className="absolute inset-x-0 bottom-1/5 z-30 flex flex-col items-center gap-3 font-semibold sm:static sm:flex-row sm:gap-3 sm:text-xl">
+              <div className="absolute inset-x-0 bottom-1/5 z-30 flex flex-col items-center gap-3 font-semibold sm:static sm:flex-row sm:text-sm md:text-base lg:text-lg xl:text-xl">
                 <Link
-                  className="bg-primary text-background relative flex w-5/12 items-center justify-center gap-1 rounded-xl px-2.5 py-3 pr-8 text-xs sm:w-fit sm:gap-2 sm:px-8 sm:py-5 sm:pr-10 sm:text-xl"
+                  className="bg-primary text-background relative flex w-5/12 min-w-fit items-center justify-center gap-1 rounded-xl px-2.5 py-3 pr-8 text-xs sm:w-fit sm:gap-1 sm:px-8 sm:pr-10 sm:text-sm md:text-base lg:gap-2 lg:py-5 lg:text-lg xl:text-xl"
                   to={"/login"}
                 >
                   Authorization Login
@@ -65,7 +62,7 @@ export default function Home({
                   </svg>
                 </Link>
                 <button
-                  className="bg-background/50 text-primary border-primary w-5/12 cursor-pointer rounded-xl border border-2 px-2.5 py-3 text-xs sm:w-fit sm:gap-2 sm:px-8 sm:py-5 sm:text-xl"
+                  className="bg-background/50 text-primary border-primary w-5/12 min-w-fit cursor-pointer rounded-xl border border-2 px-2.5 py-3 text-xs sm:w-fit sm:gap-1 sm:px-4 sm:text-sm md:text-base lg:gap-2 lg:px-8 lg:py-5 lg:text-lg xl:text-xl"
                   onClick={() => guestLogin()}
                 >
                   Guest Access
