@@ -11,12 +11,12 @@ const options = {
 const API = axios.create(options);
 
 const TokenRefreshClient = axios.create(options);
-TokenRefreshClient.interceptors.response.use((response) => response.data);
+TokenRefreshClient.interceptors.response.use((response) => response);
 
 // Funnels requests
 API.interceptors.response.use(
   (response) => {
-    return response.data;
+    return response;
   },
   async (error) => {
     const { config } = error;
@@ -24,16 +24,20 @@ API.interceptors.response.use(
 
     // If access token expires
     if (status === 403) {
+      console.log(
+        'token expired'
+      )
       try {
         // Attempts to refresh the token
-        const res = await TokenRefreshClient.get("/auth/refresh", {
+        const response = await TokenRefreshClient.get("/auth/refresh", {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("refreshToken")}`,
           },
         });
-
+        console.log("API ClIENT")
+        console.log(response.data)
         // Sets new access token in local storage
-        const newAccessToken = res.accessToken;
+        const newAccessToken = response.data.accessToken;
         localStorage.setItem("accessToken", newAccessToken);
 
         // Tries the original request again with the new token

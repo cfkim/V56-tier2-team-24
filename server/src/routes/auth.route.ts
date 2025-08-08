@@ -4,6 +4,7 @@ import UserModel from "../models/user.model";
 import {
     clearAuthCookies,
     getAccessTokenCookieOptions,
+    getRefreshTokenCookieOptions,
     setAuthCookies,
 } from "../utils/cookies";
 
@@ -109,11 +110,11 @@ authRoutes.post("/register", async (req, res) => {
 
 // -- REFRESH TOKEN HANDLER --
 authRoutes.get("/refresh", async (req, res) => {
-    const cookieToken = req.cookies.refreshToken;
+    // const cookieToken = req.cookies.refreshToken;
     const authHeader = req.headers["authorization"];
     const refreshToken = authHeader && authHeader.split(" ")[1];
-    if (cookieToken == null) return res.sendStatus(401); // No token provided
-    if (!refreshTokens.includes(cookieToken)) return res.sendStatus(403); // Invalid token
+    // if (cookieToken == null) return res.sendStatus(401); // No token provided
+    if (!refreshTokens.includes(refreshToken || "")) return res.sendStatus(403); // Invalid token
     jwt.verify(refreshToken, JWT_REFRESH_SECRET, (err: any, user: any) => {
         if (err) return res.sendStatus(403); // Invalid token
         const session_user = { id: user.id, email: user.email };
@@ -122,7 +123,7 @@ authRoutes.get("/refresh", async (req, res) => {
             "accessToken",
             accessToken,
             getAccessTokenCookieOptions()
-        ).json({ accessToken: accessToken });
+        ).cookie('refreshToken', refreshToken, getRefreshTokenCookieOptions()).json({ accessToken: accessToken });
     });
 });
 

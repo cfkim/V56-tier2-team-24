@@ -1,6 +1,6 @@
 export let navigate = (
-  route: string,
-  redirect: { state: { redirectUrl: string } },
+  _route: string,
+  _redirect: { state: { redirectUrl: string } },
 ) => {};
 
 export const setNavigate = (
