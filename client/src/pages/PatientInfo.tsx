@@ -8,7 +8,7 @@ export default function PatientInfo() {
     useEffect(() => {
         const fetchPatients = async () => {
             const result = await getPatients()
-            const patients = result.patients
+            const patients = result.data.patients
             setPatients(patients)
         }
 
