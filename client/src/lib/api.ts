@@ -49,7 +49,7 @@ export const logout = async () => {
 
 export const getPatients = async () => {
   console.log("Getting patients")
-  const token = localStorage.getItem("refreshToken");
+  const token = localStorage.getItem("accessToken");
   const res = await API.get("/patient/all", {
     headers: {
       Authorization: `Bearer ${token}`,
