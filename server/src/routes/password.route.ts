@@ -2,7 +2,7 @@ import express from 'express';
 import { body, validationResult } from 'express-validator';
 import crypto from 'crypto';
 import bcrypt from 'bcryptjs';
-import { sendPasswordResetEmail } from '../services/emailService';
+import { sendPasswordResetEmail } from '../utils/emailService';
 import UserModel from '../models/user.model';
 
 const router = express.Router();
@@ -49,7 +49,7 @@ router.post('/forgot',
       });
 
       // Create reset URL
-      const resetUrl = `${process.env.FRONTEND_URL || 'http://localhost:5173'}/password/reset?token=${resetToken}&email=${encodeURIComponent(email)}`;
+      const resetUrl = `${process.env.APP_ORIGIN || 'http://localhost:5173'}/password/reset?token=${resetToken}&email=${encodeURIComponent(email)}`;
 
       // Send email using Gmail
       let emailSent = false;

@@ -1,11 +1,15 @@
 import { Router } from "express";
-import { JWT_REFRESH_SECRET, JWT_SECRET } from "../constants/env";
+import { APP_ORIGIN, JWT_REFRESH_SECRET, JWT_SECRET } from "../constants/env";
 import UserModel from "../models/user.model";
+import ResetPasswordModel from "../models/resetPassword.model";
+import crypto from 'crypto';
+
 import {
     clearAuthCookies,
     getAccessTokenCookieOptions,
     setAuthCookies,
 } from "../utils/cookies";
+import { sendPasswordResetEmail } from "../utils/emailService";
 
 // const express = require("express");
 // const app = express();
@@ -19,6 +23,7 @@ const authRoutes = Router();
 
 // This is a simple in-memory store for refresh tokens
 let refreshTokens: string[] = [];
+let resetTokens = new Map();
 
 function generateAccessToken(user: any) {
     return jwt.sign(user, JWT_SECRET, { expiresIn: "15s" });
@@ -137,3 +142,112 @@ authRoutes.get("/logout", async (req, res) => {
 });
 
 export default authRoutes;
+
+// -- PASSWORD RESET HANDLERS --
+// this sends the email with reset link
+authRoutes.post('/forgot', async(req, res) => {
+    try {
+        const email = req.body.emailSent
+        
+        // finds user from email
+        const user = await UserModel.findOne({ email: email });
+
+            // if user does not exist, returns error
+        if (user == null) {
+            return res.status(401).send("Cannot find user");
+        }
+        
+        // generates reset token and hashes it
+        const resetToken = crypto.randomBytes(32).toString('hex');
+        const hashedToken = await bcrypt.hash(resetToken, 10)
+        
+        // sets token expiration data
+        const expiresAt = new Date(Date.now() + 60 * 60 * 1000); // 1 hour
+
+        const resetPassword = await ResetPasswordModel.create({
+            userId: user._id,
+            token: hashedToken,
+            expiresAt: expiresAt
+        })
+
+        // Creates reset url
+        const resetUrl = `${APP_ORIGIN}/password/reset?code=${resetPassword._id}&exp=${expiresAt}`;
+        
+        // Send email using Gmail
+        let emailSent = false;
+        
+        if (process.env.EMAIL_SERVICE === 'gmail' && process.env.EMAIL_USER) {
+            emailSent = await sendPasswordResetEmail(email, resetUrl);
+            console.log('Gmail email attempt:', emailSent ? 'success' : 'failed');
+        }
+        
+        if (!emailSent) {
+            // In development mode, return the reset URL directly for testing
+            if (process.env.NODE_ENV === 'development') {
+            return res.json({ 
+                message: 'Password reset link generated successfully (development mode)',
+                email: email,
+                resetUrl: resetUrl, // Only in development
+                note: 'Email service not configured. Use the reset URL above for testing.'
+            });
+            }
+            return res.status(500).json({ error: 'Failed to send reset email' });
+        }else{
+            res.status(200).json({message: `password link successfully sent to ${email}`})
+        }
+
+    }catch (error){
+        console.error('Could not send email error:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+})
+
+//this verifies the reset token and updates the password
+authRoutes.post('/reset', async(req, res) => {
+    try {
+        const code = req.body.restCode
+        const new_password = req.body.password
+
+        // find the reset object from url code
+        const valid = await ResetPasswordModel.findOne({_id: code, expiresAt: {$gt: new Date()}})
+
+        if(valid){
+            const hashed_new_password = bcrypt.hash(new_password, 10);
+
+            // updates user password
+            const updatedUser = await UserModel.findByIdAndUpdate(valid.userId, {
+                password: hashed_new_password
+            })
+
+            // removes reset token from db
+            await valid.deleteOne()
+            res.status(200).json({message: "successfully updated password"})
+
+        }else{
+            res.status(400).json({ error: 'Invalid or expired code' });
+        }
+        
+
+    }catch (error) {
+        console.error('Reset password error:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+})
+
+// this automatically checks if the code has expired
+authRoutes.post('/verify/token', async(req, res) => {
+    try{
+        const code = req.body.code
+        // find the reset object from url code
+        const valid = await ResetPasswordModel.findOne({_id: code, expiresAt: {$gt: new Date()}})
+        if(valid){
+            res.status(200).json({ message: 'Token is valid' });
+        }else{
+            res.status(400).json({ error: 'Invalid or expired code' });
+        }
+        
+    }catch (error) {
+        console.error('Verify token error:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+})

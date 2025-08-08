@@ -50,3 +50,34 @@ export const logout = async () => {
 
   return res;
 };
+
+// for forgot password
+// sends email to forgot password endpoint
+export const forgotPassword = async(email: string) => {
+  const response = API.post('/password/forgot', {
+    method: 'POST',
+    body: JSON.stringify({ email }),
+  });
+
+  return response
+}
+
+// resets the password with new password
+export const resetPassword = async(token: string, email: string, password: string) => {
+  const response = API.post('/password/reset', {
+    method: 'POST',
+    body: JSON.stringify({ token, email, password }),
+  });
+
+  return response;
+}
+
+// sends token to verify
+export const verifyResetToken = async (token: string, email: string) => {
+  const response = API.post('/password/verify-token', {
+      method: 'POST',
+      body: JSON.stringify({ token, email }),
+    });
+
+    return response;
+}
