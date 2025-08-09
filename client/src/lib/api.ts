@@ -54,30 +54,22 @@ export const logout = async () => {
 // for forgot password
 // sends email to forgot password endpoint
 export const forgotPassword = async(email: string) => {
-  const response = API.post('/password/forgot', {
-    method: 'POST',
-    body: JSON.stringify({ email }),
-  });
+  const response = API.post('/auth/password/forgot', {email});
 
   return response
 }
 
 // resets the password with new password
-export const resetPassword = async(token: string, email: string, password: string) => {
-  const response = API.post('/password/reset', {
-    method: 'POST',
-    body: JSON.stringify({ token, email, password }),
-  });
+export const resetPassword = async(code: string, uid: string, password: string) => {
+  const response = API.post('/auth/password/reset', {code, uid, password});
 
   return response;
 }
 
 // sends token to verify
-export const verifyResetToken = async (token: string, email: string) => {
-  const response = API.post('/password/verify-token', {
-      method: 'POST',
-      body: JSON.stringify({ token, email }),
-    });
-
-    return response;
+export const verifyResetToken = async (code: string, uid: string) => {
+  console.log(code, uid);
+  const response = API.post('/auth/password/verify', {code, uid});
+  console.log(response)
+  return response;
 }

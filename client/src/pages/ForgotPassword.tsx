@@ -2,7 +2,7 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import loginImg from "/static/images/login.svg";
-import apiService from "../services/api";
+import { forgotPassword } from "../lib/api";
 
 export default function ForgotPassword() {
   const today = new Date().toLocaleDateString('en-US', { 
@@ -29,7 +29,7 @@ export default function ForgotPassword() {
     setError("");
 
     try {
-      const response = await apiService.forgotPassword(email);
+      const response = await forgotPassword(email);
       
       if (response.error) {
         setError(response.error);

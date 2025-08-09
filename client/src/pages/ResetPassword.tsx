@@ -1,7 +1,8 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import loginImg from "/static/images/login.svg";
-import apiService from "../services/api";
+import { resetPassword, verifyResetToken } from "../lib/api";
+// import apiService from "../services/api";
 
 export default function ResetPassword() {
   const today = new Date().toLocaleDateString('en-US', { 
@@ -25,10 +26,8 @@ export default function ResetPassword() {
     feedback: ""
   });
 
-  const token = searchParams.get('token');
-  const email = searchParams.get('email');
-
-
+  const token = searchParams.get('code');
+  const uid = searchParams.get('uid');
 
   // Password strength checker
   const checkPasswordStrength = (password: string) => {
@@ -64,14 +63,14 @@ export default function ResetPassword() {
 
   useEffect(() => {
     const validateToken = async () => {
-      if (!token || !email) {
+      if (!token || !uid) {
         setError('Invalid reset link. Please request a new password reset.');
         setValidating(false);
         return;
       }
 
       try {
-        const response = await apiService.verifyResetToken(token, email);
+        const response = await verifyResetToken(token, uid);
         
         if (response.error) {
           setError(response.error);
@@ -88,7 +87,7 @@ export default function ResetPassword() {
     };
 
     validateToken();
-  }, [token, email]);
+  }, [token, uid]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -114,7 +113,7 @@ export default function ResetPassword() {
     setError("");
 
     try {
-      const response = await apiService.resetPassword(token!, email!, formData.password);
+      const response = await resetPassword(token!, uid!, formData.password);
       
       if (response.error) {
         setError(response.error);
