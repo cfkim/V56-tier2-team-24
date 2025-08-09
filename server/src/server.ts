@@ -2,7 +2,6 @@ import "dotenv/config";
 import { APP_ORIGIN, PORT } from "./constants/env";
 import authRoutes from "./routes/auth.route";
 import cors from "cors";
-import passwordRoutes from "./routes/password.route";
 import userRoutes from "./routes/user.route";
 import connectToDatabase from "./config/db";
 import cookieParser from "cookie-parser";
