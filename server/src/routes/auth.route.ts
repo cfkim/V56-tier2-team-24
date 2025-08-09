@@ -178,7 +178,8 @@ authRoutes.post('/password/forgot', async(req, res) => {
         let emailSent = false;
         
         console.log('Attempting to send password reset email to:', email);
-        if (process.env.EMAIL_SERVICE === 'gmail' && process.env.EMAIL_USER) {
+        if (process.env.EMAIL_SENDER) {
+            console.log("here")
             emailSent = await sendPasswordResetEmail(email, resetUrl);
             console.log('Gmail email attempt:', emailSent ? 'success' : 'failed');
         }
@@ -186,12 +187,12 @@ authRoutes.post('/password/forgot', async(req, res) => {
         if (!emailSent) {
             // In development mode, return the reset URL directly for testing
             if (process.env.NODE_ENV === 'development') {
-            return res.json({ 
-                message: 'Password reset link generated successfully (development mode)',
-                email: email,
-                resetUrl: resetUrl, // Only in development
-                note: 'Email service not configured. Use the reset URL above for testing.'
-            });
+                return res.json({ 
+                    message: 'Password reset link generated successfully (development mode)',
+                    email: email,
+                    resetUrl: resetUrl, // Only in development
+                    note: 'Email service not configured. Use the reset URL above for testing.'
+                });
             }
             return res.status(500).json({ error: 'Failed to send reset email' });
         }else{

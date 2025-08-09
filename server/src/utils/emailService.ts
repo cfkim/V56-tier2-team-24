@@ -1,23 +1,14 @@
-import nodemailer from 'nodemailer';
+import {Resend} from 'resend'
+import {RESEND_API_KEY} from '../constants/env';
 
-// Create transporter
-const createTransporter = () => {
-  return nodemailer.createTransport({
-    service: process.env.EMAIL_SERVICE || 'gmail',
-    auth: {
-      user: process.env.EMAIL_USER,
-      pass: process.env.EMAIL_PASSWORD || process.env.EMAIL_APP_PASSWORD
-    }
-  });
-};
+const resend = new Resend(RESEND_API_KEY);
 
-// Send password reset email
+// Sends password reset email
 const sendPasswordResetEmail = async (email: string, resetUrl: string) => {
   try {
-    const transporter = createTransporter();
 
     const mailOptions = {
-      from: `"Beacon Team" <${process.env.EMAIL_USER}>`,
+      from: `"Beacon Team" <onboarding@resend.dev>`, // Using a verified sender email
       to: email,
       subject: 'Reset Your Password - Beacon',
       html: `
@@ -66,25 +57,25 @@ const sendPasswordResetEmail = async (email: string, resetUrl: string) => {
         </div>
       `,
       text: `
-Reset Your Password - Beacon
+        Reset Your Password - Beacon
 
-You requested to reset your password. Click the link below to create a new password:
+        You requested to reset your password. Click the link below to create a new password:
 
-${resetUrl}
+        ${resetUrl}
 
-If the link doesn't work, copy and paste it into your browser.
+        If the link doesn't work, copy and paste it into your browser.
 
-Important:
-- This link will expire in 1 hour
-- If you didn't request this password reset, please ignore this email
-- For security, this link can only be used once
+        Important:
+        - This link will expire in 1 hour
+        - If you didn't request this password reset, please ignore this email
+        - For security, this link can only be used once
 
-This email was sent by Beacon. Please do not reply to this email.
-      `
+        This email was sent by Beacon. Please do not reply to this email.
+              `
     };
 
-    const info = await transporter.sendMail(mailOptions);
-    console.log('Password reset email sent:', info.messageId);
+    const info = await resend.emails.send(mailOptions);
+    console.log('Password reset email sent:', info.data);
     return true;
 
   } catch (error) {
