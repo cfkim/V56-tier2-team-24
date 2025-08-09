@@ -1,4 +1,3 @@
-// src/pages/ForgotPassword.tsx
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import loginImg from "/static/images/login.svg";
@@ -31,8 +30,8 @@ export default function ForgotPassword() {
     try {
       const response = await forgotPassword(email);
       
-      if (response.error) {
-        setError(response.error);
+      if (response.data.error) {
+        setError(response.data.error);
         return;
       }
 
@@ -40,13 +39,13 @@ export default function ForgotPassword() {
       if (response.data) {
         const data = response.data as any;
         
-        // In development mode, show the reset URL if provided
+        // In development mode, shows the reset URL if provided
         if (data.resetUrl) {
           setError(`Development Mode: Reset URL - ${data.resetUrl}`);
           return;
         }
         
-        // If no resetUrl but successful, navigate to confirmation page
+        // If no resetUrl but successful, navigates to confirmation page
         navigate("/password/reset-link-sent");
       } else {
         setError('Unexpected response format');
@@ -62,7 +61,6 @@ export default function ForgotPassword() {
 
   return (
     <div className="flex-1 flex flex-col bg-white">
-      {/* Main content */}
 
       {/* Main content */}
       <div className="flex flex-1 items-center justify-center px-4 py-4 min-h-0">
@@ -75,7 +73,7 @@ export default function ForgotPassword() {
           {/* Right Form */}
           <div className="w-full lg:w-1/2 p-8 flex flex-col justify-center">
             <div className="mb-8">
-              <h2 className="text-4xl font-nunito font-bold text-[#3A3A3A] mb-6">Log In</h2>
+              <h2 className="text-4xl font-kaisei font-bold text-[#3A3A3A] mb-6">Log In</h2>
               <h3 className="text-2xl font-nunito font-semibold text-[#3A3A3A] ">Forgot password?</h3>
             </div>
             <p className="text-gray-600 mb-6 font-nunito text-base">
