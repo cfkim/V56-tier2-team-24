@@ -5,11 +5,11 @@ import { resetPassword, verifyResetToken } from "../lib/api";
 // import apiService from "../services/api";
 
 export default function ResetPassword() {
-  const today = new Date().toLocaleDateString('en-US', { 
-    year: 'numeric', 
-    month: 'long', 
-    day: 'numeric' 
-  });
+  // const today = new Date().toLocaleDateString('en-US', { 
+  //   year: 'numeric', 
+  //   month: 'long', 
+  //   day: 'numeric' 
+  // });
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   

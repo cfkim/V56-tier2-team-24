@@ -4,11 +4,11 @@ import loginImg from "/static/images/login.svg";
 import { forgotPassword } from "../lib/api";
 
 export default function ForgotPassword() {
-  const today = new Date().toLocaleDateString('en-US', { 
-    year: 'numeric', 
-    month: 'long', 
-    day: 'numeric' 
-  });
+  // const today = new Date().toLocaleDateString('en-US', { 
+  //   year: 'numeric', 
+  //   month: 'long', 
+  //   day: 'numeric' 
+  // });
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
