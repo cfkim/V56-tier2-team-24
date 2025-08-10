@@ -1,0 +1,36 @@
+GET http://localhost:4004/auth/users
+###
+
+DELETE http://localhost:4004/auth/users/delete
+
+###
+POST http://localhost:4004/auth/register
+Content-Type: application/json
+
+{
+    "email": "testsurgeon@test",
+    "password": "wompwomp",
+    "role": "surgeon"
+}
+
+###
+POST http://localhost:4004/auth/login
+Content-Type: application/json
+
+{
+    "email": "test@test",
+    "password": "wompwomp",
+    
+}
+
+###
+GET http://localhost:4004/auth/refresh
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InRlc3RAdGVzdCIsInBhc3N3b3JkIjoiJDJiJDEwJFU5MU5waW9iNHJIN045a3F6SzFIWS5vVmM4bEw0blpvcFoxSnlFWUJJM0FMSzI0Q3hCd3ZXIiwiaWF0IjoxNzUzODA3OTE3fQ.gIdKRpuGwhpEXyuIUlFv80YbhdzcGjWkIl4RYCDBLIU
+
+###
+GET http://localhost:4004/auth/logout
+Content-Type: application/json
+
+{
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InRlc3RAdGVzdCIsInBhc3N3b3JkIjoiJDJiJDEwJFJMOUdqNS5lTHFMeFhzQkVSLmRrOHVBSFA0ejF6YTdsQ0FqM2ZYM2E1cVMuMVlPZnBvYzdDIiwiaWF0IjoxNzUzODE3MDYwfQ.aKitAFVEhHN6Yb-YSzhZlqWmTUsxdv7cTk50B8JeeqU"
+}
