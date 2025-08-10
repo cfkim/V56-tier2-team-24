@@ -37,7 +37,7 @@ export default function PatientInfo() {
     }, [])
     
     return <>
-    <div className="m-10 font-nunito">
+    <div className="m-20 font-nunito">
         <div className="flex flex-col">
             <div className="flex flex-row justify-between mb-10">
                 <div className="mx-4">
@@ -69,11 +69,11 @@ export default function PatientInfo() {
             </div>
         </div>
         
-        <div className="h-screen relative overflow-x-auto">
-            <table className="min-w-full outline">
-                <thead className="bg-accent text-left">
+        <div className="h-screen relative overflow-visible">
+            <table className="min-w-full  outline-2 outline-gray-100 rounded-2xl text-lg">
+                <thead className="bg-accent text-left h-12 font-nunito-bold">
                     <tr>
-                        <th scope="col">
+                        <th className="pl-5" scope="col">
                             Patient
                         </th>
                         <th scope="col">
@@ -89,7 +89,7 @@ export default function PatientInfo() {
                             Email Address
                         </th>
                         <th scope="col">
-                            Phone Number
+                            Medical Status
                         </th>
                         <th scope="col">
                             Delete Action
@@ -98,17 +98,15 @@ export default function PatientInfo() {
                 </thead>
                 <tbody>
                     {patients.map((patient) => (
-                        <tr className="outline outline-gray-400" key={patient._id}>
-                            <td><div className="flex flex-col"><div className="font-bold">{patient.firstName} {patient.lastName}</div>{patient.patientID}</div></td>
-                            <td>{patient.streetAddress}</td>
-                            <td>{patient.country}</td>
-                            <td>{patient.phoneNumber}</td>
-                            <td>{patient.email}</td>
-                            <td>{patient.medicalStatus}</td>
-                            <td><button onClick={() => deletePatient(patient.patientID)}>X</button></td>
-                            
+                        <tr className="border-b-1 border-gray-200" key={patient._id}>
+                            <td className="py-3 px-5 pr-50"><div className="flex flex-col"><div className="font-nunito-bold">{patient.firstName} {patient.lastName}</div><div className="text-md text-gray-500">Patient No: {patient.patientID}</div></div></td>
+                            <td className="py-3">{patient.streetAddress}</td>
+                            <td className="py-3 pr-15">{patient.country}</td>
+                            <td className="py-3 ">{patient.phoneNumber}</td>
+                            <td className="py-3 ">{patient.email}</td>
+                            <td className="py-3 ">{patient.medicalStatus}</td>
+                            <td className="py-3 "><button onClick={() => deletePatient(patient.patientID)}>...</button></td>       
                         </tr>
-
                     ))}
                 </tbody>
             </table>
