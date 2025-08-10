@@ -19,7 +19,7 @@ export default function ResetPasswordSuccess() {
           {/* Right Content */}
           <div className="w-full lg:w-1/2 p-8 flex flex-col justify-center">
             <div className="mb-8">
-              <h2 className="text-4xl font-nunito font-bold text-[#3A3A3A] mb-6">Log In</h2>
+              <h2 className="text-4xl font-kaisei font-bold text-[#3A3A3A] mb-6">Log In</h2>
             </div>
             <div className="space-y-6">
               <div className="text-center">

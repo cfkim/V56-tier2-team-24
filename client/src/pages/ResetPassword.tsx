@@ -195,7 +195,7 @@ export default function ResetPassword() {
 
           <div className="w-full lg:w-1/2 p-8 flex flex-col justify-center">
             <div className="mb-8">
-              <h2 className="text-4xl font-nunito font-bold text-[#3A3A3A] mb-6">Reset Password</h2>
+              <h2 className="text-4xl font-kaisei font-bold text-[#3A3A3A] mb-6">Reset Password</h2>
             </div>
             <p className="text-gray-600 mb-6 font-nunito text-base">
               Enter your new password below.
