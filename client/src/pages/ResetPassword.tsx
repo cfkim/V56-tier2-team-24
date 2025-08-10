@@ -1,8 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
-import loginImg from "/static/images/login.svg";
 import { resetPassword, verifyResetToken } from "../lib/api";
-// import apiService from "../services/api";
 
 export default function ResetPassword() {
   // const today = new Date().toLocaleDateString('en-US', { 
@@ -149,7 +147,11 @@ export default function ResetPassword() {
         <div className="flex flex-1 items-center justify-center px-4 py-4 min-h-0">
           <div className="flex flex-col lg:flex-row w-full max-w-7xl bg-white rounded-lg overflow-hidden">
             <div className="w-full lg:w-2/3 flex justify-center items-center p-6 pr-16">
-              <img src={loginImg} alt="Login visual" className="w-full h-auto max-h-[450px] object-cover rounded-lg" />
+              <img
+                src="/static/images/login.svg"
+                alt="Login image"
+                className="w-full h-auto max-h-[450px] object-cover rounded-lg"
+              />
             </div>
             <div className="w-full lg:w-1/2 p-8 flex flex-col justify-center">
               <div className="mb-8">
@@ -184,7 +186,11 @@ export default function ResetPassword() {
       <div className="flex flex-1 items-center justify-center px-4 py-4 min-h-0">
         <div className="flex flex-col lg:flex-row w-full max-w-7xl bg-white rounded-lg overflow-hidden">
           <div className="w-full lg:w-2/3 flex justify-center items-center p-6 pr-16">
-            <img src={loginImg} alt="Login visual" className="w-full h-auto max-h-[450px] object-cover rounded-lg" />
+            <img
+              src="/static/images/login.svg"
+              alt="Login image"
+              className="w-full h-auto max-h-[450px] object-cover rounded-lg"
+            />
           </div>
 
           <div className="w-full lg:w-1/2 p-8 flex flex-col justify-center">
