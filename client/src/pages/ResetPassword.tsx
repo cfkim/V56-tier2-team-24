@@ -72,8 +72,8 @@ export default function ResetPassword() {
       try {
         const response = await verifyResetToken(token, uid);
         
-        if (response.error) {
-          setError(response.error);
+        if (response.data.error) {
+          setError(response.data.error);
           setTokenValid(false);
         } else {
           setTokenValid(true);
@@ -115,8 +115,8 @@ export default function ResetPassword() {
     try {
       const response = await resetPassword(token!, uid!, formData.password);
       
-      if (response.error) {
-        setError(response.error);
+      if (response.data.error) {
+        setError(response.data.error);
         return;
       }
 
