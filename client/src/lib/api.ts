@@ -16,14 +16,18 @@ interface signInData {
 export const login = async (data: signInData) => API.post("/auth/login", data);
 
 export const getUser = async () => {
-  const token = localStorage.getItem("accessToken");
+
+  const token = localStorage.getItem("accessToken") || localStorage.getItem("token");
+
   const response = await API("/user", {
     headers: {
       Authorization: `Bearer ${token}`,
     },
   });
-  console.log("API endpoint")
-  console.log(response)
+
+  console.log("API endpoint");
+  console.log(response);
+
   return response;
 };
 
