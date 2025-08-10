@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import loginImg from "/static/images/login.svg";
+// import loginImg from "/static/images/login.svg";
 import { forgotPassword } from "../lib/api";
 
 export default function ForgotPassword() {
@@ -67,7 +67,12 @@ export default function ForgotPassword() {
         <div className="flex flex-col lg:flex-row w-full max-w-7xl bg-white rounded-lg overflow-hidden">
           {/* Left Image */}
           <div className="w-full lg:w-2/3 flex justify-center items-center p-6 pr-16">
-            <img src={loginImg} alt="Login visual" className="w-full h-auto max-h-[450px] object-cover rounded-lg" />
+            <img
+              src="/static/images/login.svg"
+              alt="Login image"
+              className="w-full h-auto max-h-[450px] object-cover rounded-lg"
+            />
+            {/* <img src={loginImg} alt="Login visual" className="w-full h-auto max-h-[450px] object-cover rounded-lg" /> */}
           </div>
 
           {/* Right Form */}
