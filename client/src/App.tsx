@@ -6,8 +6,12 @@ import Header from "./components/Header";
 import { getUser } from "./lib/api";
 import { setNavigate } from "./lib/navigation";
 import Account from "./pages/Account";
+import ForgotPassword from "./pages/ForgotPassword";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
+import ResetLinkSent from "./pages/ResetLinkSent";
+import ResetPassword from "./pages/ResetPassword";
+import ResetPasswordSuccess from "./pages/ResetPasswordSuccess";
 import type { User } from "./types/LoginResponse";
 import type { Role } from "./types/Role";
 import PatientStatus from "./pages/PatientStatus";
@@ -24,6 +28,13 @@ function App() {
 
   useEffect(() => {
     console.log("auth useEffect triggered!");
+
+    // Skip authentication check for password reset pages
+    const currentPath = window.location.pathname;
+    if (currentPath.startsWith('/password/')) {
+      setIsLoggedIn(false);
+      return;
+    }
 
     const fetchUser = async () => {
       try {
@@ -75,6 +86,10 @@ function App() {
           <Route path="/status" element={<PatientStatus />} />
           <Route path="/info" element={<PatientInfo />} />
           <Route path="/update" element={<UpdateStatus />} />
+          <Route path="/password/forgot" element={<ForgotPassword />} />
+          <Route path="/password/reset-link-sent" element={<ResetLinkSent />} />
+          <Route path="/password/reset" element={<ResetPassword />} />
+          <Route path="/password/reset-success" element={<ResetPasswordSuccess />} />
         </Routes>
       </main>
       <Footer />

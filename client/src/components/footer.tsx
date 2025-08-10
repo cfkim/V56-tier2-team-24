@@ -53,7 +53,7 @@ export default function Footer() {
           <div className="mt-10 flex flex-col items-center justify-center gap-3">
             <a href="https://github.com/chingu-voyages/V56-tier2-team-24">
               <img
-                src="./public/static/images/github 1.png"
+                src="/static/images/github.png"
                 alt="github logo"
               />
             </a>

@@ -16,14 +16,18 @@ interface signInData {
 export const login = async (data: signInData) => API.post("/auth/login", data);
 
 export const getUser = async () => {
-  const token = localStorage.getItem("accessToken");
+
+  const token = localStorage.getItem("accessToken") || localStorage.getItem("token");
+
   const response = await API("/user", {
     headers: {
       Authorization: `Bearer ${token}`,
     },
   });
-  console.log("API endpoint")
-  console.log(response)
+
+  console.log("API endpoint");
+  console.log(response);
+
   return response;
 };
 
@@ -49,7 +53,6 @@ export const logout = async () => {
 
 
 // gets all patients
-
 export const getPatients = async () => {
   console.log("Getting patients")
   const token = localStorage.getItem("accessToken");
@@ -59,4 +62,27 @@ export const getPatients = async () => {
     },
   });
   return res;
+}
+
+// for forgot password
+// sends email to forgot password endpoint
+export const forgotPassword = async(email: string) => {
+  const response = API.post('/auth/password/forgot', {email});
+
+  return response
+}
+
+// resets the password with new password
+export const resetPassword = async(code: string, uid: string, password: string) => {
+  const response = API.post('/auth/password/reset', {code, uid, password});
+
+  return response;
+}
+
+// sends token to verify
+export const verifyResetToken = async (code: string, uid: string) => {
+  console.log(code, uid);
+  const response = API.post('/auth/password/verify', {code, uid});
+  console.log(response)
+  return response;
 }
