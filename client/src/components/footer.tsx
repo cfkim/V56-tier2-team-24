@@ -1,6 +1,6 @@
 export default function Footer() {
   return (
-    <div className="bg-primary w-full text-white">
+    <div className="bg-primary relative z-20 w-full text-white">
       <div
         id="footer-content"
         className="font-nunito flex h-full flex-col items-center justify-between p-10 text-[14px] md:p-15 lg:p-15"
@@ -53,7 +53,7 @@ export default function Footer() {
           <div className="mt-10 flex flex-col items-center justify-center gap-3">
             <a href="https://github.com/chingu-voyages/V56-tier2-team-24">
               <img
-                src="./public/static/images/github 1.png"
+                src="/static/images/github.png"
                 alt="github logo"
               />
             </a>

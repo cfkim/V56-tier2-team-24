@@ -18,7 +18,7 @@ POST http://localhost:4004/auth/login
 Content-Type: application/json
 
 {
-    "email": "test@test",
+    "email": "testadmin@test",
     "password": "wompwomp",
     
 }
@@ -33,4 +33,27 @@ Content-Type: application/json
 
 {
     "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InRlc3RAdGVzdCIsInBhc3N3b3JkIjoiJDJiJDEwJFJMOUdqNS5lTHFMeFhzQkVSLmRrOHVBSFA0ejF6YTdsQ0FqM2ZYM2E1cVMuMVlPZnBvYzdDIiwiaWF0IjoxNzUzODE3MDYwfQ.aKitAFVEhHN6Yb-YSzhZlqWmTUsxdv7cTk50B8JeeqU"
+}
+
+###
+POST http://localhost:4004/patient/create
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InRlc3RhZG1pbkB0ZXN0IiwiaWQiOiI2ODg5OGEyOTI5ODZlZjg2MDQ1ZDQwZWUiLCJpYXQiOjE3NTQ0MDkxODMsImV4cCI6MTc1NDQwOTE5OH0.WFwFhmrCvamTCM8eSaktqk7WUf0UYxsAoYFYYPAAgfg
+Content-Type: application/json
+
+{
+    "email": "testpatient@test",
+    "firstName": "jane",
+    "lastName": "Doe",
+    "streetAddress": "123 Street",
+    "patientID": "1234ABC",
+    "country": "USA",
+    "phoneNumber": "123 234 2132"
+}
+###
+GET http://localhost:4004/patient
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4ODk4YTI5Mjk4NmVmODYwNDVkNDBlZSIsImVtYWlsIjoidGVzdGFkbWluQHRlc3QiLCJpYXQiOjE3NTQ0MTAyMjIsImV4cCI6MTc1NDQxMDIzN30.bAQpT5kKJ1FG-NW0tmbv9Kb_DICclqopqO0lTjrBnAc
+Content-Type: application/json
+
+{
+    "patientID": "1234ABC"
 }

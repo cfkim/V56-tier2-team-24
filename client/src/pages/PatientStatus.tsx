@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react"
 import { getStatusList } from "../lib/api"
+import type { Patient } from "../types/Patient"
 
 export default function Status() {
     const [statusList, setStatusList] = useState([])
@@ -41,7 +42,7 @@ export default function Status() {
                 </tr>
             </thead>
             <tbody>
-                {statusList.map((patient) => (
+                {statusList.map((patient:Patient) => (
                     <tr key={patient._id}>
                         <td className="px-9">
                             #{patient.patientID}
