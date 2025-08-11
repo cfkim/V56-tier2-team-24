@@ -67,34 +67,24 @@ export default function PatientFormModal({
   };
 
   const handleAddPatient = async (e: React.FormEvent) => {
-    console.log("add patient");
     e.preventDefault();
     const formData = new FormData(e.target as HTMLFormElement);
     const isValid = validateForm(formData);
+
     if (isValid) {
-      try {
-        const addedPatient = await addPatient(formData);
-        console.log("addedPatient");
-        console.log(addedPatient.data);
-        onClose();
-      } catch (error) {
-        console.log(error);
-      }
+      const addedPatient = await addPatient(formData);
+      onClose();
     } else {
       console.log(errors);
     }
   };
   const handleEditPatient = async (e: React.FormEvent) => {
-    console.log("edit patient");
     e.preventDefault;
     const formData = new FormData(e.target as HTMLFormElement);
     const isValid = validateForm(formData);
     if (isValid) {
-      console.log(formData);
       try {
         const addedPatient = await addPatient(formData);
-        console.log("addedPatient");
-        console.log(addedPatient);
         onClose();
       } catch (error) {
         console.log(error);
@@ -144,7 +134,7 @@ export default function PatientFormModal({
             <input
               type="text"
               name="patientID"
-              disabled
+              readOnly
               required
               value={isEdit ? "123456" : newPatientId}
               className="bg-accent w-full rounded-xl border-b border-[#C1C7CD] px-4 py-3 text-[#B5B16F]"
