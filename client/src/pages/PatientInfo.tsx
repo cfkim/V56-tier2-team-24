@@ -2,10 +2,12 @@ import { useEffect, useState } from "react";
 import { getPatients } from "../lib/api";
 import Search from "../components/search";
 import API from "../config/apiClient";
+import type { Patient } from "../types/Patient";
+import clsx from "clsx";
 
 export default function PatientInfo() {
-    const [patients, setPatients] = useState([])
-    
+    const [patients, setPatients] = useState<Patient[]>([]);
+    const [selectedStatus, setSelectedStatus] = useState<string>("All");
     const deletePatient = async (patientID: string) => {
 
         console.log("deleting user attempt: " + patientID)
@@ -45,23 +47,26 @@ export default function PatientInfo() {
                     <p>View and manage essential patient details before, during, and after surgery. <br></br> Please ensure all updates are accurate and respectful of patient privacy.</p>
                 </div>
                 <div className="flex items-end">
-                    <button className="bg-primary text-white px-4 rounded-2xl h-12">Add a New Patient +</button>
+                    <button className="bg-primary text-white px-4 rounded-2xl h-12 flex gap-1 items-center">
+                        Add a New Patient 
+                    <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#FFFFFF"><path d="M440-440H200v-80h240v-240h80v240h240v80H520v240h-80v-240Z"/></svg>
+                    </button>
                 </div>
                 
             </div>
 
             <div className="flex flex-row justify-between mb-4">
                 <div className="flex flex-row gap-8">
-                    <button className="">
+                    <button className={clsx("rounded-2xl px-10 h-12", selectedStatus === "All" ? "outline-primary outline-2 " : "")} onClick={() => setSelectedStatus("All")}>
                         All
                     </button>
-                    <button>
+                    <button className={clsx("rounded-2xl px-4 h-12", selectedStatus === "Before" ? "outline-primary outline-2 " : "")} onClick={() => setSelectedStatus("Before")}>
                         Before Procedure
                     </button>
-                    <button>
+                    <button className={clsx("rounded-2xl px-4 h-12", selectedStatus === "During" ? "outline-primary outline-2 " : "")} onClick={() => setSelectedStatus("During")}>
                         During Procedure
                     </button>
-                    <button>
+                    <button className={clsx("rounded-2xl px-4 h-12", selectedStatus === "After" ? "outline-primary outline-2 " : "")} onClick={() => setSelectedStatus("After")}>
                         After Procedure
                     </button>
                 </div>
@@ -97,7 +102,7 @@ export default function PatientInfo() {
                     </tr>
                 </thead>
                 <tbody>
-                    {patients.map((patient) => (
+                    {patients.map((patient:Patient) => (
                         <tr className="border-b-1 border-gray-200" key={patient._id}>
                             <td className="py-3 px-5 pr-50"><div className="flex flex-col"><div className="font-nunito-bold">{patient.firstName} {patient.lastName}</div><div className="text-md text-gray-500">Patient No: {patient.patientID}</div></div></td>
                             <td className="py-3">{patient.streetAddress}</td>
