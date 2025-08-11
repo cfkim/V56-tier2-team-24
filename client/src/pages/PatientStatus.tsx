@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react"
 import { getStatusList } from "../lib/api"
 import type { Patient } from "../types/Patient"
+import { LargeSearch } from "../components/search"
 
 export default function Status() {
     const [statusList, setStatusList] = useState([])
@@ -15,12 +16,10 @@ export default function Status() {
         fetchStatusList();
     }, [])
     return <>
-    <div className="flex items-center overflow-x-auto h-screen flex-col gap-4">
+    <div className="flex items-center overflow-x-auto h-screen flex-col gap-6 font-nunito m-10">
         <h1 className="text-3xl font-kaisei">Surgery Status Board</h1>
         To track the progress of the patient, refer to the Patient # given to you at Check-In
-        <div className="h-8 w-60 bg-gray-300 p-1 pl-2 rounded">
-            <span className="text-gray-500">search</span>
-        </div>
+        <LargeSearch/>
         
         <div className="bg-accent w-2/3 h-16 mt-3 rounded-lg flex">
             <div className="flex w-full flex-row justify-between items-center">
@@ -34,20 +33,20 @@ export default function Status() {
                 
             </div>
         </div>
-        <table className="w-3/4 outline outline-gray-300 rounded-lg">
+        <table className="w-3/4 outline outline-gray-200 rounded-lg">
             <thead className="text-left bg-gray-200">
                 <tr>
-                    <th scope="col" className="py-3 px-9">Patient</th>
+                    <th scope="col" className="py-3 px-9 w-3/4">Patient</th>
                     <th scope="col">Medical Status</th>
                 </tr>
             </thead>
             <tbody>
                 {statusList.map((patient:Patient) => (
-                    <tr key={patient._id}>
-                        <td className="px-9">
+                    <tr className="border-b-1 border-gray-200 last-child:border-bottom:0" key={patient._id}>
+                        <td className="px-9 py-4">
                             #{patient.patientID}
                         </td>
-                        <td>
+                        <td className="py-4">
                             {patient.medicalStatus}
                         </td>
                     </tr>

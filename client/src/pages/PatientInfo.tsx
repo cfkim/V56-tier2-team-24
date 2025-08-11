@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { getPatients } from "../lib/api";
-import Search from "../components/search";
+import { SmallSearch } from "../components/search";
 import API from "../config/apiClient";
 import type { Patient } from "../types/Patient";
 import clsx from "clsx";
@@ -70,7 +70,7 @@ export default function PatientInfo() {
                         After Procedure
                     </button>
                 </div>
-                <Search></Search>
+                <SmallSearch></SmallSearch>
             </div>
         </div>
         
