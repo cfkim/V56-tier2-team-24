@@ -10,6 +10,7 @@ export default function PatientInfo() {
   const [patients, setPatients] = useState<Patient[]>([]);
   const [isOpen, setIsOpen] = useState(false);
   const [selectedStatus, setSelectedStatus] = useState<string>("All");
+
   const deletePatient = async (patientID: string) => {
     console.log("deleting user attempt: " + patientID);
     const token = localStorage.getItem("accessToken");
@@ -53,7 +54,10 @@ export default function PatientInfo() {
               </p>
             </div>
             <div className="flex items-end">
-              <button className="bg-primary flex h-12 items-center gap-1 rounded-2xl px-4 text-white">
+              <button
+                onClick={() => setIsOpen(true)}
+                className="bg-primary flex h-12 cursor-pointer items-center gap-1 rounded-2xl px-4 text-white"
+              >
                 Add a New Patient
                 <svg
                   xmlns="http://www.w3.org/2000/svg"

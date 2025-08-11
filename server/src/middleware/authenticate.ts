@@ -19,7 +19,7 @@ const authenticate: RequestHandler = (req, res, next) => {
         console.log("No token provided");
         return res.status(401).json({ error: "No token provided" });
     }
-    console.log(token);
+
     jwt.verify(token, process.env.JWT_SECRET, (err: any, user: any) => {
         if (err) {
             console.log("JWT verification failed:", err);

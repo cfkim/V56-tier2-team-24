@@ -14,16 +14,19 @@ const resetPasswordSchema = new mongoose.Schema<ResetPasswordDocument>({
         ref: "User",
         type: mongoose.Schema.Types.ObjectId,
         required: true,
-        index: true
+        index: true,
     },
     resetToken: {
-        type: String, required: true
+        type: String,
+        required: true,
     },
     createdAt: { type: Date, required: true, default: Date.now },
     expiresAt: { type: Date, required: true },
-}
-);
+});
 
-const ResetPasswordModel = mongoose.model<ResetPasswordDocument>("ResetPassword", resetPasswordSchema);
+const ResetPasswordModel = mongoose.model<ResetPasswordDocument>(
+    "ResetPassword",
+    resetPasswordSchema
+);
 
 export default ResetPasswordModel;

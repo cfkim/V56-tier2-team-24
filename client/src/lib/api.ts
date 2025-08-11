@@ -25,14 +25,10 @@ export const getUser = async () => {
     },
   });
 
-  console.log("API endpoint");
-  console.log(response);
-
   return response;
 };
 
 export const logout = async () => {
-  console.log("logout clicked");
   const token = localStorage.getItem("refreshToken");
   const res = await API.get("/auth/logout", {
     headers: {
@@ -53,7 +49,6 @@ export const logout = async () => {
 
 // gets all patients
 export const getPatients = async () => {
-  console.log("Getting patients");
   const token = localStorage.getItem("accessToken");
   const res = await API.get("/patient/all", {
     headers: {
@@ -65,18 +60,22 @@ export const getPatients = async () => {
 
 // adds a patient
 export const addPatient = async (formData: FormData) => {
-  console.log("Adding patient");
   const token = localStorage.getItem("accessToken");
   if (!token) throw new Error("No access token");
 
   const formObj = Object.fromEntries(formData.entries());
-  console.log(formObj);
-  const res = await API.post("/patient/create", formObj, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
-  return res;
+
+  try {
+    const res = await API.post("/patient/create", formObj, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return res;
+  } catch (error) {
+    console.error("Failed to add patient", error);
+    throw error;
+  }
 };
 
 // gets a new patient number
@@ -111,8 +110,7 @@ export const resetPassword = async (
 
 // sends token to verify
 export const verifyResetToken = async (code: string, uid: string) => {
-  console.log(code, uid);
   const response = API.post("/auth/password/verify", { code, uid });
-  console.log(response);
+
   return response;
 };

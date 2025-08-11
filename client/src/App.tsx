@@ -27,8 +27,6 @@ function App() {
   setNavigate(navigate);
 
   useEffect(() => {
-    console.log("auth useEffect triggered!");
-
     // Skip authentication check for password reset pages
     const currentPath = window.location.pathname;
     if (currentPath.startsWith("/password/")) {

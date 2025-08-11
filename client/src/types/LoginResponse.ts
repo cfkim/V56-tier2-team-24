@@ -9,14 +9,3 @@ export type User = {
   __v: number;
   password?: string;
 };
-
-// export type LoginResponse = {
-//   accessToken: string;
-//   refreshToken: string;
-//   user: User;
-// };
-
-// export type GetUserResponse = {
-//   message: string;
-//   user: User | null;
-// };
