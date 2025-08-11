@@ -51,6 +51,19 @@ export const logout = async () => {
   return res;
 };
 
+
+// gets all patients
+export const getPatients = async () => {
+  console.log("Getting patients")
+  const token = localStorage.getItem("accessToken");
+  const res = await API.get("/patient/all", {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  return res;
+}
+
 // for forgot password
 // sends email to forgot password endpoint
 export const forgotPassword = async(email: string) => {

@@ -14,6 +14,9 @@ import ResetPassword from "./pages/ResetPassword";
 import ResetPasswordSuccess from "./pages/ResetPasswordSuccess";
 import type { User } from "./types/LoginResponse";
 import type { Role } from "./types/Role";
+import PatientStatus from "./pages/PatientStatus";
+import PatientInfo from "./pages/PatientInfo";
+import UpdateStatus from "./pages/UpdateStatus";
 
 function App() {
   const [role, setRole] = useState<Role | undefined>();
@@ -80,6 +83,9 @@ function App() {
             }
           />
           <Route path="/user" element={<Account user={user} />} />
+          <Route path="/status" element={<PatientStatus />} />
+          <Route path="/info" element={<PatientInfo />} />
+          <Route path="/update" element={<UpdateStatus />} />
           <Route path="/password/forgot" element={<ForgotPassword />} />
           <Route path="/password/reset-link-sent" element={<ResetLinkSent />} />
           <Route path="/password/reset" element={<ResetPassword />} />
