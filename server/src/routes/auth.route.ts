@@ -1,12 +1,16 @@
 import { Router } from "express";
-import { JWT_REFRESH_SECRET, JWT_SECRET } from "../constants/env";
+import { APP_ORIGIN, JWT_REFRESH_SECRET, JWT_SECRET } from "../constants/env";
 import UserModel from "../models/user.model";
+import ResetPasswordModel from "../models/resetPassword.model";
+import crypto from 'crypto';
 import {
     clearAuthCookies,
     getAccessTokenCookieOptions,
     getRefreshTokenCookieOptions,
     setAuthCookies,
 } from "../utils/cookies";
+import { sendPasswordResetEmail } from "../utils/emailService";
+
 
 // const express = require("express");
 // const app = express();
@@ -137,4 +141,123 @@ authRoutes.get("/logout", async (req, res) => {
     res.sendStatus(204);
 });
 
+// -- PASSWORD RESET HANDLERS --
+// this sends the email with reset link
+authRoutes.post('/password/forgot', async(req, res) => {
+    console.log("here at forgot")
+    try {
+        const email = req.body.email
+        console.log(email)
+        // finds user from email
+        const user = await UserModel.findOne({ email: email });
+
+            // if user does not exist, returns error
+        if (user == null) {
+            return res.status(404).send("Cannot find user");
+        }
+        
+        // generates reset token and hashes it
+        const resetToken = crypto.randomBytes(32).toString('hex');
+        const hashedToken = await bcrypt.hash(resetToken, 10)
+        
+        // sets token expiration data
+        const expiresAt = new Date(Date.now() + 60 * 60 * 1000); // 1 hour
+
+        const resetPassword = await ResetPasswordModel.create({
+            userId: user._id,
+            resetToken: hashedToken,
+            expiresAt: expiresAt
+        })
+
+        // Creates reset url
+        const resetUrl = `${APP_ORIGIN}/password/reset?code=${resetPassword._id}&exp=${expiresAt}&uid=${user._id}`;
+        
+        // Send email using Gmail
+        let emailSent = false;
+        
+        console.log('Attempting to send password reset email to:', email);
+        if (process.env.EMAIL_SENDER) {
+            console.log("here")
+            emailSent = await sendPasswordResetEmail(email, resetUrl);
+            console.log('Gmail email attempt:', emailSent ? 'success' : 'failed');
+        }
+        console.log('email was sent')
+        if (!emailSent) {
+            // In development mode, return the reset URL directly for testing
+            if (process.env.NODE_ENV === 'development') {
+                return res.json({ 
+                    message: 'Password reset link generated successfully (development mode)',
+                    email: email,
+                    resetUrl: resetUrl, // Only in development
+                    note: 'Email service not configured. Use the reset URL above for testing.'
+                });
+            }
+            return res.status(500).json({ error: 'Failed to send reset email' });
+        }else{
+            res.status(200).json({message: `password link successfully sent to ${email}`})
+        }
+
+    }catch (error){
+        console.error('Could not send email error:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+})
+
+//this verifies the reset token and updates the password
+authRoutes.post('/password/reset', async(req, res) => {
+    console.log(req.body)
+    try {
+        const code = req.body.code
+        const uid = req.body.uid
+        const new_password = req.body.password
+
+        // find the reset object from url code
+        const valid = await ResetPasswordModel.findOne({_id: code, expiresAt: {$gt: new Date()}})
+
+        if(valid){
+            console.log('found user and valid')
+            const hashed_new_password = await bcrypt.hash(new_password, 10);
+            console.log(valid)
+            // updates user password
+            const updatedUser = await UserModel.findByIdAndUpdate(valid.userId, {
+                password: hashed_new_password
+            })
+
+            // removes reset token from db
+            await valid.deleteOne()
+            res.status(200).json({message: "successfully updated password"})
+
+        }else{
+            res.status(400).json({ error: 'Invalid or expired code' });
+        }
+        
+
+    }catch (error) {
+        console.error('Reset password error:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+})
+
+// this automatically checks if the code has expired
+authRoutes.post('/password/verify', async(req, res) => {
+    console.log(req.body)
+    try{
+        const code = req.body.code
+        const uid = req.body.uid
+        console.log("here at verify token")
+        console.log(`Code: ${code}, uid: ${uid}`)
+        // find the reset object from url code
+        const valid = await ResetPasswordModel.findOne({userId: uid, _id: code, expiresAt: {$gt: new Date()}})
+        console.log(valid)
+        if(valid){
+            res.status(200).json({ message: 'Token is valid' });
+        }else{
+            res.status(400).json({ error: 'Invalid or expired code' });
+        }
+        
+    }catch (error) {
+        console.error('Verify token error:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+})
 export default authRoutes;

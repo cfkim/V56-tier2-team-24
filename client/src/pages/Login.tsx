@@ -56,7 +56,7 @@ export default function Login({
           />
         </div>
         <div className="font-nunito flex w-1/2 flex-col items-center justify-center bg-white px-30">
-          <h1 className="font-kaisei mb-12 w-full text-xl font-bold md:text-4xl">
+          <h1 className="font-kaisei mb-12 w-full text-xl font-bold sm:text-4xl">
             Log In
           </h1>
           {isError && (
