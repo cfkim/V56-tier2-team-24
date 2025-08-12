@@ -4,48 +4,92 @@ import PatientModel from "../models/patient.model";
 const patientRoutes = Router();
 
 // gets a specific patient records
-patientRoutes.get('/', async(req:any, res) => {
-    const patient = await PatientModel.findOne({patientID: req.body.patientID})
+patientRoutes.get("/", async (req: any, res) => {
+    const patient = await PatientModel.findOne({
+        patientID: req.body.patientID,
+    });
 
-    if(patient){
+    if (patient) {
         res.status(200).json({
-            message:"Patient found",
-            patient: patient
-        })
-    }else{
-        res.status(404).json({message: "could not find patient record with that ID"})
+            message: "Patient found",
+            patient: patient,
+        });
+    } else {
+        res.status(404).json({
+            message: "could not find patient record with that ID",
+        });
     }
-})
+});
 
 // gets all patient records
-patientRoutes.get('/all', async(req:any, res) => {
-    const allPatients = await PatientModel.find({})
+patientRoutes.get("/all", async (req: any, res) => {
+    const allPatients = await PatientModel.find({});
 
-    if(allPatients){
+    if (allPatients) {
         res.status(200).json({
-            message:"Patients found",
-            patients: allPatients
-        })
-    }else{
-        res.status(500).json({message: "Error occurred while fetching patient data"})
+            message: "Patients found",
+            patients: allPatients,
+        });
+    } else {
+        res.status(500).json({
+            message: "Error occurred while fetching patient data",
+        });
     }
-})
+});
+
+function createRandomString(length: number) {
+    const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+    let result = "";
+    for (let i = 0; i < length; i++) {
+        result += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+    return result;
+}
+
+// gets available patient number
+patientRoutes.get("/patientId", async (_req: any, res) => {
+    try {
+        let newNumber;
+        let existingNumber: any = {};
+        while (existingNumber) {
+            newNumber = createRandomString(6);
+            existingNumber = await PatientModel.exists({
+                patientID: newNumber,
+            });
+        }
+        res.status(200).json({
+            message: "New patient number generated",
+            patientID: newNumber,
+        });
+    } catch (error) {
+        res.status(500).json({
+            message: "Error occurred while generating patient number",
+        });
+    }
+});
 
 // creates patient record
-patientRoutes.post('/create', async(req, res) => {
-    try{
-        const firstName = req.body.firstName
-        const lastName = req.body.lastName
-        const email = req.body.email
-        const streetAddress = req.body.streetAddress
-        const country = req.body.country
-        const patientID = req.body.patientID
-        const phoneNumber = req.body.phoneNumber
+patientRoutes.post("/create", async (req, res) => {
+    try {
+        const firstName = req.body.firstName;
+        const lastName = req.body.lastName;
+        const email = req.body.email;
+        const streetAddress = req.body.streetAddress;
+        const city = req.body.city;
+        const state = req.body.state;
+        const country = req.body.country;
+        const patientID = req.body.patientID;
+        const countryCode = req.body.countryCode;
+        const phoneNumber = req.body.phoneNumber;
 
-        const existingPatient = await PatientModel.exists({email: email})
-        console.log(existingPatient)
-        if(existingPatient) {
-            res.status(500).json({message: "patient record already exists with that patient id"})
+        const existingPatient = await PatientModel.exists({
+            patientID: patientID,
+        });
+
+        if (existingPatient) {
+            res.status(500).json({
+                message: "patient record already exists with that patient id",
+            });
         }
 
         const patient = await PatientModel.create({
@@ -53,53 +97,62 @@ patientRoutes.post('/create', async(req, res) => {
             firstName: firstName,
             lastName: lastName,
             streetAddress: streetAddress,
+            city: city,
+            state: state,
             country: country,
             patientID: patientID,
+            countryCode: countryCode,
             phoneNumber: phoneNumber,
-        })
+        });
 
-        res.status(201).json({message: "patient successfully created"})
-    }catch{
-        res.status(500).json({message: "failed to create patient record"})
+        res.status(201).json({ message: "patient successfully created" });
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({
+            message: "Failed to create patient record",
+            error: error instanceof Error ? error.message : error,
+        });
     }
-    
-})
+});
 
 // deletes patient record
-patientRoutes.delete('/delete', async (req, res) => {
-    // console.log("delete patient attempt BE")
-    const idToDelete = req.body.id
+patientRoutes.delete("/delete", async (req, res) => {
+    const idToDelete = req.body.id;
     try {
-        const result = await PatientModel.deleteOne({patientID: idToDelete})
+        const result = await PatientModel.deleteOne({ patientID: idToDelete });
 
-        if(result.deletedCount === 0){
-            return res.status(404).json({message: "No record with ID to delete"})
+        if (result.deletedCount === 0) {
+            return res
+                .status(404)
+                .json({ message: "No record with ID to delete" });
         }
-        // console.log("successful deletion BE")
-        res.status(200).json({message: "Patient record successfully deleted"})
-    }catch {
-        res.status(404).json({message: "Could not delete user."})
+
+        res.status(200).json({
+            message: "Patient record successfully deleted",
+        });
+    } catch {
+        res.status(404).json({ message: "Could not delete user." });
     }
-})
+});
 
 // updates patient record
-patientRoutes.post('/update', async (req, res) => {
-    const updatedInfo = req.body.updates
-    const id = req.body.id
-    const patient = await PatientModel.findById(id)
+patientRoutes.post("/update", async (req, res) => {
+    const updatedInfo = req.body.updates;
+    const id = req.body.id;
+    const patient = await PatientModel.findById(id);
 
     if (patient == null) {
-        return res.status(401).send("could not find user")
+        return res.status(401).send("could not find user");
     }
 
     try {
-        patient.set(updatedInfo)
-        await patient.save()
-        res.status(200).json({message: "Successfully updated patient info"})
-    }catch{
-        res.status(500).json({message:"Could not update"})
+        patient.set(updatedInfo);
+        await patient.save();
+        res.status(200).json({ message: "Successfully updated patient info" });
+    } catch {
+        res.status(500).json({ message: "Could not update" });
     }
-})
+});
 
 // updates patient status
 

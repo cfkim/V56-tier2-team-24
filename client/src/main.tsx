@@ -13,6 +13,7 @@ createRoot(document.getElementById("root")!).render(
       <BrowserRouter>
         <App />
         <div id="sidebar" />
+        <div id="portal" />
         <ReactQueryDevtools initialIsOpen={false} />
       </BrowserRouter>
     </QueryClientProvider>

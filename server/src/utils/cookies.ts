@@ -1,30 +1,55 @@
-import { CookieOptions, Response } from "express"
-import { NODE_ENV } from "../constants/env"
+import { CookieOptions, Response } from "express";
+import { NODE_ENV } from "../constants/env";
 
-const secure = NODE_ENV !== "development"
+const secure = NODE_ENV !== "development";
 
 const defaults: CookieOptions = {
     sameSite: "strict",
     httpOnly: true,
-    secure
-}
+    secure,
+};
+const ACCESS_TOKEN_EXPIRATION = 15 * 60 * 1000;
+const REFRESH_TOKEN_EXPIRATION = 24 * 60 * 60 * 1000;
 
-export const getAccessTokenCookieOptions = (): CookieOptions => ({...defaults, expires: new Date(Date.now() + 15 * 1000)}) // 15 s
-export const getRefreshTokenCookieOptions = (): CookieOptions => ({...defaults, expires: new Date(Date.now() + 30 * 60 * 1000)}) // 30 m
+export const getAccessTokenCookieOptions = (): CookieOptions => ({
+    ...defaults,
+    maxAge: ACCESS_TOKEN_EXPIRATION,
+    expires: new Date(Date.now() + ACCESS_TOKEN_EXPIRATION),
+}); // 15 s
+export const getRefreshTokenCookieOptions = (): CookieOptions => ({
+    ...defaults,
+    maxAge: REFRESH_TOKEN_EXPIRATION,
+    expires: new Date(Date.now() + REFRESH_TOKEN_EXPIRATION),
+}); // 30 m
 
 type Params = {
-    res: Response,
-    accessToken: string,
-    refreshToken: string,
-    rememberMe?: Boolean
-}
+    res: Response;
+    accessToken: string;
+    refreshToken: string;
+    rememberMe?: boolean;
+};
 
-export const setAuthCookies = ({res, accessToken, refreshToken, rememberMe}: Params) => {
+export const setAuthCookies = ({
+    res,
+    accessToken,
+    refreshToken,
+    rememberMe,
+}: Params) => {
     if (rememberMe) {
-        res.cookie("refreshToken", refreshToken, getRefreshTokenCookieOptions())
+        res.cookie(
+            "refreshToken",
+            refreshToken,
+            getRefreshTokenCookieOptions()
+        );
     }
-    res.cookie("accessToken", accessToken, getAccessTokenCookieOptions())
-    return res
-}
+    res.cookie("accessToken", accessToken, getAccessTokenCookieOptions());
+    return res;
+};
 
-export const clearAuthCookies = (res: Response) => res.clearCookie("accessToken").clearCookie("refreshToken")
+export const clearAuthCookies = (res: Response) => {
+    res.clearCookie("accessToken", getAccessTokenCookieOptions()).clearCookie(
+        "refreshToken",
+        getRefreshTokenCookieOptions()
+    );
+    return res;
+};
