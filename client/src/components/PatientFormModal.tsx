@@ -73,6 +73,8 @@ export default function PatientFormModal({
 
     if (isValid) {
       const addedPatient = await addPatient(formData);
+      // to fix typescript error of unused variables in deployment
+      console.log(addedPatient);
       onClose();
     } else {
       console.log(errors);
@@ -85,6 +87,8 @@ export default function PatientFormModal({
     if (isValid) {
       try {
         const addedPatient = await addPatient(formData);
+        // to fix typescript error of unused variables in deployment
+        console.log(addedPatient);
         onClose();
       } catch (error) {
         console.log(error);
