@@ -29,7 +29,7 @@ export default function Login({
 
     onSuccess: (response) => {
       // Saves tokens to storage
-      console.log(response);
+
       window.localStorage.setItem("accessToken", response.data.accessToken);
 
       // Only saves refresh token if rememberMe checked
@@ -56,7 +56,7 @@ export default function Login({
           />
         </div>
         <div className="font-nunito flex w-1/2 flex-col items-center justify-center bg-white px-30">
-          <h1 className="font-kaisei mb-12 w-full text-xl font-bold sm:text-4xl">
+          <h1 className="font-kaisei mb-12 w-full cursor-pointer text-xl font-bold sm:text-4xl">
             Log In
           </h1>
           {isError && (

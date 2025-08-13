@@ -1,17 +1,16 @@
-import {Resend} from 'resend'
-import {RESEND_API_KEY} from '../constants/env';
+import { Resend } from "resend";
+import { RESEND_API_KEY } from "../constants/env";
 
 const resend = new Resend(RESEND_API_KEY);
 
 // Sends password reset email
 const sendPasswordResetEmail = async (email: string, resetUrl: string) => {
-  try {
-
-    const mailOptions = {
-      from: `"Beacon Team" <onboarding@resend.dev>`, // Using a verified sender email
-      to: email,
-      subject: 'Reset Your Password - Beacon',
-      html: `
+    try {
+        const mailOptions = {
+            from: `"Beacon Team" <onboarding@resend.dev>`, // Using a verified sender email
+            to: email,
+            subject: "Reset Your Password - Beacon",
+            html: `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
           <div style="background-color: #082368; color: white; padding: 20px; text-align: center; border-radius: 8px 8px 0 0;">
             <h1 style="margin: 0; font-size: 24px;">Beacon</h1>
@@ -56,7 +55,7 @@ const sendPasswordResetEmail = async (email: string, resetUrl: string) => {
           </div>
         </div>
       `,
-      text: `
+            text: `
         Reset Your Password - Beacon
 
         You requested to reset your password. Click the link below to create a new password:
@@ -71,17 +70,16 @@ const sendPasswordResetEmail = async (email: string, resetUrl: string) => {
         - For security, this link can only be used once
 
         This email was sent by Beacon. Please do not reply to this email.
-              `
-    };
+              `,
+        };
 
-    const info = await resend.emails.send(mailOptions);
-    console.log('Password reset email sent:', info.data);
-    return true;
-
-  } catch (error) {
-    console.error('Error sending password reset email:', error);
-    return false;
-  }
+        const info = await resend.emails.send(mailOptions);
+        console.log("Password reset email sent:", info.data);
+        return true;
+    } catch (error) {
+        console.error("Error sending password reset email:", error);
+        return false;
+    }
 };
 
-export { sendPasswordResetEmail }; 
+export { sendPasswordResetEmail };

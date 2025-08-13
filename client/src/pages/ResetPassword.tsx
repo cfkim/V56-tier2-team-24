@@ -1,16 +1,11 @@
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { resetPassword, verifyResetToken } from "../lib/api";
 
 export default function ResetPassword() {
-  // const today = new Date().toLocaleDateString('en-US', { 
-  //   year: 'numeric', 
-  //   month: 'long', 
-  //   day: 'numeric' 
-  // });
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  
+
   const [formData, setFormData] = useState({
     password: "",
     confirmPassword: "",
@@ -21,11 +16,11 @@ export default function ResetPassword() {
   const [validating, setValidating] = useState(true);
   const [passwordStrength, setPasswordStrength] = useState({
     score: 0,
-    feedback: ""
+    feedback: "",
   });
 
-  const token = searchParams.get('code');
-  const uid = searchParams.get('uid');
+  const token = searchParams.get("code");
+  const uid = searchParams.get("uid");
 
   // Password strength checker
   const checkPasswordStrength = (password: string) => {
@@ -49,7 +44,10 @@ export default function ResetPassword() {
 
     return {
       score,
-      feedback: feedback.length > 0 ? `Missing: ${feedback.join(", ")}` : "Strong password"
+      feedback:
+        feedback.length > 0
+          ? `Missing: ${feedback.join(", ")}`
+          : "Strong password",
     };
   };
 
@@ -62,14 +60,14 @@ export default function ResetPassword() {
   useEffect(() => {
     const validateToken = async () => {
       if (!token || !uid) {
-        setError('Invalid reset link. Please request a new password reset.');
+        setError("Invalid reset link. Please request a new password reset.");
         setValidating(false);
         return;
       }
 
       try {
         const response = await verifyResetToken(token, uid);
-        
+
         if (response.data.error) {
           setError(response.data.error);
           setTokenValid(false);
@@ -77,7 +75,7 @@ export default function ResetPassword() {
           setTokenValid(true);
         }
       } catch (error) {
-        setError('Failed to validate reset link. Please try again.');
+        setError("Failed to validate reset link. Please try again.");
         setTokenValid(false);
       } finally {
         setValidating(false);
@@ -89,21 +87,23 @@ export default function ResetPassword() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (formData.password !== formData.confirmPassword) {
-      setError('Passwords do not match');
+      setError("Passwords do not match");
       return;
     }
 
     if (formData.password.length < 8) {
-      setError('Password must be at least 8 characters long');
+      setError("Password must be at least 8 characters long");
       return;
     }
 
     // Check password complexity
     const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/;
     if (!passwordRegex.test(formData.password)) {
-      setError('Password must contain at least one uppercase letter, one lowercase letter, and one number');
+      setError(
+        "Password must contain at least one uppercase letter, one lowercase letter, and one number",
+      );
       return;
     }
 
@@ -112,17 +112,16 @@ export default function ResetPassword() {
 
     try {
       const response = await resetPassword(token!, uid!, formData.password);
-      
+
       if (response.data.error) {
         setError(response.data.error);
         return;
       }
 
       // Navigate to success page
-      navigate('/password/reset-success');
-      
+      navigate("/password/reset-success");
     } catch (error) {
-      setError('An unexpected error occurred. Please try again.');
+      setError("An unexpected error occurred. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -130,10 +129,10 @@ export default function ResetPassword() {
 
   if (validating) {
     return (
-      <div className="flex-1 flex flex-col bg-white">
+      <div className="flex flex-1 flex-col bg-white">
         <div className="flex flex-1 items-center justify-center">
           <div className="text-center">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#082368] mx-auto mb-4"></div>
+            <div className="mx-auto mb-4 h-12 w-12 animate-spin rounded-full border-b-2 border-[#082368]"></div>
             <p className="text-gray-600">Validating reset link...</p>
           </div>
         </div>
@@ -143,31 +142,34 @@ export default function ResetPassword() {
 
   if (!tokenValid) {
     return (
-      <div className="flex-1 flex flex-col bg-white">
-        <div className="flex flex-1 items-center justify-center px-4 py-4 min-h-0">
-          <div className="flex flex-col lg:flex-row w-full max-w-7xl bg-white rounded-lg overflow-hidden">
-            <div className="w-full lg:w-2/3 flex justify-center items-center p-6 pr-16">
+      <div className="flex flex-1 flex-col bg-white">
+        <div className="flex min-h-0 flex-1 items-center justify-center px-4 py-4">
+          <div className="flex w-full max-w-7xl flex-col overflow-hidden rounded-lg bg-white lg:flex-row">
+            <div className="flex w-full items-center justify-center p-6 pr-16 lg:w-2/3">
               <img
                 src="/static/images/login.svg"
                 alt="Login image"
-                className="w-full h-auto max-h-[450px] object-cover rounded-lg"
+                className="h-auto max-h-[450px] w-full rounded-lg object-cover"
               />
             </div>
-            <div className="w-full lg:w-1/2 p-8 flex flex-col justify-center">
+            <div className="flex w-full flex-col justify-center p-8 lg:w-1/2">
               <div className="mb-8">
-                <h2 className="text-4xl font-nunito font-bold text-[#3A3A3A] mb-6">Reset Password</h2>
+                <h2 className="font-nunito mb-6 text-4xl font-bold text-[#3A3A3A]">
+                  Reset Password
+                </h2>
               </div>
               <div className="space-y-4">
-                <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg">
+                <div className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-red-700">
                   {error}
                 </div>
-                <p className="text-gray-600 font-nunito text-base">
-                  The password reset link is invalid or has expired. Please request a new one.
+                <p className="font-nunito text-base text-gray-600">
+                  The password reset link is invalid or has expired. Please
+                  request a new one.
                 </p>
-                <div className="flex justify-center mt-6">
+                <div className="mt-6 flex justify-center">
                   <Link
                     to="/password/forgot"
-                    className="bg-[#082368] text-white rounded-lg py-3 px-6 font-nunito font-semibold hover:bg-[#061a4a] transition-colors"
+                    className="font-nunito rounded-lg bg-[#082368] px-6 py-3 font-semibold text-white transition-colors hover:bg-[#061a4a]"
                   >
                     Request New Reset Link
                   </Link>
@@ -181,33 +183,37 @@ export default function ResetPassword() {
   }
 
   return (
-    <div className="flex-1 flex flex-col bg-white">
-
-      <div className="flex flex-1 items-center justify-center px-4 py-4 min-h-0">
-        <div className="flex flex-col lg:flex-row w-full max-w-7xl bg-white rounded-lg overflow-hidden">
-          <div className="w-full lg:w-2/3 flex justify-center items-center p-6 pr-16">
+    <div className="flex flex-1 flex-col bg-white">
+      <div className="flex min-h-0 flex-1 items-center justify-center px-4 py-4">
+        <div className="flex w-full max-w-7xl flex-col overflow-hidden rounded-lg bg-white lg:flex-row">
+          <div className="flex w-full items-center justify-center p-6 pr-16 lg:w-2/3">
             <img
               src="/static/images/login.svg"
               alt="Login image"
-              className="w-full h-auto max-h-[450px] object-cover rounded-lg"
+              className="h-auto max-h-[450px] w-full rounded-lg object-cover"
             />
           </div>
 
-          <div className="w-full lg:w-1/2 p-8 flex flex-col justify-center">
+          <div className="flex w-full flex-col justify-center p-8 lg:w-1/2">
             <div className="mb-8">
-              <h2 className="text-4xl font-kaisei font-bold text-[#3A3A3A] mb-6">Reset Password</h2>
+              <h2 className="font-kaisei mb-6 text-4xl font-bold text-[#3A3A3A]">
+                Reset Password
+              </h2>
             </div>
-            <p className="text-gray-600 mb-6 font-nunito text-base">
+            <p className="font-nunito mb-6 text-base text-gray-600">
               Enter your new password below.
             </p>
             <form onSubmit={handleSubmit} className="flex flex-col gap-4">
               {error && (
-                <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg">
+                <div className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-red-700">
                   {error}
                 </div>
               )}
               <div className="flex flex-col gap-2">
-                <label htmlFor="password" className="font-nunito font-semibold text-[#3A3A3A]">
+                <label
+                  htmlFor="password"
+                  className="font-nunito font-semibold text-[#3A3A3A]"
+                >
                   New Password
                 </label>
                 <input
@@ -216,44 +222,64 @@ export default function ResetPassword() {
                   value={formData.password}
                   onChange={handlePasswordChange}
                   required
-                  className="p-4 rounded-lg border border-gray-300 font-nunito focus:outline-none focus:border-[#082368]"
+                  className="font-nunito rounded-lg border border-gray-300 p-4 focus:border-[#082368] focus:outline-none"
                   placeholder="Enter your new password"
                   disabled={loading}
                 />
-                <div className="text-sm text-gray-500 mt-2">
+                <div className="mt-2 text-sm text-gray-500">
                   Password Strength: {passwordStrength.score}/5
                 </div>
-                <div className="w-full bg-gray-200 rounded-full h-2 mt-1">
-                  <div 
+                <div className="mt-1 h-2 w-full rounded-full bg-gray-200">
+                  <div
                     className={`h-2 rounded-full transition-all duration-300 ${
-                      passwordStrength.score <= 1 ? 'bg-red-500' :
-                      passwordStrength.score <= 2 ? 'bg-orange-500' :
-                      passwordStrength.score <= 3 ? 'bg-yellow-500' :
-                      passwordStrength.score <= 4 ? 'bg-blue-500' : 'bg-green-500'
+                      passwordStrength.score <= 1
+                        ? "bg-red-500"
+                        : passwordStrength.score <= 2
+                          ? "bg-orange-500"
+                          : passwordStrength.score <= 3
+                            ? "bg-yellow-500"
+                            : passwordStrength.score <= 4
+                              ? "bg-blue-500"
+                              : "bg-green-500"
                     }`}
                     style={{ width: `${(passwordStrength.score / 5) * 100}%` }}
                   ></div>
                 </div>
-                <div className={`text-sm mt-1 ${
-                  passwordStrength.score <= 1 ? 'text-red-500' :
-                  passwordStrength.score <= 2 ? 'text-orange-500' :
-                  passwordStrength.score <= 3 ? 'text-yellow-500' :
-                  passwordStrength.score <= 4 ? 'text-blue-500' : 'text-green-500'
-                }`}>
+                <div
+                  className={`mt-1 text-sm ${
+                    passwordStrength.score <= 1
+                      ? "text-red-500"
+                      : passwordStrength.score <= 2
+                        ? "text-orange-500"
+                        : passwordStrength.score <= 3
+                          ? "text-yellow-500"
+                          : passwordStrength.score <= 4
+                            ? "text-blue-500"
+                            : "text-green-500"
+                  }`}
+                >
                   {passwordStrength.feedback}
                 </div>
               </div>
               <div className="flex flex-col gap-2">
-                <label htmlFor="confirmPassword" className="font-nunito font-semibold text-[#3A3A3A]">
+                <label
+                  htmlFor="confirmPassword"
+                  className="font-nunito font-semibold text-[#3A3A3A]"
+                >
                   Confirm New Password
                 </label>
                 <input
                   type="password"
                   id="confirmPassword"
                   value={formData.confirmPassword}
-                  onChange={(e) => setFormData({ ...formData, confirmPassword: e.target.value })}
+                  onChange={(e) =>
+                    setFormData({
+                      ...formData,
+                      confirmPassword: e.target.value,
+                    })
+                  }
                   required
-                  className="p-4 rounded-lg border border-gray-300 font-nunito focus:outline-none focus:border-[#082368]"
+                  className="font-nunito rounded-lg border border-gray-300 p-4 focus:border-[#082368] focus:outline-none"
                   placeholder="Confirm your new password"
                   disabled={loading}
                 />
@@ -261,7 +287,7 @@ export default function ResetPassword() {
               <button
                 type="submit"
                 disabled={loading}
-                className="bg-[#082368] text-white rounded-lg py-4 font-nunito font-semibold hover:bg-[#061a4a] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                className="font-nunito rounded-lg bg-[#082368] py-4 font-semibold text-white transition-colors hover:bg-[#061a4a] disabled:cursor-not-allowed disabled:opacity-50"
               >
                 {loading ? "Resetting..." : "Reset Password"}
               </button>
@@ -271,4 +297,4 @@ export default function ResetPassword() {
       </div>
     </div>
   );
-} 
+}
