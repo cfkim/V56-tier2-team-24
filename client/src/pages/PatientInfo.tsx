@@ -2,14 +2,21 @@ import clsx from "clsx";
 import { useEffect, useState } from "react";
 import PatientFormModal from "../components/PatientFormModal";
 import Search from "../components/search";
+import SuccessMessage from "../components/SuccessMessage";
 import API from "../config/apiClient";
 import { getPatients } from "../lib/api";
 import type { Patient } from "../types/Patient";
+import cn from "../utils/cn";
 
 export default function PatientInfo() {
   const [patients, setPatients] = useState<Patient[]>([]);
-  const [isOpen, setIsOpen] = useState(false);
+  const [formIsOpen, setFormIsOpen] = useState(false);
   const [selectedStatus, setSelectedStatus] = useState<string>("All");
+  const [lastAddedPatientId, setLastAddedPatientId] = useState<string>("");
+  const [successIsOpen, setSuccessIsOpen] = useState(false);
+  const [successAction, setSuccessAction] = useState<
+    "add" | "edit" | "delete" | ""
+  >("");
 
   const deletePatient = async (patientID: string) => {
     console.log("deleting user attempt: " + patientID);
@@ -27,16 +34,34 @@ export default function PatientInfo() {
       console.log("error deleting patient");
     }
   };
-
-  useEffect(() => {
-    const fetchPatients = async () => {
+  const fetchPatients = async () => {
+    try {
       const result = await getPatients();
       const patients = result.data.patients;
       setPatients(patients);
-    };
-
+      return true;
+    } catch (error) {
+      console.error(error);
+      return false;
+    }
+  };
+  useEffect(() => {
     fetchPatients();
   }, []);
+
+  useEffect(() => {
+    if (!lastAddedPatientId) return;
+    setSuccessIsOpen(true);
+    setSuccessAction("add");
+    const t = setTimeout(() => {
+      setSuccessIsOpen(false);
+      setSuccessAction("");
+      setLastAddedPatientId("");
+    }, 4000);
+    return () => clearTimeout(t);
+  }, [lastAddedPatientId]);
+
+  let action = "";
 
   return (
     <>
@@ -55,7 +80,7 @@ export default function PatientInfo() {
             </div>
             <div className="flex items-end">
               <button
-                onClick={() => setIsOpen(true)}
+                onClick={() => setFormIsOpen(true)}
                 className="bg-primary flex h-12 cursor-pointer items-center gap-1 rounded-2xl px-4 text-white"
               >
                 Add a New Patient
@@ -136,7 +161,13 @@ export default function PatientInfo() {
             </thead>
             <tbody>
               {patients.map((patient: Patient) => (
-                <tr className="border-b-1 border-gray-200" key={patient._id}>
+                <tr
+                  className={cn(
+                    "border-b-1 border-gray-200",
+                    lastAddedPatientId !== patient.patientID ? "blur-sm" : "",
+                  )}
+                  key={patient._id}
+                >
                   <td className="px-5 py-3 pr-50">
                     <div className="flex flex-col">
                       <div className="font-nunito-bold">
@@ -163,7 +194,17 @@ export default function PatientInfo() {
           </table>
         </div>
       </div>
-      <PatientFormModal isOpen={isOpen} onClose={() => setIsOpen(false)} />
+      <PatientFormModal
+        isOpen={formIsOpen}
+        onClose={() => setFormIsOpen(false)}
+        fetchPatients={fetchPatients}
+        setLastAddedPatientId={setLastAddedPatientId}
+      />
+      <SuccessMessage
+        isOpen={successIsOpen}
+        onClose={() => setSuccessIsOpen(false)}
+        action={successAction}
+      />
     </>
   );
 }

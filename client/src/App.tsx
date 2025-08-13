@@ -57,7 +57,7 @@ function App() {
         setIsLoggedIn={setIsLoggedIn}
         setUser={setUser}
       />
-      <main>
+      <main className="font-nunito">
         <Routes>
           <Route
             path="/"

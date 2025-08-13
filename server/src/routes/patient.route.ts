@@ -23,7 +23,7 @@ patientRoutes.get("/", async (req: any, res) => {
 
 // gets all patient records
 patientRoutes.get("/all", async (req: any, res) => {
-    const allPatients = await PatientModel.find({});
+    const allPatients = await PatientModel.find({}).sort({ createdAt: -1 });
 
     if (allPatients) {
         res.status(200).json({

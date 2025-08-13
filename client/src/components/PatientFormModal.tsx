@@ -6,10 +6,14 @@ export default function PatientFormModal({
   isOpen,
   onClose,
   isEdit = false,
+  fetchPatients,
+  setLastAddedPatientId,
 }: {
   isOpen: boolean;
   onClose: () => void;
   isEdit?: boolean;
+  fetchPatients: () => Promise<boolean>;
+  setLastAddedPatientId: React.Dispatch<React.SetStateAction<string>>;
 }) {
   const [newPatientId, setNewPatientId] = useState<number>(0);
   const [errors, setErrors] = useState<{
@@ -69,15 +73,33 @@ export default function PatientFormModal({
   const handleAddPatient = async (e: React.FormEvent) => {
     e.preventDefault();
     const formData = new FormData(e.target as HTMLFormElement);
+    const patientIdVal = formData.get("patientId");
+    if (typeof patientIdVal === "string" && patientIdVal.startsWith("#")) {
+      formData.set("patientId", patientIdVal.slice(1));
+    }
     const isValid = validateForm(formData);
 
     if (isValid) {
-      const addedPatient = await addPatient(formData);
-      onClose();
+      try {
+        const addedPatient = await addPatient(formData);
+        if (addedPatient.data.error) {
+          console.log(addedPatient.data.error);
+          return;
+        } else {
+          const fetchedPatients = await fetchPatients();
+          if (fetchedPatients) {
+            setLastAddedPatientId(addedPatient.data.patientID);
+          }
+        }
+        onClose();
+      } catch (error) {
+        console.log(error);
+      }
     } else {
       console.log(errors);
     }
   };
+
   const handleEditPatient = async (e: React.FormEvent) => {
     e.preventDefault;
     const formData = new FormData(e.target as HTMLFormElement);
@@ -136,7 +158,7 @@ export default function PatientFormModal({
               name="patientID"
               readOnly
               required
-              value={isEdit ? "123456" : newPatientId}
+              value={isEdit ? "123456" : "#" + newPatientId}
               className="bg-accent w-full rounded-xl border-b border-[#C1C7CD] px-4 py-3 text-[#B5B16F]"
             />
             <label htmlFor="firstName">First Name</label>
