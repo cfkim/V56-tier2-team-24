@@ -3,6 +3,7 @@ import { createPortal } from "react-dom";
 import { addPatient, getNewPatientId } from "../../lib/api";
 import cn from "../../utils/cn";
 import PatientFormTextInput from "./PatientFormTextInput";
+import PhoneNumberInput from "./PhoneNumberInput";
 
 export default function PatientFormModal({
   isOpen,
@@ -189,34 +190,10 @@ export default function PatientFormModal({
 
             <fieldset className="flex flex-col gap-2">
               <legend>Phone Number</legend>
-              <div className="flex gap-2">
-                <input
-                  type="tel"
-                  id="countryCode"
-                  name="countryCode"
-                  placeholder="+999"
-                  required
-                  inputMode="tel"
-                  maxLength={4}
-                  className={cn(
-                    "w-20 min-w-0 rounded-xl border-b border-[#C1C7CD] bg-[#F2F4F8] px-1 py-3 text-center placeholder:text-[#697077]",
-                    errors.countryCode && "border-red",
-                  )}
-                />
-                <input
-                  type="tel"
-                  id="phoneNumber"
-                  name="phoneNumber"
-                  placeholder="123-456-7890"
-                  required
-                  inputMode="tel"
-                  maxLength={14}
-                  className={cn(
-                    "w-full rounded-xl border-b border-[#C1C7CD] bg-[#F2F4F8] px-4 py-3 placeholder:text-[#697077]",
-                    errors.phoneNumber && "border-red",
-                  )}
-                />
-              </div>
+              <PhoneNumberInput
+                countryCodeError={errors.countryCode}
+                phoneNumberError={errors.phoneNumber}
+              />
             </fieldset>
             {errors.countryCode && (
               <div className="text-red">{errors.countryCode}</div>

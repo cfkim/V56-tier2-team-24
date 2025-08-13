@@ -1,8 +1,8 @@
 import clsx from "clsx";
 import { useEffect, useState } from "react";
 import PatientFormModal from "../components/PatientForm/PatientFormModal";
+import SuccessMessage from "../components/PatientForm/SuccessMessage";
 import Search from "../components/search";
-import SuccessMessage from "../components/SuccessMessage";
 import API from "../config/apiClient";
 import { getPatients } from "../lib/api";
 import type { Patient } from "../types/Patient";
