@@ -29,7 +29,7 @@ export default function SuccessMessage({
   };
   const { bold, normal } = messages[action];
   return createPortal(
-    <div className="fixed top-1/2 left-1/2 flex h-14 w-80 -translate-x-1/2 -translate-y-1/2 items-center justify-center gap-4 rounded-xl bg-[#E9F6ED]">
+    <div className="fixed top-1/2 left-1/2 z-30 flex h-14 w-80 -translate-x-1/2 -translate-y-1/2 items-center justify-center gap-4 rounded-xl bg-[#E9F6ED]">
       <svg
         width="44"
         height="48"

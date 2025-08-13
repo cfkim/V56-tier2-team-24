@@ -105,7 +105,10 @@ patientRoutes.post("/create", async (req, res) => {
             phoneNumber: phoneNumber,
         });
 
-        res.status(201).json({ message: "patient successfully created" });
+        res.status(201).json({
+            message: "patient successfully created",
+            patient: patient,
+        });
     } catch (error) {
         console.log(error);
         res.status(500).json({

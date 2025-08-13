@@ -8,19 +8,19 @@ const defaults: CookieOptions = {
     httpOnly: true,
     secure,
 };
-const ACCESS_TOKEN_EXPIRATION = 15 * 60 * 1000;
-const REFRESH_TOKEN_EXPIRATION = 24 * 60 * 60 * 1000;
+const ACCESS_TOKEN_EXPIRATION = 15 * 60 * 1000; // 15min
+const REFRESH_TOKEN_EXPIRATION = 7 * 24 * 60 * 60 * 1000; // 7 days
 
 export const getAccessTokenCookieOptions = (): CookieOptions => ({
     ...defaults,
     maxAge: ACCESS_TOKEN_EXPIRATION,
     expires: new Date(Date.now() + ACCESS_TOKEN_EXPIRATION),
-}); // 15 s
+}); // 15 min
 export const getRefreshTokenCookieOptions = (): CookieOptions => ({
     ...defaults,
     maxAge: REFRESH_TOKEN_EXPIRATION,
     expires: new Date(Date.now() + REFRESH_TOKEN_EXPIRATION),
-}); // 30 m
+}); // 7 days
 
 type Params = {
     res: Response;
@@ -35,21 +35,24 @@ export const setAuthCookies = ({
     refreshToken,
     rememberMe,
 }: Params) => {
+    res.cookie("accessToken", accessToken, getAccessTokenCookieOptions());
     if (rememberMe) {
         res.cookie(
             "refreshToken",
             refreshToken,
             getRefreshTokenCookieOptions()
         );
+    } else {
+        const opts = { ...getRefreshTokenCookieOptions() };
+        delete opts.maxAge;
+        delete opts.expires;
+
+        res.cookie("refreshToken", refreshToken, opts);
     }
-    res.cookie("accessToken", accessToken, getAccessTokenCookieOptions());
     return res;
 };
 
 export const clearAuthCookies = (res: Response) => {
-    res.clearCookie("accessToken", getAccessTokenCookieOptions()).clearCookie(
-        "refreshToken",
-        getRefreshTokenCookieOptions()
-    );
+    res.clearCookie("accessToken").clearCookie("refreshToken");
     return res;
 };

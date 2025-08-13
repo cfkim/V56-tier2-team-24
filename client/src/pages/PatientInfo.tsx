@@ -51,6 +51,7 @@ export default function PatientInfo() {
 
   useEffect(() => {
     if (!lastAddedPatientId) return;
+    console.log("lastAddedPatientId: " + lastAddedPatientId);
     setSuccessIsOpen(true);
     setSuccessAction("add");
     const t = setTimeout(() => {
@@ -60,8 +61,6 @@ export default function PatientInfo() {
     }, 4000);
     return () => clearTimeout(t);
   }, [lastAddedPatientId]);
-
-  let action = "";
 
   return (
     <>
@@ -164,7 +163,9 @@ export default function PatientInfo() {
                 <tr
                   className={cn(
                     "border-b-1 border-gray-200",
-                    lastAddedPatientId !== patient.patientID ? "blur-sm" : "",
+                    successIsOpen && lastAddedPatientId !== patient.patientID
+                      ? "blur-xs"
+                      : "",
                   )}
                   key={patient._id}
                 >

@@ -56,7 +56,7 @@ export default function Login({
           />
         </div>
         <div className="font-nunito flex w-1/2 flex-col items-center justify-center bg-white px-30">
-          <h1 className="font-kaisei mb-12 w-full cursor-pointer text-xl font-bold sm:text-4xl">
+          <h1 className="font-kaisei mb-12 w-full text-xl font-bold sm:text-4xl">
             Log In
           </h1>
           {isError && (
@@ -102,7 +102,7 @@ export default function Login({
             </div>
             <button
               type="submit"
-              className="bg-primary mb-20 w-full rounded-[12px] py-[13px] text-white disabled:opacity-50"
+              className="bg-primary mb-20 w-full cursor-pointer rounded-[12px] py-[13px] text-white disabled:opacity-50"
               disabled={!email || password.length < 6}
             >
               {isPending ? <p>...</p> : <p>Log In</p>}
