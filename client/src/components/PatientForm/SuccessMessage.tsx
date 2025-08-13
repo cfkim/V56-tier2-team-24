@@ -29,8 +29,9 @@ export default function SuccessMessage({
   };
   const { bold, normal } = messages[action];
   return createPortal(
-    <div className="fixed top-1/2 left-1/2 z-30 flex h-14 w-80 -translate-x-1/2 -translate-y-1/2 items-center justify-center gap-4 rounded-xl bg-[#E9F6ED]">
+    <div className="fixed top-1/2 left-1/2 z-30 flex max-w-full -translate-x-1/2 -translate-y-1/2 items-center justify-center gap-3 rounded-xl bg-[#E9F6ED] px-2.5 py-3.5 text-xs whitespace-nowrap md:gap-4 md:px-4">
       <svg
+        className="flex-shrink-0"
         width="44"
         height="48"
         viewBox="0 0 44 48"
@@ -43,8 +44,9 @@ export default function SuccessMessage({
         />
       </svg>
 
-      <span className="font-semibold">{bold}</span>
-      {normal}
+      <div className="min-w-0 flex-shrink overflow-hidden text-ellipsis">
+        <span className="font-semibold">{bold}</span> {normal}
+      </div>
     </div>,
     portal,
   );

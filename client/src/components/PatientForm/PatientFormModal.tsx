@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
-import { addPatient, getNewPatientId } from "../lib/api";
+import { addPatient, getNewPatientId } from "../../lib/api";
+import cn from "../../utils/cn";
+import PatientFormTextInput from "./PatientFormTextInput";
 
 export default function PatientFormModal({
   isOpen,
@@ -76,7 +78,7 @@ export default function PatientFormModal({
     const formData = new FormData(e.target as HTMLFormElement);
     const patientIdVal = formData.get("patientID");
     if (typeof patientIdVal === "string" && patientIdVal.startsWith("#")) {
-      formData.set("patientId", patientIdVal.slice(1));
+      formData.set("patientID", patientIdVal.slice(1));
     }
 
     if (!validateForm(formData)) return;
@@ -159,59 +161,17 @@ export default function PatientFormModal({
               className="bg-accent w-full rounded-xl border-b border-[#C1C7CD] px-4 py-3 text-[#B5B16F]"
             />
             <label htmlFor="firstName">First Name</label>
-            <input
-              type="text"
-              name="firstName"
-              placeholder="Jane"
-              required
-              maxLength={20}
-              className="w-full rounded-xl border-b border-[#C1C7CD] bg-[#F2F4F8] px-4 py-3 placeholder:text-[#697077]"
-            />
+            <PatientFormTextInput name="firstName" />
             <label htmlFor="lastName">Last Name</label>
-            <input
-              type="text"
-              name="lastName"
-              placeholder="Doe"
-              required
-              maxLength={20}
-              className="w-full rounded-xl border-b border-[#C1C7CD] bg-[#F2F4F8] px-4 py-3 placeholder:text-[#697077]"
-            />
+            <PatientFormTextInput name="lastName" />
             <label htmlFor="streetAddress">Street Address</label>
-            <input
-              type="text"
-              name="streetAddress"
-              placeholder="123 Main St"
-              required
-              maxLength={50}
-              className="w-full rounded-xl border-b border-[#C1C7CD] bg-[#F2F4F8] px-4 py-3 placeholder:text-[#697077]"
-            />
+            <PatientFormTextInput name="streetAddress" />
             <label htmlFor="city">City</label>
-            <input
-              type="text"
-              name="city"
-              placeholder="Springfield"
-              required
-              maxLength={20}
-              className="w-full rounded-xl border-b border-[#C1C7CD] bg-[#F2F4F8] px-4 py-3 placeholder:text-[#697077]"
-            />
+            <PatientFormTextInput name="city" />
             <label htmlFor="state">State</label>
-            <input
-              type="text"
-              name="state"
-              placeholder="California"
-              required
-              maxLength={20}
-              className="w-full rounded-xl border-b border-[#C1C7CD] bg-[#F2F4F8] px-4 py-3 placeholder:text-[#697077]"
-            />
+            <PatientFormTextInput name="state" />
             <label htmlFor="country">Country</label>
-            <input
-              type="text"
-              name="country"
-              placeholder="United States"
-              required
-              maxLength={20}
-              className="w-full rounded-xl border-b border-[#C1C7CD] bg-[#F2F4F8] px-4 py-3 placeholder:text-[#697077]"
-            />
+            <PatientFormTextInput name="country" />
             {isEdit && (
               <>
                 <label htmlFor="currentMedicalStatus">
@@ -221,6 +181,7 @@ export default function PatientFormModal({
                   type="text"
                   name="currentMedicalStatus"
                   placeholder="Checked-In"
+                  readOnly
                   className="bg-accent w-full rounded-xl border-b border-[#C1C7CD] px-4 py-3 placeholder:text-[#B5B16F]"
                 />
               </>
@@ -237,7 +198,10 @@ export default function PatientFormModal({
                   required
                   inputMode="tel"
                   maxLength={4}
-                  className="w-20 min-w-0 rounded-xl border-b border-[#C1C7CD] bg-[#F2F4F8] px-1 py-3 text-center placeholder:text-[#697077]"
+                  className={cn(
+                    "w-20 min-w-0 rounded-xl border-b border-[#C1C7CD] bg-[#F2F4F8] px-1 py-3 text-center placeholder:text-[#697077]",
+                    errors.countryCode && "border-red",
+                  )}
                 />
                 <input
                   type="tel"
@@ -247,7 +211,10 @@ export default function PatientFormModal({
                   required
                   inputMode="tel"
                   maxLength={14}
-                  className="w-full rounded-xl border-b border-[#C1C7CD] bg-[#F2F4F8] px-4 py-3 placeholder:text-[#697077]"
+                  className={cn(
+                    "w-full rounded-xl border-b border-[#C1C7CD] bg-[#F2F4F8] px-4 py-3 placeholder:text-[#697077]",
+                    errors.phoneNumber && "border-red",
+                  )}
                 />
               </div>
             </fieldset>
@@ -265,7 +232,10 @@ export default function PatientFormModal({
               required
               inputMode="email"
               maxLength={50}
-              className="w-full rounded-xl border-b border-[#C1C7CD] bg-[#F2F4F8] px-4 py-3 placeholder:text-[#697077]"
+              className={cn(
+                "w-full rounded-xl border-b border-[#C1C7CD] bg-[#F2F4F8] px-4 py-3 placeholder:text-[#697077]",
+                errors.email && "border-red",
+              )}
             />
             {errors.email && <div className="text-red">{errors.email}</div>}
             <div className="mt-6 flex gap-3">

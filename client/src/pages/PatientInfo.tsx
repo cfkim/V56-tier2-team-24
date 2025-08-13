@@ -1,6 +1,6 @@
 import clsx from "clsx";
 import { useEffect, useState } from "react";
-import PatientFormModal from "../components/PatientFormModal";
+import PatientFormModal from "../components/PatientForm/PatientFormModal";
 import Search from "../components/search";
 import SuccessMessage from "../components/SuccessMessage";
 import API from "../config/apiClient";
@@ -58,7 +58,7 @@ export default function PatientInfo() {
       setSuccessIsOpen(false);
       setSuccessAction("");
       setLastAddedPatientId("");
-    }, 4000);
+    }, 40000);
     return () => clearTimeout(t);
   }, [lastAddedPatientId]);
 
@@ -164,7 +164,7 @@ export default function PatientInfo() {
                   className={cn(
                     "border-b-1 border-gray-200",
                     successIsOpen && lastAddedPatientId !== patient.patientID
-                      ? "blur-xs"
+                      ? "opacity-20"
                       : "",
                   )}
                   key={patient._id}
