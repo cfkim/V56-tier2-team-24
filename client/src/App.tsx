@@ -33,6 +33,13 @@ function App() {
       setIsLoggedIn(false);
       return;
     }
+    
+    // Skip authentication if no token is found. Becomes a guest.
+    if(window.localStorage.getItem("accessToken") == null){
+      setIsLoggedIn(true);
+      setRole("guest")
+      return;
+    }
 
     const fetchUser = async () => {
       try {
