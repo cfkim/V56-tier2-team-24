@@ -37,7 +37,7 @@ export default function Status() {
         }finally{
             clearInterval(timer);
             setProgress(100); 
-            setTimeout(() => setProgress(0), 500);
+            setTimeout(() => setProgress(0), 700);
         }
     }
 
