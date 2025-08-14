@@ -1,0 +1,61 @@
+@import "tailwindcss";
+
+@font-face {
+    font-family: Nunito;
+    src: url("../src/assets/fonts/Nunito-Regular.ttf");
+}
+
+@font-face {
+    font-family: Nunito-bold;
+    src: url("../src/assets/fonts/Nunito-Bold.ttf");
+}
+
+@font-face {
+    font-family: KaiseiOpti;
+    font-style: normal;
+    font-weight: 400;
+    font-display: swap;
+    src: url("../src/assets/fonts/KaiseiOpti-Regular.ttf") format("truetype");
+}
+
+@font-face {
+    font-family: KaiseiOpti;
+    font-style: normal;
+    font-weight: 500;
+    font-display: swap;
+    src: url("../src/assets/fonts/KaiseiOpti-Medium.ttf") format("truetype");
+}
+
+@font-face {
+    font-family: KaiseiOpti;
+    font-style: normal;
+    font-weight: 700;
+    font-display: swap;
+    src: url("../src/assets/fonts/KaiseiOpti-Bold.ttf") format("truetype");
+}
+
+@theme {
+    --font-nunito: Nunito, "sans-serif";
+    --font-nunito-bold: Nunito-bold, "sans-serif";
+    --font-kaisei: KaiseiOpti, "serif";
+
+    --color-background: #FFFFFF;
+    --color-header-text: #4D4D4D;
+    --color-bg-text: #082332;
+    --color-text: #8C92AC/90;
+    --color-primary: #082368;
+    --color-accent: #FFFCCD;
+    --color-header-black: #222324;
+
+    --color-checked-in: #80BBEF;
+    --color-pre-procedure: #FFF265;
+    --color-in-progress: #FFAA32;
+    --color-closing: #D6A9F8;
+    --color-recovery: #A7D1C9;
+    --color-complete: #279C49;
+    --color-dismissal: #D9D9D9;
+}
+
+@utility no-scrollbar {
+    @apply [scrollbar-width:none] [&::-webkit-scrollbar]:hidden;
+}
