@@ -201,11 +201,7 @@ export default function PatientInfo() {
         fetchPatients={fetchPatients}
         setLastAddedPatientId={setLastAddedPatientId}
       />
-      <SuccessMessage
-        isOpen={successIsOpen}
-        onClose={() => setSuccessIsOpen(false)}
-        action={successAction}
-      />
+      <SuccessMessage isOpen={successIsOpen} action={successAction} />
     </>
   );
 }

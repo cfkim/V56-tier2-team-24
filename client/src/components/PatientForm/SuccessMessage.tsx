@@ -2,11 +2,9 @@ import { createPortal } from "react-dom";
 
 export default function SuccessMessage({
   isOpen,
-  onClose,
   action,
 }: {
   isOpen: boolean;
-  onClose: () => void;
   action: string;
 }) {
   const portal = document.getElementById("portal");
