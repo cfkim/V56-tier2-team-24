@@ -1,16 +1,18 @@
-import { useEffect, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import { getStatusList } from "../lib/api"
 import type { Patient } from "../types/Patient"
 import { LargeSearch } from "../components/search"
 import clsx from "clsx"
 
 export default function Status() {
+    const [originalList, setOriginalList] = useState([]);
     const [statusList, setStatusList] = useState([])
-    const [searchTerm, setSearchTerm] = useState("")
+    const searchTermRef = useRef("");
     const [progress, setProgress] = useState(0);
 
     // Function to fetch list of patient and status
-    const fetchStatusList = async () => {
+    const fetchStatusList = async (term: string = "") => {
+        console.log("Search term: " + term)
         setProgress(0);
         let fakeProgress = 0;
         
@@ -22,7 +24,17 @@ export default function Status() {
 
         try{
             const result = await getStatusList();
-            setStatusList(result.data.statusList);
+            const fullList = result.data.statusList; 
+            setOriginalList(fullList);
+            if(term !== ""){
+                const filteredStatusList = fullList.filter((patient: Patient) =>
+                    patient.patientID.toString().toLowerCase().includes(term.toLowerCase())
+                );
+                setStatusList(filteredStatusList);
+            }else{
+                setStatusList(fullList);
+            }
+            
         }finally{
             clearInterval(timer);
             setProgress(100); 
@@ -31,11 +43,11 @@ export default function Status() {
     }
 
     useEffect(() => {
-        fetchStatusList();
+        fetchStatusList(searchTermRef.current);
 
         const intervalId = setInterval(() => {
-            fetchStatusList();       
-        }, 20000); // Refreshes every 20 seconds
+            fetchStatusList(searchTermRef.current);       
+        }, 7000); // Refreshes every 20 seconds
 
         return () => {
             clearInterval(intervalId);} // Prevents memory leaks after component unmounts
@@ -45,18 +57,23 @@ export default function Status() {
     // Gets a filtered list based on search
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const value = e.target.value;
-        if (value === "") {
-            // If the search term is empty, gets the full status list
-            getStatusList().then(result => {
-                setStatusList(result.data.statusList);
-            });
-        } else {
-            // Gets the list filtered by search term
-            const filteredStatusList = statusList.filter((patient: Patient) =>
-                patient.patientID.toString().toLowerCase().includes(value.toLowerCase())
-            );
-            setStatusList(filteredStatusList);
-        }
+        searchTermRef.current = value;
+        // This is code for searching based purely on recently fetched data
+        // if (value === "") {
+        //     // If the search term is empty, gets the full status list
+        //     getStatusList().then(result => {
+        //         setStatusList(result.data.statusList);
+        //     });
+        // } else {
+        //     // Gets the list filtered by search term
+        //     const filteredStatusList = statusList.filter((patient: Patient) =>
+        //         patient.patientID.toString().toLowerCase().includes(value.toLowerCase())
+        //     );
+        //     setStatusList(filteredStatusList);
+        // }
+
+        // This is refreshes the code first and then does the search
+        fetchStatusList(value);
     }
 
     return <>
@@ -74,7 +91,7 @@ export default function Status() {
                 </div>
                 <p className="pr-4">
                 <svg 
-                    onClick={fetchStatusList}
+                    onClick={() => fetchStatusList(searchTermRef.current)}
                     className="cursor-pointer"
                     xmlns="http://www.w3.org/2000/svg" 
                     height="26px" viewBox="0 -960 960 960" 
