@@ -10,16 +10,31 @@ export default function Status() {
         const fetchStatusList = async () => {
             const result = await getStatusList();
             setStatusList(result.data.statusList);
-            console.log(result)
         }
-
         fetchStatusList();
     }, [])
+
+    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const value = e.target.value;
+        if (value === "") {
+            // If the search term is empty, gets the full status list
+            getStatusList().then(result => {
+                setStatusList(result.data.statusList);
+            });
+        } else {
+            // Gets the list filtered by search result
+            const filteredStatusList = statusList.filter((patient: Patient) =>
+                patient.patientID.toString().toLowerCase().includes(value.toLowerCase())
+            );
+            setStatusList(filteredStatusList);
+        }
+    }
+
     return <>
     <div className="flex items-center overflow-x-auto h-screen flex-col gap-6 font-nunito m-10">
         <h1 className="text-3xl font-kaisei">Surgery Status Board</h1>
         To track the progress of the patient, refer to the Patient # given to you at Check-In
-        <LargeSearch/>
+        <LargeSearch handleChange={handleInputChange}/>
         
         <div className="bg-accent w-2/3 h-16 mt-3 rounded-lg flex">
             <div className="flex w-full flex-row justify-between items-center">
