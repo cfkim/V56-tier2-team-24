@@ -2,18 +2,47 @@ import { useEffect, useState } from "react"
 import { getStatusList } from "../lib/api"
 import type { Patient } from "../types/Patient"
 import { LargeSearch } from "../components/search"
+import clsx from "clsx"
 
 export default function Status() {
     const [statusList, setStatusList] = useState([])
+    const [searchTerm, setSearchTerm] = useState("")
+    const [progress, setProgress] = useState(0);
 
-    useEffect(() => {
-        const fetchStatusList = async () => {
+    // Function to fetch list of patient and status
+    const fetchStatusList = async () => {
+        setProgress(0);
+        let fakeProgress = 0;
+        
+        // this "simulates" progress until data is loaded on screen
+        const timer = setInterval(() => {
+            fakeProgress += Math.random() * 20; // random increments
+            setProgress(Math.min(fakeProgress, 90));
+        }, 100);
+
+        try{
             const result = await getStatusList();
             setStatusList(result.data.statusList);
+        }finally{
+            clearInterval(timer);
+            setProgress(100); 
+            setTimeout(() => setProgress(0), 500);
         }
-        fetchStatusList();
-    }, [])
+    }
 
+    useEffect(() => {
+        fetchStatusList();
+
+        const intervalId = setInterval(() => {
+            fetchStatusList();       
+        }, 20000); // Refreshes every 20 seconds
+
+        return () => {
+            clearInterval(intervalId);} // Prevents memory leaks after component unmounts
+            
+        },[])
+
+    // Gets a filtered list based on search
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const value = e.target.value;
         if (value === "") {
@@ -22,7 +51,7 @@ export default function Status() {
                 setStatusList(result.data.statusList);
             });
         } else {
-            // Gets the list filtered by search result
+            // Gets the list filtered by search term
             const filteredStatusList = statusList.filter((patient: Patient) =>
                 patient.patientID.toString().toLowerCase().includes(value.toLowerCase())
             );
@@ -31,7 +60,8 @@ export default function Status() {
     }
 
     return <>
-    <div className="flex items-center overflow-x-auto h-screen flex-col gap-6 font-nunito m-10">
+    <div id="progress-bar" className={clsx("h-2 bg-primary", progress === 0 ? "transition-none" : "transition-all")} style={{ width: `${progress}%` }}></div>
+    <div className="flex items-center overflow-x-auto h-screen flex-col gap-6 font-nunito m-10">   
         <h1 className="text-3xl font-kaisei">Surgery Status Board</h1>
         To track the progress of the patient, refer to the Patient # given to you at Check-In
         <LargeSearch handleChange={handleInputChange}/>
@@ -44,6 +74,8 @@ export default function Status() {
                 </div>
                 <p className="pr-4">
                 <svg 
+                    onClick={fetchStatusList}
+                    className="cursor-pointer"
                     xmlns="http://www.w3.org/2000/svg" 
                     height="26px" viewBox="0 -960 960 960" 
                     width="26px" fill="#000000">
