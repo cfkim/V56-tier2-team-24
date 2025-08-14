@@ -1,7 +1,14 @@
 import { useState } from "react";
 import { titleCase } from "title-case";
+import cn from "../../utils/cn";
 
-export default function PatientFormTextInput({ name }: { name: string }) {
+export default function PatientFormTextInput({
+  name,
+  isEdit,
+}: {
+  name: string;
+  isEdit?: boolean;
+}) {
   const [inputValue, setInputValue] = useState("");
   const placeHolder = {
     firstName: "Jane",
@@ -13,15 +20,21 @@ export default function PatientFormTextInput({ name }: { name: string }) {
   };
   return (
     <input
+      id={name}
       type="text"
       name={name}
       placeholder={placeHolder[name as keyof typeof placeHolder]}
       required
       maxLength={50}
+      readOnly={isEdit}
       onChange={(e) => setInputValue(e.target.value)}
       onBlur={(e) => setInputValue(titleCase(e.target.value))}
       value={inputValue}
-      className="w-full rounded-xl border-b border-[#C1C7CD] bg-[#F2F4F8] px-4 py-3 placeholder:text-[#697077]"
+      className={cn(
+        "focus:outline-primary w-full rounded-xl border-b border-[#C1C7CD] bg-[#F2F4F8] px-4 py-3 placeholder:text-[#697077] focus:outline-2",
+        isEdit &&
+          "bg-accent pointer-events-none cursor-not-allowed text-[#B5B16F]",
+      )}
     />
   );
 }

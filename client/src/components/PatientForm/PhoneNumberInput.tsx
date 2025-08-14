@@ -1,8 +1,13 @@
+import * as countryCodes from "country-codes-list";
 import { useState } from "react";
 import cn from "../../utils/cn";
 
 const phoneNumberRegex = "/^[2-9]\\d{2}-\\d{3}-\\d{4}$/";
-const internationalCountryCodeRegex = "/^\\+?[1-9][0-9]{1,3}$/";
+
+const myCountryCodesObject: {} = countryCodes.customList(
+  "countryNameEn",
+  "countryCallingCode",
+);
 
 export default function PhoneNumberInput({
   countryCodeError,
@@ -11,19 +16,14 @@ export default function PhoneNumberInput({
   countryCodeError: string | undefined;
   phoneNumberError: string | undefined;
 }) {
-  const [countryCode, setCountryCode] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
 
-  const formatCountryCode = (value: string) => {
-    if (!value) return "";
-    const countryCode = value.replace(/\D/g, "");
-    if (!countryCode) return "+";
-    return `+${countryCode.slice(0, 3)}`;
-  };
-
-  const handleCountryCodeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setCountryCode(formatCountryCode(e.target.value) || "");
-  };
+  //   const formatCountryCode = (value: string) => {
+  //     if (!value) return "";
+  //     const countryCode = value.replace(/\D/g, "");
+  //     if (!countryCode) return "+";
+  //     return `+${countryCode.slice(0, 3)}`;
+  //   };
 
   const formatPhoneNumber = (value: string) => {
     if (!value) return "";
@@ -44,22 +44,34 @@ export default function PhoneNumberInput({
 
   return (
     <div className="flex gap-2">
-      <input
-        type="tel"
-        id="countryCode"
-        name="countryCode"
-        placeholder="+999"
-        required
-        inputMode="tel"
-        maxLength={4}
-        value={countryCode}
-        onChange={handleCountryCodeChange}
-        pattern={internationalCountryCodeRegex}
-        className={cn(
-          "w-20 min-w-0 rounded-xl border-b border-[#C1C7CD] bg-[#F2F4F8] px-1 py-3 text-center placeholder:text-[#697077]",
-          countryCodeError && "border-red",
-        )}
-      />
+      <div className="relative flex gap-2">
+        <select
+          id="countryCode"
+          name="countryCode"
+          required
+          className={cn(
+            "0 focus:outline-primary w-20 min-w-0 cursor-pointer appearance-none rounded-xl border-b border-[#C1C7CD] bg-[#F2F4F8] px-1 py-3 text-center focus:outline-2",
+            countryCodeError && "border-red",
+          )}
+        >
+          <option value="text-[#697077]"></option>
+          {Object.keys(myCountryCodesObject).map((countryCallingCode) => (
+            <option key={countryCallingCode} value={countryCallingCode}>
+              +{countryCallingCode}
+            </option>
+          ))}
+        </select>
+        <svg
+          className="pointer-events-none absolute top-1/2 right-2 h-4 w-4 -translate-y-1/2 text-[#697077]"
+          xmlns="http://www.w3.org/2000/svg"
+          height="24px"
+          viewBox="0 -960 960 960"
+          width="24px"
+          fill="currentColor"
+        >
+          <path d="M480-344 240-584l56-56 184 184 184-184 56 56-240 240Z" />
+        </svg>
+      </div>
       <input
         type="tel"
         id="phoneNumber"
@@ -72,7 +84,7 @@ export default function PhoneNumberInput({
         value={phoneNumber}
         pattern={phoneNumberRegex}
         className={cn(
-          "w-full rounded-xl border-b border-[#C1C7CD] bg-[#F2F4F8] px-4 py-3 placeholder:text-[#697077]",
+          "focus:outline-primary w-full rounded-xl border-b border-[#C1C7CD] bg-[#F2F4F8] px-4 py-3 placeholder:text-[#697077] focus:outline-2",
           phoneNumberError && "border-red",
         )}
       />

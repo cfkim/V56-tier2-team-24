@@ -117,13 +117,15 @@ export default function PatientFormModal({
   };
   return createPortal(
     <>
-      <div aria-hidden="true" className="fixed inset-0 z-30 bg-black/40" />
+      <div aria-hidden="true" className="fixed inset-0 z-30 bg-[#343434]/75" />
       <div
         aria-modal="true"
-        className="bg-background font-nunito no-scrollbar fixed top-20 right-0 left-0 z-50 mx-auto max-h-[calc(100vh-5rem)] w-10/12 overflow-y-auto rounded-xl pb-10 pb-24 shadow-xl"
+        className="bg-background font-nunito no-scrollbar fixed top-20 right-0 left-0 z-50 mx-auto max-h-[calc(100vh-5rem)] w-10/12 max-w-5xl overflow-y-auto rounded-xl pb-24 shadow-xl sm:pb-10"
       >
-        <div className="align-center flex justify-between border-b border-[#DDE1E6] px-10 py-5 text-base text-lg font-bold">
-          <h3 className="text-[#222324]">Add new Patient</h3>
+        <div className="flex items-center justify-between border-b border-[#DDE1E6] px-10 py-5 text-base text-lg font-bold">
+          <h3 className="text-[#222324]">
+            {isEdit ? "Edit Patient Information" : "Add New Patient"}
+          </h3>
           <button
             className="text-header-black cursor-pointer"
             onClick={onClose}
@@ -151,79 +153,99 @@ export default function PatientFormModal({
             }}
             className="flex flex-col gap-2 px-10 py-5 text-sm"
           >
-            <h4 className="text-base font-bold">User Details</h4>
-            <label htmlFor="patientID">Patient Number</label>
-            <input
-              type="text"
-              name="patientID"
-              readOnly
-              required
-              value={isEdit ? "123456" : "#" + newPatientId}
-              className="bg-accent w-full rounded-xl border-b border-[#C1C7CD] px-4 py-3 text-[#B5B16F]"
-            />
-            <label htmlFor="firstName">First Name</label>
-            <PatientFormTextInput name="firstName" />
-            <label htmlFor="lastName">Last Name</label>
-            <PatientFormTextInput name="lastName" />
-            <label htmlFor="streetAddress">Street Address</label>
-            <PatientFormTextInput name="streetAddress" />
-            <label htmlFor="city">City</label>
-            <PatientFormTextInput name="city" />
-            <label htmlFor="state">State</label>
-            <PatientFormTextInput name="state" />
-            <label htmlFor="country">Country</label>
-            <PatientFormTextInput name="country" />
-            {isEdit && (
-              <>
-                <label htmlFor="currentMedicalStatus">
-                  Current Medical Status
-                </label>
+            <h4 className="font-bold sm:text-lg">User Details</h4>
+            <div className="flex flex-col gap-2 sm:grid sm:grid-cols-3">
+              <div className="flex flex-col gap-2">
+                <label htmlFor="patientID">Patient Number</label>
                 <input
+                  id="patientID"
                   type="text"
-                  name="currentMedicalStatus"
-                  placeholder="Checked-In"
+                  name="patientID"
                   readOnly
-                  className="bg-accent w-full rounded-xl border-b border-[#C1C7CD] px-4 py-3 placeholder:text-[#B5B16F]"
+                  required
+                  value={isEdit ? "123456" : "#" + newPatientId}
+                  className="bg-accent pointer-events-none w-full cursor-not-allowed rounded-xl border-b border-[#C1C7CD] px-4 py-3 text-[#B5B16F]"
                 />
-              </>
-            )}
-
-            <fieldset className="flex flex-col gap-2">
-              <legend>Phone Number</legend>
-              <PhoneNumberInput
-                countryCodeError={errors.countryCode}
-                phoneNumberError={errors.phoneNumber}
-              />
-            </fieldset>
-            {errors.countryCode && (
-              <div className="text-red">{errors.countryCode}</div>
-            )}
-            {errors.phoneNumber && (
-              <div className="text-red">{errors.phoneNumber}</div>
-            )}
-            <label htmlFor="email">Email Address</label>
-            <input
-              type="email"
-              name="email"
-              placeholder="c7TlG@example.com"
-              required
-              inputMode="email"
-              maxLength={50}
-              className={cn(
-                "w-full rounded-xl border-b border-[#C1C7CD] bg-[#F2F4F8] px-4 py-3 placeholder:text-[#697077]",
-                errors.email && "border-red",
+              </div>
+              <div className="flex flex-col gap-2">
+                <label htmlFor="firstName">First Name</label>
+                <PatientFormTextInput name="firstName" isEdit={isEdit} />
+              </div>
+              <div className="flex flex-col gap-2">
+                <label htmlFor="lastName">Last Name</label>
+                <PatientFormTextInput name="lastName" isEdit={isEdit} />
+              </div>
+              <div className="flex flex-col gap-2">
+                <label htmlFor="streetAddress">Street Address</label>
+                <PatientFormTextInput name="streetAddress" />
+              </div>
+              <div className="flex flex-col gap-2">
+                <label htmlFor="city">City</label>
+                <PatientFormTextInput name="city" />
+              </div>
+              <div className="flex flex-col gap-2">
+                <label htmlFor="state">State</label>
+                <PatientFormTextInput name="state" />
+              </div>
+              <div className="flex flex-col gap-2">
+                <label htmlFor="country">Country</label>
+                <PatientFormTextInput name="country" />
+              </div>
+              {isEdit && (
+                <div className="flex flex-col gap-2">
+                  <label htmlFor="currentMedicalStatus">
+                    Current Medical Status
+                  </label>
+                  <input
+                    type="text"
+                    name="currentMedicalStatus"
+                    placeholder="Checked-In"
+                    readOnly
+                    className="bg-accent pointer-events-none w-full rounded-xl border-b border-[#C1C7CD] px-4 py-3 placeholder:text-[#B5B16F]"
+                  />
+                </div>
               )}
-            />
-            {errors.email && <div className="text-red">{errors.email}</div>}
-            <div className="mt-6 flex gap-3">
-              <button className="bg-primary text-background w-full cursor-pointer rounded-xl px-3 py-4">
-                {isEdit ? "Save Changes" : "Add Patient"}
-              </button>
-              <div
-                className="outline-primary flex w-full cursor-pointer items-center justify-center rounded-xl px-3 py-4 outline outline-2"
-                onClick={onClose}
-              >
-                Cancel
+              <div className="flex flex-col gap-2 sm:col-start-1">
+                <fieldset className="flex flex-col">
+                  <legend className="mb-2">Phone Number</legend>
+                  <PhoneNumberInput
+                    countryCodeError={errors.countryCode}
+                    phoneNumberError={errors.phoneNumber}
+                  />
+                </fieldset>
+                {errors.countryCode && (
+                  <div className="text-red">{errors.countryCode}</div>
+                )}
+                {errors.phoneNumber && (
+                  <div className="text-red">{errors.phoneNumber}</div>
+                )}
+              </div>
+              <div className="flex flex-col gap-2">
+                <label htmlFor="email">Email Address</label>
+                <input
+                  type="email"
+                  name="email"
+                  placeholder="c7TlG@example.com"
+                  required
+                  inputMode="email"
+                  maxLength={50}
+                  className={cn(
+                    "focus:outline-primary w-full rounded-xl border-b border-[#C1C7CD] bg-[#F2F4F8] px-4 py-3 placeholder:text-[#697077] focus:outline-2",
+                    errors.email && "border-red",
+                  )}
+                />
+                {errors.email && <div className="text-red">{errors.email}</div>}
+              </div>
+              <div className="mt-6 flex gap-3 sm:col-start-1 sm:text-base">
+                <button className="bg-primary text-background w-full cursor-pointer rounded-xl px-3 py-4">
+                  {isEdit ? "Save Changes" : "Add Patient"}
+                </button>
+                <div
+                  className="outline-primary flex w-full cursor-pointer items-center justify-center rounded-xl px-3 py-4 outline outline-2"
+                  onClick={onClose}
+                >
+                  Cancel
+                </div>
               </div>
             </div>
           </form>
