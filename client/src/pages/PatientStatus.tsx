@@ -12,7 +12,6 @@ export default function Status() {
 
     // Function to fetch list of patient and status
     const fetchStatusList = async (term: string = "") => {
-        console.log("Search term: " + term)
         setProgress(0);
         let fakeProgress = 0;
         
@@ -103,7 +102,7 @@ export default function Status() {
             </div>
         </div>
         <table className="w-3/4 outline outline-gray-200 rounded-lg">
-            <thead className="text-left bg-gray-200">
+            <thead className="text-left bg-gray-200 text-2xl">
                 <tr>
                     <th scope="col" className="py-3 px-9 w-3/4">Patient</th>
                     <th scope="col">Medical Status</th>
@@ -112,11 +111,21 @@ export default function Status() {
             <tbody>
                 {statusList.map((patient:Patient) => (
                     <tr className="border-b-1 border-gray-200 last-child:border-bottom:0" key={patient._id}>
-                        <td className="px-9 py-4">
+                        <td className="px-9 py-4 text-2xl">
                             #{patient.patientID}
                         </td>
                         <td className="py-4">
-                            {patient.medicalStatus}
+                            <div className={clsx("rounded-xl inline-block px-6 py-2 text-center text-white text-xl", 
+                                patient.medicalStatus == "checked-in" ? "bg-checked-in" : 
+                                patient.medicalStatus == "pre-procedure" ? "bg-pre-procedure" : 
+                                patient.medicalStatus == "in-progress" ? "bg-in-progress" : 
+                                patient.medicalStatus == "closing" ? "bg-closing" : 
+                                patient.medicalStatus == "recovery" ? "bg-recovery" : 
+                                patient.medicalStatus == "complete" ? "bg-complete" : 
+                                patient.medicalStatus == "dismissal" ? "bg-dismissal" : "")}>
+                                {patient.medicalStatus}
+                            </div>
+                            
                         </td>
                     </tr>
                     
