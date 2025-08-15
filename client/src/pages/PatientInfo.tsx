@@ -18,6 +18,8 @@ export default function PatientInfo() {
   const [selectedPatient, setSelectedPatient] = useState<Patient | null>(null);
   const [deleteConfirmIsOpen, setDeleteConfirmIsOpen] = useState(false);
   const [lastAddedPatientId, setLastAddedPatientId] = useState<string>("");
+  const [lastEditedPatientId, setLastEditedPatientId] = useState<string>("");
+  const [lastDeletedPatientId, setLastDeletedPatientId] = useState<string>("");
   const [successIsOpen, setSuccessIsOpen] = useState(false);
   const [successAction, setSuccessAction] = useState<
     "add" | "edit" | "delete" | ""
@@ -47,9 +49,34 @@ export default function PatientInfo() {
       setSuccessIsOpen(false);
       setSuccessAction("");
       setLastAddedPatientId("");
-    }, 40000);
+    }, 4000);
     return () => clearTimeout(t);
   }, [lastAddedPatientId]);
+
+  useEffect(() => {
+    if (!lastEditedPatientId) return;
+    console.log("lastEditedPatientId: " + lastEditedPatientId);
+    setSuccessIsOpen(true);
+    setSuccessAction("edit");
+    const t = setTimeout(() => {
+      setSuccessIsOpen(false);
+      setSuccessAction("");
+      setLastEditedPatientId("");
+    }, 4000);
+    return () => clearTimeout(t);
+  });
+  useEffect(() => {
+    if (!lastDeletedPatientId) return;
+    console.log("lastDeletedPatientId: " + lastDeletedPatientId);
+    setSuccessIsOpen(true);
+    setSuccessAction("delete");
+    const t = setTimeout(() => {
+      setSuccessIsOpen(false);
+      setSuccessAction("");
+      setLastDeletedPatientId("");
+    }, 4000);
+    return () => clearTimeout(t);
+  });
 
   return (
     <>
@@ -260,8 +287,10 @@ export default function PatientInfo() {
           setPatientFormIsOpen(false);
           setSelectedPatient(null);
         }}
+        patient={selectedPatient}
         fetchPatients={fetchPatients}
         setLastAddedPatientId={setLastAddedPatientId}
+        setLastEditedPatientId={setLastEditedPatientId}
       />
       <DeleteConfirmModal
         isOpen={deleteConfirmIsOpen}
@@ -271,6 +300,7 @@ export default function PatientInfo() {
         }}
         fetchPatients={fetchPatients}
         selectedPatientID={selectedPatient?.patientID || ""}
+        setLastDeletedPatientId={setLastDeletedPatientId}
       />
       <SuccessMessage isOpen={successIsOpen} action={successAction} />
     </>

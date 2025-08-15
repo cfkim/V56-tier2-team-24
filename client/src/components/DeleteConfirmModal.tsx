@@ -6,11 +6,13 @@ export default function DeleteConfirmModal({
   onClose,
   fetchPatients,
   selectedPatientID,
+  setLastDeletedPatientId,
 }: {
   isOpen: boolean;
   onClose: () => void;
   fetchPatients: () => void;
   selectedPatientID: string;
+  setLastDeletedPatientId: React.Dispatch<React.SetStateAction<string>>;
 }) {
   useEffect(() => {
     const prev = document.body.style.overflow;
@@ -35,6 +37,8 @@ export default function DeleteConfirmModal({
         },
         data: { id: patientID },
       });
+
+      setLastDeletedPatientId(patientID);
       fetchPatients();
       onClose();
     } catch {

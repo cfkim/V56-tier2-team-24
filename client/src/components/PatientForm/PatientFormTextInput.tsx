@@ -5,11 +5,13 @@ import cn from "../../utils/cn";
 export default function PatientFormTextInput({
   name,
   isEdit,
+  defaultValue,
 }: {
   name: string;
   isEdit?: boolean;
+  defaultValue?: string;
 }) {
-  const [inputValue, setInputValue] = useState("");
+  const [inputValue, setInputValue] = useState(defaultValue || "");
   const placeHolder = {
     firstName: "Jane",
     lastName: "Doe",

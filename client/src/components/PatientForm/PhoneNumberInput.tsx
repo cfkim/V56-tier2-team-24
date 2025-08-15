@@ -5,11 +5,16 @@ import cn from "../../utils/cn";
 export default function PhoneNumberInput({
   countryCodeError,
   phoneNumberError,
+  defaultCountryCode,
+  defaultPhoneNumber,
 }: {
   countryCodeError: string | undefined;
   phoneNumberError: string | undefined;
+  defaultCountryCode: string;
+  defaultPhoneNumber: string;
 }) {
-  const [phoneNumber, setPhoneNumber] = useState("");
+  const [countryCode, setCountryCode] = useState(defaultCountryCode);
+  const [phoneNumber, setPhoneNumber] = useState(defaultPhoneNumber);
 
   const formatPhoneNumber = (value: string) => {
     if (!value) return "";
@@ -42,6 +47,8 @@ export default function PhoneNumberInput({
           id="countryCode"
           name="countryCode"
           required
+          value={countryCode}
+          onChange={(e) => setCountryCode(e.target.value)}
           className={cn(
             "0 focus:outline-primary w-20 min-w-0 cursor-pointer appearance-none rounded-xl border-b border-[#C1C7CD] bg-[#F2F4F8] px-1 py-3 pl-2 focus:outline-2",
             countryCodeError && "border-red",

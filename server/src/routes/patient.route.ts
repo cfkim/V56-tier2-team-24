@@ -140,11 +140,10 @@ patientRoutes.delete("/delete", async (req, res) => {
 
 // updates patient record
 patientRoutes.post("/update", async (req, res) => {
-    const updatedInfo = req.body.updates;
-    const id = req.body.id;
+    const { _id: id, ...updatedInfo } = req.body;
     const patient = await PatientModel.findById(id);
 
-    if (patient == null) {
+    if (!patient) {
         return res.status(401).send("could not find user");
     }
 

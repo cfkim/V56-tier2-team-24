@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
-import { addPatient, getNewPatientId } from "../../lib/api";
-import cn from "../../utils/cn";
+import { addPatient, editPatient, getNewPatientId } from "../../lib/api";
+import type { Patient } from "../../types/Patient";
+import EmailInput from "./EmailInput";
 import PatientFormTextInput from "./PatientFormTextInput";
 import PhoneNumberInput from "./PhoneNumberInput";
 
@@ -11,14 +12,19 @@ export default function PatientFormModal({
   isEdit = false,
   fetchPatients,
   setLastAddedPatientId,
+  setLastEditedPatientId,
+  patient,
 }: {
   isOpen: boolean;
   onClose: () => void;
   isEdit?: boolean;
   fetchPatients: () => Promise<boolean>;
   setLastAddedPatientId: React.Dispatch<React.SetStateAction<string>>;
+  setLastEditedPatientId: React.Dispatch<React.SetStateAction<string>>;
+  patient: Patient | null;
 }) {
   const [newPatientId, setNewPatientId] = useState<number>(0);
+
   const [errors, setErrors] = useState<{
     countryCode?: string;
     phoneNumber?: string;
@@ -85,7 +91,7 @@ export default function PatientFormModal({
     if (!validateForm(formData)) return;
 
     try {
-      const addedPatient = await addPatient(formData);
+      await addPatient(formData);
       //   const addedPatientID = addedPatient.data.patient.patientID;
       //   if (!addedPatientID) {
       //     console.error("Missing Patient ID from added patient.");
@@ -104,18 +110,29 @@ export default function PatientFormModal({
   };
 
   const handleEditPatient = async (e: React.FormEvent) => {
-    e.preventDefault;
+    e.preventDefault();
     const formData = new FormData(e.target as HTMLFormElement);
-    const isValid = validateForm(formData);
-    if (isValid) {
-      try {
-        const addedPatient = await addPatient(formData);
-        onClose();
-      } catch (error) {
-        console.log(error);
+    const patientIdVal = formData.get("patientID");
+    if (typeof patientIdVal === "string" && patientIdVal.startsWith("#")) {
+      formData.set("patientID", patientIdVal.slice(1));
+    }
+
+    if (!validateForm(formData)) return;
+    try {
+      await editPatient(formData);
+      //   const addedPatientID = addedPatient.data.patient.patientID;
+      //   if (!addedPatientID) {
+      //     console.error("Missing Patient ID from added patient.");
+      //     return;
+      //   }
+      //   setLastAddedPatientId(addedPatientID);
+      if (patientIdVal) {
+        setLastEditedPatientId(patientIdVal.toString());
       }
-    } else {
-      console.log(errors);
+      fetchPatients();
+      onClose();
+    } catch (error) {
+      console.log(error);
     }
   };
   return createPortal(
@@ -159,6 +176,11 @@ export default function PatientFormModal({
             <h4 className="font-bold sm:text-lg">User Details</h4>
             <div className="flex flex-col gap-2 sm:grid sm:grid-cols-3">
               <div className="flex flex-col gap-2">
+                <input
+                  type="hidden"
+                  name="_id"
+                  value={(patient && patient._id) || ""}
+                />
                 <label htmlFor="patientID">Patient Number</label>
                 <input
                   id="patientID"
@@ -166,44 +188,65 @@ export default function PatientFormModal({
                   name="patientID"
                   readOnly
                   required
-                  value={isEdit ? "123456" : "#" + newPatientId}
+                  value={
+                    isEdit && patient ? patient.patientID : "#" + newPatientId
+                  }
                   className="bg-accent pointer-events-none w-full cursor-not-allowed rounded-xl border-b border-[#C1C7CD] px-4 py-3 text-[#B5B16F]"
                 />
               </div>
               <div className="flex flex-col gap-2">
                 <label htmlFor="firstName">First Name</label>
-                <PatientFormTextInput name="firstName" isEdit={isEdit} />
+                <PatientFormTextInput
+                  name="firstName"
+                  isEdit={isEdit}
+                  defaultValue={isEdit && patient ? patient.firstName : ""}
+                />
               </div>
               <div className="flex flex-col gap-2">
                 <label htmlFor="lastName">Last Name</label>
-                <PatientFormTextInput name="lastName" isEdit={isEdit} />
+                <PatientFormTextInput
+                  name="lastName"
+                  isEdit={isEdit}
+                  defaultValue={isEdit && patient ? patient.lastName : ""}
+                />
               </div>
               <div className="flex flex-col gap-2">
                 <label htmlFor="streetAddress">Street Address</label>
-                <PatientFormTextInput name="streetAddress" />
+                <PatientFormTextInput
+                  name="streetAddress"
+                  defaultValue={isEdit && patient ? patient.streetAddress : ""}
+                />
               </div>
               <div className="flex flex-col gap-2">
                 <label htmlFor="city">City</label>
-                <PatientFormTextInput name="city" />
+                <PatientFormTextInput
+                  name="city"
+                  defaultValue={isEdit && patient ? patient.city : ""}
+                />
               </div>
               <div className="flex flex-col gap-2">
                 <label htmlFor="state">State</label>
-                <PatientFormTextInput name="state" />
+                <PatientFormTextInput
+                  name="state"
+                  defaultValue={isEdit && patient ? patient.state : ""}
+                />
               </div>
               <div className="flex flex-col gap-2">
                 <label htmlFor="country">Country</label>
-                <PatientFormTextInput name="country" />
+                <PatientFormTextInput
+                  name="country"
+                  defaultValue={isEdit && patient ? patient.country : ""}
+                />
               </div>
               {isEdit && (
                 <div className="flex flex-col gap-2">
-                  <label htmlFor="currentMedicalStatus">
-                    Current Medical Status
-                  </label>
+                  <label htmlFor="medicalStatus">Current Medical Status</label>
                   <input
                     type="text"
-                    name="currentMedicalStatus"
+                    name="medicalStatus"
                     placeholder="Checked-In"
                     readOnly
+                    value={patient?.medicalStatus}
                     className="bg-accent pointer-events-none w-full rounded-xl border-b border-[#C1C7CD] px-4 py-3 placeholder:text-[#B5B16F]"
                   />
                 </div>
@@ -214,6 +257,12 @@ export default function PatientFormModal({
                   <PhoneNumberInput
                     countryCodeError={errors.countryCode}
                     phoneNumberError={errors.phoneNumber}
+                    defaultCountryCode={
+                      isEdit && patient ? patient.countryCode : ""
+                    }
+                    defaultPhoneNumber={
+                      isEdit && patient ? patient.phoneNumber : ""
+                    }
                   />
                 </fieldset>
                 {errors.countryCode && (
@@ -225,19 +274,10 @@ export default function PatientFormModal({
               </div>
               <div className="flex flex-col gap-2">
                 <label htmlFor="email">Email Address</label>
-                <input
-                  type="email"
-                  name="email"
-                  placeholder="c7TlG@example.com"
-                  required
-                  inputMode="email"
-                  maxLength={50}
-                  className={cn(
-                    "focus:outline-primary w-full rounded-xl border-b border-[#C1C7CD] bg-[#F2F4F8] px-4 py-3 placeholder:text-[#697077] focus:outline-2",
-                    errors.email && "border-red",
-                  )}
+                <EmailInput
+                  email={isEdit && patient ? patient.email : ""}
+                  emailErrors={errors.email}
                 />
-                {errors.email && <div className="text-red">{errors.email}</div>}
               </div>
               <div className="mt-6 flex gap-3 sm:col-start-1 sm:text-base">
                 <button className="bg-primary text-background w-full cursor-pointer rounded-xl px-3 py-4">
