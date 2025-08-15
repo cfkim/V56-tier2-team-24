@@ -10,7 +10,7 @@ import ForgotPassword from "./pages/ForgotPassword";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
 import PatientInfo from "./pages/PatientInfo";
-import PatientStatus from "./pages/PatientStatus";
+import Status from "./pages/PatientStatus";
 import ResetLinkSent from "./pages/ResetLinkSent";
 import ResetPassword from "./pages/ResetPassword";
 import ResetPasswordSuccess from "./pages/ResetPasswordSuccess";
@@ -31,6 +31,13 @@ function App() {
     const currentPath = window.location.pathname;
     if (currentPath.startsWith("/password/")) {
       setIsLoggedIn(false);
+      return;
+    }
+    
+    // Skip authentication if no token is found. Becomes a guest.
+    if(window.localStorage.getItem("accessToken") == null){
+      setIsLoggedIn(true);
+      setRole("guest")
       return;
     }
 
@@ -81,7 +88,7 @@ function App() {
             }
           />
           <Route path="/user" element={<Account user={user} />} />
-          <Route path="/status" element={<PatientStatus />} />
+          <Route path="/status" element={<Status />} />
           <Route path="/info" element={<PatientInfo />} />
           <Route path="/update" element={<UpdateStatus />} />
           <Route path="/password/forgot" element={<ForgotPassword />} />

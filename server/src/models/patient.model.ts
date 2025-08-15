@@ -30,7 +30,7 @@ const patientSchema = new mongoose.Schema<PatientDocument>(
         countryCode: { type: String, required: true },
         phoneNumber: { type: String, required: true },
         email: { type: String, required: true },
-        medicalStatus: { type: String, default: "checked in" },
+        medicalStatus: { type: String, default: "checked-in" },
     },
     { timestamps: true }
 );

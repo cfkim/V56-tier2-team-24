@@ -1,5 +1,5 @@
 import { useMutation } from "@tanstack/react-query";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { login } from "../lib/api";
 // import type { LoginResponse } from "../types/LoginResponse";
@@ -18,6 +18,17 @@ export default function Login({
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [rememberMe, setRememberMe] = useState(Boolean);
+
+  // added to handle navigation to login page under different auth states
+  useEffect(() => {
+    // If user is already logged in, redirects to home page
+    if (window.localStorage.getItem("accessToken")) {
+      navigate("/", { replace: true });
+    }else{
+      // sets is logged in to false
+      setIsLoggedIn(false);
+    }
+  }, []);
 
   // Handles the function call to sign in
   const {
