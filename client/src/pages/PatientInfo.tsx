@@ -67,7 +67,10 @@ export default function PatientInfo() {
             </div>
             <div className="flex items-end">
               <button
-                onClick={() => setPatientFormIsOpen(true)}
+                onClick={() => {
+                  setPatientFormIsOpen(true);
+                  setOpenPatientID(null);
+                }}
                 className="bg-primary flex h-12 cursor-pointer items-center gap-1 rounded-2xl px-4 text-white"
               >
                 Add a New Patient
@@ -131,7 +134,7 @@ export default function PatientInfo() {
           </div>
         </div>
 
-        <div className="relative h-screen overflow-visible">
+        <div className="relative overflow-visible">
           <table className="min-w-full rounded-2xl text-lg outline-2 outline-gray-100">
             <thead className="bg-accent font-nunito-bold h-12 text-left">
               <tr>
@@ -209,8 +212,8 @@ export default function PatientInfo() {
                               fill="#082368"
                             />
                             <path
-                              fill-rule="evenodd"
-                              clip-rule="evenodd"
+                              fillRule="evenodd"
+                              clipRule="evenodd"
                               d="M3.30005 9.89981C3.30005 8.07727 4.77751 6.5998 6.60005 6.5998H13.2C14.1113 6.5998 14.85 7.33854 14.85 8.2498C14.85 9.16107 14.1113 9.89981 13.2 9.89981H6.60005V26.3998H23.1V19.7998C23.1 18.8885 23.8388 18.1498 24.75 18.1498C25.6613 18.1498 26.4001 18.8885 26.4001 19.7998V26.3998C26.4001 28.2223 24.9226 29.6998 23.1 29.6998H6.60005C4.77751 29.6998 3.30005 28.2223 3.30005 26.3998V9.89981Z"
                               fill="#082368"
                             />
@@ -250,13 +253,14 @@ export default function PatientInfo() {
         </div>
       </div>
       <PatientFormModal
-        patient={selectedPatient}
         isEdit={selectedPatient !== null}
         isOpen={patientFormIsOpen}
         onClose={() => {
           setPatientFormIsOpen(false);
           setSelectedPatient(null);
         }}
+        fetchPatients={fetchPatients}
+        setLastAddedPatientId={setLastAddedPatientId}
       />
       <DeleteConfirmModal
         isOpen={deleteConfirmIsOpen}
