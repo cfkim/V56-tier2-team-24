@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Route, Routes, useNavigate } from "react-router-dom";
 import "./App.css";
 import Footer from "./components/footer";
-import Header from "./components/Header";
+import Header from "./components/Header/Header";
 import { getUser } from "./lib/api";
 import { setNavigate } from "./lib/navigation";
 import Account from "./pages/Account";
@@ -64,7 +64,7 @@ function App() {
         setIsLoggedIn={setIsLoggedIn}
         setUser={setUser}
       />
-      <main>
+      <main className="font-nunito">
         <Routes>
           <Route
             path="/"

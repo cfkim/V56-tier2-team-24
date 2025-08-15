@@ -2,42 +2,81 @@ import clsx from "clsx";
 import { useEffect, useState } from "react";
 import { getPatients } from "../lib/api";
 // import { SmallSearch } from "../components/search";
-import PatientFormModal from "../components/PatientFormModal";
+import PatientFormModal from "../components/PatientForm/PatientFormModal";
+import SuccessMessage from "../components/PatientForm/SuccessMessage";
 import Search from "../components/search";
-import API from "../config/apiClient";
+
+import DeleteConfirmModal from "../components/DeleteConfirmModal";
 import type { Patient } from "../types/Patient";
+import cn from "../utils/cn";
 
 export default function PatientInfo() {
   const [patients, setPatients] = useState<Patient[]>([]);
-  const [isOpen, setIsOpen] = useState(false);
+  const [patientFormIsOpen, setPatientFormIsOpen] = useState(false);
   const [selectedStatus, setSelectedStatus] = useState<string>("All");
+  const [openPatientID, setOpenPatientID] = useState<string | null>(null);
+  const [selectedPatient, setSelectedPatient] = useState<Patient | null>(null);
+  const [deleteConfirmIsOpen, setDeleteConfirmIsOpen] = useState(false);
+  const [lastAddedPatientId, setLastAddedPatientId] = useState<string>("");
+  const [lastEditedPatientId, setLastEditedPatientId] = useState<string>("");
+  const [lastDeletedPatientId, setLastDeletedPatientId] = useState<string>("");
+  const [successIsOpen, setSuccessIsOpen] = useState(false);
+  const [successAction, setSuccessAction] = useState<
+    "add" | "edit" | "delete" | ""
+  >("");
 
-  const deletePatient = async (patientID: string) => {
-    console.log("deleting user attempt: " + patientID);
-    const token = localStorage.getItem("accessToken");
-
+  const fetchPatients = async () => {
     try {
-      await API.delete("/patient/delete", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-        data: { id: patientID },
-      });
-      setPatients((prev) => prev.filter((p) => p.patientID !== patientID));
-    } catch {
-      console.log("error deleting patient");
-    }
-  };
-
-  useEffect(() => {
-    const fetchPatients = async () => {
       const result = await getPatients();
       const patients = result.data.patients;
       setPatients(patients);
-    };
-
+      return true;
+    } catch (error) {
+      console.error(error);
+      return false;
+    }
+  };
+  useEffect(() => {
     fetchPatients();
   }, []);
+
+  useEffect(() => {
+    if (!lastAddedPatientId) return;
+    console.log("lastAddedPatientId: " + lastAddedPatientId);
+    setSuccessIsOpen(true);
+    setSuccessAction("add");
+    const t = setTimeout(() => {
+      setSuccessIsOpen(false);
+      setSuccessAction("");
+      setLastAddedPatientId("");
+    }, 4000);
+    return () => clearTimeout(t);
+  }, [lastAddedPatientId]);
+
+  useEffect(() => {
+    if (!lastEditedPatientId) return;
+    console.log("lastEditedPatientId: " + lastEditedPatientId);
+    setSuccessIsOpen(true);
+    setSuccessAction("edit");
+    const t = setTimeout(() => {
+      setSuccessIsOpen(false);
+      setSuccessAction("");
+      setLastEditedPatientId("");
+    }, 4000);
+    return () => clearTimeout(t);
+  });
+  useEffect(() => {
+    if (!lastDeletedPatientId) return;
+    console.log("lastDeletedPatientId: " + lastDeletedPatientId);
+    setSuccessIsOpen(true);
+    setSuccessAction("delete");
+    const t = setTimeout(() => {
+      setSuccessIsOpen(false);
+      setSuccessAction("");
+      setLastDeletedPatientId("");
+    }, 4000);
+    return () => clearTimeout(t);
+  });
 
   return (
     <>
@@ -56,7 +95,10 @@ export default function PatientInfo() {
             </div>
             <div className="flex items-end">
               <button
-                onClick={() => setIsOpen(true)}
+                onClick={() => {
+                  setPatientFormIsOpen(true);
+                  setOpenPatientID(null);
+                }}
                 className="bg-primary flex h-12 cursor-pointer items-center gap-1 rounded-2xl px-4 text-white"
               >
                 Add a New Patient
@@ -120,7 +162,7 @@ export default function PatientInfo() {
           </div>
         </div>
 
-        <div className="relative h-screen overflow-visible">
+        <div className="relative overflow-visible">
           <table className="min-w-full rounded-2xl text-lg outline-2 outline-gray-100">
             <thead className="bg-accent font-nunito-bold h-12 text-left">
               <tr>
@@ -132,12 +174,20 @@ export default function PatientInfo() {
                 <th scope="col">Phone Number</th>
                 <th scope="col">Email Address</th>
                 <th scope="col">Medical Status</th>
-                <th scope="col">Delete Action</th>
+                <th scope="col"> </th>
               </tr>
             </thead>
             <tbody>
               {patients.map((patient: Patient) => (
-                <tr className="border-b-1 border-gray-200" key={patient._id}>
+                <tr
+                  className={cn(
+                    "border-b-1 border-gray-200",
+                    successIsOpen && lastAddedPatientId !== patient.patientID
+                      ? "opacity-20"
+                      : "",
+                  )}
+                  key={patient._id}
+                >
                   <td className="px-5 py-3 pr-50">
                     <div className="flex flex-col">
                       <div className="font-nunito-bold">
@@ -154,9 +204,75 @@ export default function PatientInfo() {
                   <td className="py-3">{patient.email}</td>
                   <td className="py-3">{patient.medicalStatus}</td>
                   <td className="py-3">
-                    <button onClick={() => deletePatient(patient.patientID)}>
+                    <button
+                      className="cursor-pointer"
+                      onClick={() => {
+                        const next =
+                          openPatientID === patient.patientID
+                            ? null
+                            : patient.patientID;
+                        setOpenPatientID(next);
+                        if (next) setSelectedPatient(patient);
+                      }}
+                    >
                       ...
                     </button>
+                    {openPatientID && openPatientID === patient.patientID && (
+                      <div className="top-1/2+1 absolute right-3 z-10 flex flex-col rounded-xl bg-[#F8F8F8] text-xs md:text-sm">
+                        <div
+                          className="flex cursor-pointer items-center gap-2.5 rounded-t-xl border-b-1 border-[#DDE1E6] px-5 py-3.5 underline hover:bg-gray-100 md:px-7 md:py-5"
+                          onClick={() => {
+                            setOpenPatientID(null);
+                            setSelectedPatient(patient);
+                            setPatientFormIsOpen(true);
+                          }}
+                        >
+                          <svg
+                            className="h-3 w-3 md:h-4 md:w-4"
+                            width="33"
+                            height="33"
+                            viewBox="0 0 33 33"
+                            fill="none"
+                            xmlns="http://www.w3.org/2000/svg"
+                          >
+                            <path
+                              d="M28.7335 4.26635C27.4448 2.97762 25.3553 2.97762 24.0666 4.26635L11.55 16.7829V21.4498H16.2169L28.7335 8.93326C30.0222 7.64453 30.0222 5.55508 28.7335 4.26635Z"
+                              fill="#082368"
+                            />
+                            <path
+                              fillRule="evenodd"
+                              clipRule="evenodd"
+                              d="M3.30005 9.89981C3.30005 8.07727 4.77751 6.5998 6.60005 6.5998H13.2C14.1113 6.5998 14.85 7.33854 14.85 8.2498C14.85 9.16107 14.1113 9.89981 13.2 9.89981H6.60005V26.3998H23.1V19.7998C23.1 18.8885 23.8388 18.1498 24.75 18.1498C25.6613 18.1498 26.4001 18.8885 26.4001 19.7998V26.3998C26.4001 28.2223 24.9226 29.6998 23.1 29.6998H6.60005C4.77751 29.6998 3.30005 28.2223 3.30005 26.3998V9.89981Z"
+                              fill="#082368"
+                            />
+                          </svg>
+                          Edit Information
+                        </div>
+                        <div
+                          className="flex cursor-pointer items-center gap-2.5 rounded-b-xl px-5 py-3.5 underline hover:bg-gray-100 md:px-7 md:py-5"
+                          onClick={() => {
+                            setOpenPatientID(null);
+                            setSelectedPatient(patient);
+                            setDeleteConfirmIsOpen(true);
+                          }}
+                        >
+                          <svg
+                            className="h-3 w-3 md:h-4 md:w-4"
+                            width="24"
+                            height="30"
+                            viewBox="0 0 24 30"
+                            fill="none"
+                            xmlns="http://www.w3.org/2000/svg"
+                          >
+                            <path
+                              d="M22.167 9L21.1575 27.165C21.1153 27.9309 20.7813 28.6516 20.2242 29.1789C19.667 29.7062 18.9291 30 18.162 30H5.838C5.07091 30 4.33295 29.7062 3.77582 29.1789C3.21868 28.6516 2.88469 27.9309 2.8425 27.165L1.833 9H22.167ZM1.5 0H22.5C22.8978 0 23.2794 0.158035 23.5607 0.43934C23.842 0.720644 24 1.10218 24 1.5V4.5C24 4.89782 23.842 5.27936 23.5607 5.56066C23.2794 5.84196 22.8978 6 22.5 6H1.5C1.10218 6 0.720644 5.84196 0.43934 5.56066C0.158035 5.27936 0 4.89782 0 4.5V1.5C0 1.10218 0.158035 0.720644 0.43934 0.43934C0.720644 0.158035 1.10218 0 1.5 0V0ZM9 12C8.60218 12 8.22064 12.158 7.93934 12.4393C7.65804 12.7206 7.5 13.1022 7.5 13.5V24C7.5 24.3978 7.65804 24.7794 7.93934 25.0607C8.22064 25.342 8.60218 25.5 9 25.5C9.39782 25.5 9.77936 25.342 10.0607 25.0607C10.342 24.7794 10.5 24.3978 10.5 24V13.5C10.5 13.1022 10.342 12.7206 10.0607 12.4393C9.77936 12.158 9.39782 12 9 12ZM15 12C14.6022 12 14.2206 12.158 13.9393 12.4393C13.658 12.7206 13.5 13.1022 13.5 13.5V24C13.5 24.3978 13.658 24.7794 13.9393 25.0607C14.2206 25.342 14.6022 25.5 15 25.5C15.3978 25.5 15.7794 25.342 16.0607 25.0607C16.342 24.7794 16.5 24.3978 16.5 24V13.5C16.5 13.1022 16.342 12.7206 16.0607 12.4393C15.7794 12.158 15.3978 12 15 12Z"
+                              fill="#082368"
+                            />
+                          </svg>
+                          Delete Profile
+                        </div>
+                      </div>
+                    )}
                   </td>
                 </tr>
               ))}
@@ -164,7 +280,29 @@ export default function PatientInfo() {
           </table>
         </div>
       </div>
-      <PatientFormModal isOpen={isOpen} onClose={() => setIsOpen(false)} />
+      <PatientFormModal
+        isEdit={selectedPatient !== null}
+        isOpen={patientFormIsOpen}
+        onClose={() => {
+          setPatientFormIsOpen(false);
+          setSelectedPatient(null);
+        }}
+        patient={selectedPatient}
+        fetchPatients={fetchPatients}
+        setLastAddedPatientId={setLastAddedPatientId}
+        setLastEditedPatientId={setLastEditedPatientId}
+      />
+      <DeleteConfirmModal
+        isOpen={deleteConfirmIsOpen}
+        onClose={() => {
+          setDeleteConfirmIsOpen(false);
+          setSelectedPatient(null);
+        }}
+        fetchPatients={fetchPatients}
+        selectedPatientID={selectedPatient?.patientID || ""}
+        setLastDeletedPatientId={setLastDeletedPatientId}
+      />
+      <SuccessMessage isOpen={successIsOpen} action={successAction} />
     </>
   );
 }

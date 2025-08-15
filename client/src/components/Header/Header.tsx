@@ -1,9 +1,9 @@
 import { useMemo, useState } from "react";
 import { Link } from "react-router-dom";
-import type { Role } from "../types/Role";
+import type { Role } from "../../types/Role";
+import Sidebar from "../Sidebar";
 import HeaderLinks from "./HeaderLinks";
 import ProfileIcon from "./ProfileIcon";
-import Sidebar from "./Sidebar";
 
 export default function Header({
   role,
@@ -67,7 +67,15 @@ export default function Header({
               <path d="M120-240v-80h720v80H120Zm0-200v-80h720v80H120Zm0-200v-80h720v80H120Z" />
             </svg>
           </button>
-          <Link to="/" className="px-4 text-xl font-semibold sm:px-16">
+          <Link
+            to="/"
+            className="mx-4 flex items-center gap-5 text-xl font-semibold sm:mx-16"
+          >
+            <img
+              className="hidden h-10 sm:inline-block"
+              src="/favicon.svg"
+              alt="Beacon Logo"
+            />
             Beacon
           </Link>
         </div>

@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { logout } from "../lib/api";
-import type { Role } from "../types/Role";
+import { logout } from "../../lib/api";
+import type { Role } from "../../types/Role";
 
 export default function ProfileIcon({
   setIsLoggedIn,

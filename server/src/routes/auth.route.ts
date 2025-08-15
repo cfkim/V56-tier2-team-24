@@ -25,7 +25,7 @@ const authRoutes = Router();
 let refreshTokens: string[] = [];
 
 function generateAccessToken(user: any) {
-    return jwt.sign(user, JWT_SECRET, { expiresIn: "15s" });
+    return jwt.sign(user, JWT_SECRET, { expiresIn: "15m" });
 }
 
 // -- LOGIN HANDLER --
@@ -49,7 +49,7 @@ authRoutes.post("/login", async (req, res) => {
             const session_user = { email: inputEmail, id: user._id };
             const accessToken = generateAccessToken(session_user);
             const refreshToken = jwt.sign(session_user, JWT_REFRESH_SECRET, {
-                expiresIn: "30d",
+                expiresIn: rememberMe ? "7d" : "1d",
             });
 
             refreshTokens.push(refreshToken);
@@ -91,7 +91,7 @@ authRoutes.post("/register", async (req, res) => {
         const session_user = { id: user._id, email: user.email };
         const accessToken = generateAccessToken(session_user);
         const refreshToken = jwt.sign(session_user, JWT_REFRESH_SECRET, {
-            expiresIn: "30d",
+            expiresIn: "1d",
         });
 
         // "Saves" refresh tokens in memory for testing
