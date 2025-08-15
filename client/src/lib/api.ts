@@ -47,6 +47,12 @@ export const logout = async () => {
   return res;
 };
 
+export const getStatusList = async () => {
+  console.log("getting status list for patients")
+  const res = await API.get("/status")
+  return res
+}
+
 // gets all patients
 export const getPatients = async () => {
   const token = localStorage.getItem("accessToken");

@@ -1,9 +1,10 @@
 import clsx from "clsx";
 import { useEffect, useState } from "react";
+import { getPatients } from "../lib/api";
+// import { SmallSearch } from "../components/search";
 import PatientFormModal from "../components/PatientFormModal";
 import Search from "../components/search";
 import API from "../config/apiClient";
-import { getPatients } from "../lib/api";
 import type { Patient } from "../types/Patient";
 
 export default function PatientInfo() {
