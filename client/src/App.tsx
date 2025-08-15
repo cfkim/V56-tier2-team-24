@@ -16,6 +16,7 @@ import ResetPassword from "./pages/ResetPassword";
 import ResetPasswordSuccess from "./pages/ResetPasswordSuccess";
 import UpdateStatus from "./pages/UpdateStatus";
 import UpdatePatientStatus from "./pages/UpdatePatientStatus";
+import UpdateStatusConfirmation from "./pages/UpdateStatusConfirmation";
 import type { User } from "./types/LoginResponse";
 import type { Role } from "./types/Role";
 
@@ -86,6 +87,7 @@ function App() {
           <Route path="/info" element={<PatientInfo />} />
           <Route path="/update" element={<UpdateStatus />} />
           <Route path="/update/patient/:patientId" element={<UpdatePatientStatus />} />
+          <Route path="/update/confirmation" element={<UpdateStatusConfirmation />} />
           <Route path="/password/forgot" element={<ForgotPassword />} />
           <Route path="/password/reset-link-sent" element={<ResetLinkSent />} />
           <Route path="/password/reset" element={<ResetPassword />} />

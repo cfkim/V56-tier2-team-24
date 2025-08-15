@@ -62,8 +62,8 @@ export default function UpdatePatientStatus() {
     // TODO: Add API call to update patient status
     setTimeout(() => {
       setIsSaving(false);
-      // Navigate to success page or back to patient list
-      navigate("/status");
+      // Navigate to confirmation page
+      navigate("/update/confirmation");
     }, 1000);
   };
 
