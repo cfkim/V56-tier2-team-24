@@ -1,13 +1,12 @@
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
+import { getPatientById, updatePatientStatus } from "../lib/api";
 import { 
   STATUS_OPTIONS, 
   type Patient, 
   type PatientStatus,
   isStatusDisabled, 
-  getStatusButtonClass,
-  createMockPatient,
-  savePatientStatus
+  getStatusButtonClass
 } from "../utils/patientStatus";
 
 export default function UpdatePatientStatus() {
@@ -17,18 +16,27 @@ export default function UpdatePatientStatus() {
   const [loading, setLoading] = useState(true);
   const [selectedStatus, setSelectedStatus] = useState<PatientStatus | "">("");
   const [isSaving, setIsSaving] = useState(false);
+  const [error, setError] = useState<string>("");
 
   useEffect(() => {
-    // Simulate fetching patient data for testing
     const fetchPatient = async () => {
-      setLoading(true);
-      
-      // Simulate API delay
-      setTimeout(() => {
-        const mockPatient = createMockPatient(patientId || "TEST123");
-        setPatient(mockPatient);
+      if (!patientId) {
+        setError("Patient ID is required");
         setLoading(false);
-      }, 800);
+        return;
+      }
+
+      try {
+        setLoading(true);
+        setError("");
+        const response = await getPatientById(patientId);
+        setPatient(response.data.patient);
+      } catch (err: any) {
+        console.error("Error fetching patient:", err);
+        setError(err.response?.data?.message || "Failed to fetch patient information");
+      } finally {
+        setLoading(false);
+      }
     };
 
     fetchPatient();
@@ -42,16 +50,20 @@ export default function UpdatePatientStatus() {
   const handleSaveChanges = async () => {
     if (!selectedStatus || !patientId) return;
     
-    setIsSaving(true);
-    
-    // Simulate API call for testing
-    setTimeout(() => {
-      // Save the new status to our memory store
-      savePatientStatus(patientId, selectedStatus);
+    try {
+      setIsSaving(true);
+      setError("");
       
-      setIsSaving(false);
+      await updatePatientStatus(patientId, selectedStatus);
+      
+      // Navigate to confirmation page
       navigate("/update/confirmation");
-    }, 1000);
+    } catch (err: any) {
+      console.error("Error updating patient status:", err);
+      setError(err.response?.data?.message || "Failed to update patient status");
+    } finally {
+      setIsSaving(false);
+    }
   };
 
   const handleBack = () => {
@@ -64,6 +76,23 @@ export default function UpdatePatientStatus() {
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
           <p className="text-text">Loading patient information...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="flex-1 bg-background font-nunito flex items-center justify-center">
+        <div className="text-center">
+          <h2 className="text-2xl font-bold text-header-black mb-4">Error</h2>
+          <p className="text-text mb-6">{error}</p>
+          <button
+            onClick={handleBack}
+            className="bg-primary text-white px-6 py-2 rounded-lg hover:bg-primary/90"
+          >
+            Go Back
+          </button>
         </div>
       </div>
     );
@@ -113,6 +142,20 @@ export default function UpdatePatientStatus() {
             
             <div className="w-24"></div> {/* Spacer to balance the layout */}
           </div>
+
+          {/* Error Message */}
+          {error && (
+            <div className="max-w-2xl mx-auto mb-6 p-4 bg-red-50 border border-red-200 rounded-lg">
+              <div className="flex items-center gap-3">
+                <div className="flex-shrink-0 w-6 h-6 bg-red-100 rounded-full flex items-center justify-center">
+                  <svg className="w-4 h-4 text-red-600" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
+                  </svg>
+                </div>
+                <p className="text-red-800">{error}</p>
+              </div>
+            </div>
+          )}
 
           {/* Form */}
           <div className="max-w-2xl mx-auto space-y-6">
