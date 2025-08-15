@@ -13,8 +13,8 @@ import cn from "../utils/cn";
 export default function PatientInfo() {
   const [patients, setPatients] = useState<Patient[]>([]);
   const [filteredPatients, setFilteredPatients] = useState<Patient[]>([]);
+  const [options, setOptions] = useState([""])
   const searchTermRef = useRef("");
-  
   const [patientFormIsOpen, setPatientFormIsOpen] = useState(false);
   const [selectedStatus, setSelectedStatus] = useState<string>("All");
   const [openPatientID, setOpenPatientID] = useState<string | null>(null);
@@ -41,15 +41,35 @@ export default function PatientInfo() {
     try {
       const result = await getPatients();
       const patients = result.data.patients;
-      
+      let categorized = patients;
+
+      if(selectedStatus == "All"){
+        categorized = patients;
+      }else if(selectedStatus == "checked-in"){
+        categorized = patients.filter((patient: Patient) => patient.medicalStatus == "checked-in");
+      }else if(selectedStatus == "pre-procedure"){
+        categorized = patients.filter((patient: Patient) => patient.medicalStatus == "pre-procedure");
+      }else if(selectedStatus == "in-progress"){
+        categorized = patients.filter((patient: Patient) => patient.medicalStatus == "in-progress");
+      }else if(selectedStatus == "closing"){
+        categorized = patients.filter((patient: Patient) => patient.medicalStatus == "closing");
+      }else if(selectedStatus == "recovery"){
+        categorized = patients.filter((patient: Patient) => patient.medicalStatus == "recovery");
+      }else if(selectedStatus == "complete"){
+        categorized = patients.filter((patient: Patient) => patient.medicalStatus == "complete");
+      }else if(selectedStatus == "dismissal"){
+        categorized = patients.filter((patient: Patient) => patient.medicalStatus == "dismissal");
+      }
+
+      console.log(categorized)
       // if there's a search term, then return the filtered list
       if(term !== ""){
-          const filteredList = patients.filter((patient: Patient) =>
+          const filteredList = categorized.filter((patient: Patient) =>
               patient.patientID.toString().toLowerCase().includes(term.toLowerCase())
           );
           setPatients(filteredList);
       }else{
-          setPatients(patients);
+          setPatients(categorized);
       }
       
       return true;
@@ -61,7 +81,7 @@ export default function PatientInfo() {
 
   useEffect(() => {
     fetchPatients(searchTermRef.current);
-  }, []);
+  }, [selectedStatus]);
 
   useEffect(() => {
     if (!lastAddedPatientId) return;
@@ -156,7 +176,7 @@ export default function PatientInfo() {
                     ? "outline-primary outline-2"
                     : "",
                 )}
-                onClick={() => setSelectedStatus("Before")}
+                onClick={() => {setOptions(["checked-in", "pre-procedure"])}}
               >
                 Before Procedure
               </button>
@@ -167,7 +187,7 @@ export default function PatientInfo() {
                     ? "outline-primary outline-2"
                     : "",
                 )}
-                onClick={() => setSelectedStatus("During")}
+                onClick={() => setOptions(["in-progress", "closing"])}
               >
                 During Procedure
               </button>
@@ -176,13 +196,23 @@ export default function PatientInfo() {
                   "h-12 rounded-2xl px-4",
                   selectedStatus === "After" ? "outline-primary outline-2" : "",
                 )}
-                onClick={() => setSelectedStatus("After")}
+                onClick={() => setOptions(["recovery", "complete", "dismissal"])}
               >
                 After Procedure
               </button>
             </div>
             <Search handleChange={handleInputChange}></Search>
           </div>
+          {selectedStatus !== "All" && <div>
+            {options.map(option => {
+              return (
+                <button key={option} onClick={()=>setSelectedStatus(option)} className={clsx("px-5 mb-5 font-nunito-bold text-lg", option === selectedStatus ? "text-primary border-b-2 border-primary" : "")}>
+                  {option}
+                </button>
+              )
+            })}
+          </div>}
+          
         </div>
 
         <div className="relative overflow-visible h-screen">
