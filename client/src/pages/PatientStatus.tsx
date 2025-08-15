@@ -5,7 +5,7 @@ import { LargeSearch } from "../components/search"
 import clsx from "clsx"
 
 export default function Status() {
-    const [originalList, setOriginalList] = useState([]);
+    const [, setOriginalList] = useState([]);
     const [statusList, setStatusList] = useState([])
     const searchTermRef = useRef("");
     const [progress, setProgress] = useState(0);
