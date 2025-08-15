@@ -49,7 +49,7 @@ export default function PatientInfo() {
       setSuccessIsOpen(false);
       setSuccessAction("");
       setLastAddedPatientId("");
-    }, 4000);
+    }, 2000);
     return () => clearTimeout(t);
   }, [lastAddedPatientId]);
 
@@ -62,7 +62,7 @@ export default function PatientInfo() {
       setSuccessIsOpen(false);
       setSuccessAction("");
       setLastEditedPatientId("");
-    }, 4000);
+    }, 2000);
     return () => clearTimeout(t);
   });
   useEffect(() => {
@@ -74,7 +74,7 @@ export default function PatientInfo() {
       setSuccessIsOpen(false);
       setSuccessAction("");
       setLastDeletedPatientId("");
-    }, 4000);
+    }, 2000);
     return () => clearTimeout(t);
   });
 
