@@ -45,6 +45,27 @@ export default function Login({
     },
   });
 
+  // Test login function for development
+  const handleTestLogin = (role: Role) => {
+    const testUser = {
+      _id: "test-id",
+      email: `${role}@test.com`,
+      role: role,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+      __v: 0
+    };
+
+    // Set test token
+    window.localStorage.setItem("accessToken", "test-token");
+    
+    // Set user state
+    setIsLoggedIn(true);
+    setUser(testUser);
+    setRole(role);
+    navigate("/", { replace: true });
+  };
+
   return (
     <>
       <div className="flex w-full flex-row justify-between">
@@ -98,21 +119,39 @@ export default function Login({
                 <label htmlFor="remember">Remember Me</label>
               </div>
 
-              <Link to="/password/forgot">Forgot Password?</Link>
+              <Link
+                to="/password/forgot"
+                className="text-primary hover:text-primary/80"
+              >
+                Forgot Password?
+              </Link>
             </div>
             <button
               type="submit"
-              className="bg-primary mb-20 w-full rounded-[12px] py-[13px] text-white disabled:opacity-50"
-              disabled={!email || password.length < 6}
+              disabled={isPending}
+              className="mb-4 h-10 w-full rounded-[12px] bg-primary text-white font-semibold hover:bg-primary/90 disabled:opacity-50"
             >
-              {isPending ? <p>...</p> : <p>Log In</p>}
+              {isPending ? "Signing In..." : "Sign In"}
             </button>
           </form>
-          <hr className="mb-10 w-full border-[#DDE1E6]" />
-          <div className="flex w-full">
-            <p>
-              No account yet? Please visit the <strong>reception area</strong>
-            </p>
+
+          {/* Test Login Buttons for Development */}
+          <div className="w-full mt-6 p-4 bg-gray-50 rounded-lg">
+            <h3 className="text-sm font-semibold text-gray-700 mb-3">Test Login (Development)</h3>
+            <div className="flex gap-2">
+              <button
+                onClick={() => handleTestLogin("admin")}
+                className="flex-1 h-8 rounded bg-blue-600 text-white text-sm font-medium hover:bg-blue-700"
+              >
+                Login as Admin
+              </button>
+              <button
+                onClick={() => handleTestLogin("surgeon")}
+                className="flex-1 h-8 rounded bg-green-600 text-white text-sm font-medium hover:bg-green-700"
+              >
+                Login as Surgeon
+              </button>
+            </div>
           </div>
         </div>
       </div>

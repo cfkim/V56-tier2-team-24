@@ -3,11 +3,18 @@ import { useParams, useNavigate } from "react-router-dom";
 
 interface Patient {
   id: string;
-  name: string;
   currentStatus: string;
-  surgeryType?: string;
-  roomNumber?: string;
 }
+
+const STATUS_OPTIONS = [
+  "Checked-In",
+  "Pre-Procedure", 
+  "In Progress",
+  "Closing",
+  "Recovery",
+  "Complete",
+  "Dismissal"
+];
 
 export default function UpdatePatientStatus() {
   const { patientId } = useParams<{ patientId: string }>();
@@ -15,50 +22,53 @@ export default function UpdatePatientStatus() {
   const [patient, setPatient] = useState<Patient | null>(null);
   const [loading, setLoading] = useState(true);
   const [selectedStatus, setSelectedStatus] = useState<string>("");
-  const [isUpdating, setIsUpdating] = useState(false);
-
-  const statusOptions = [
-    { value: "checked-in", label: "Checked In", color: "bg-checked-in" },
-    { value: "pre-procedure", label: "Pre-Procedure", color: "bg-pre-procedure" },
-    { value: "in-progress", label: "In Progress", color: "bg-in-progress" },
-    { value: "closing", label: "Closing", color: "bg-closing" },
-    { value: "recovery", label: "Recovery", color: "bg-recovery" },
-    { value: "complete", label: "Complete", color: "bg-complete" },
-    { value: "dismissal", label: "Dismissal", color: "bg-dismissal" },
-  ];
+  const [isSaving, setIsSaving] = useState(false);
 
   useEffect(() => {
-    // Simulate API call to fetch patient data
-    const fetchPatientData = async () => {
-      setLoading(true);
-      // TODO: Replace with actual API call
-      setTimeout(() => {
-        setPatient({
-          id: patientId || "",
-          name: "John Doe",
-          currentStatus: "checked-in",
-          surgeryType: "Appendectomy",
-          roomNumber: "OR-101"
-        });
-        setLoading(false);
-      }, 1000);
-    };
-
-    if (patientId) {
-      fetchPatientData();
-    }
+    // Simulate fetching patient data
+    setTimeout(() => {
+      setPatient({
+        id: patientId || "",
+        currentStatus: "In Progress"
+      });
+      setLoading(false);
+    }, 1000);
   }, [patientId]);
 
-  const handleStatusUpdate = async () => {
-    if (!selectedStatus) return;
+  const getStatusIndex = (status: string) => {
+    return STATUS_OPTIONS.indexOf(status);
+  };
 
-    setIsUpdating(true);
+  const isStatusDisabled = (status: string) => {
+    if (!patient) return true;
+    
+    const currentIndex = getStatusIndex(patient.currentStatus);
+    const statusIndex = getStatusIndex(status);
+    
+    // Previous statuses are disabled
+    return statusIndex <= currentIndex;
+  };
+
+  const handleStatusSelect = (status: string) => {
+    if (isStatusDisabled(status)) return;
+    setSelectedStatus(status);
+  };
+
+  const handleSaveChanges = async () => {
+    if (!selectedStatus) return;
+    
+    setIsSaving(true);
+    
     // TODO: Add API call to update patient status
     setTimeout(() => {
-      setIsUpdating(false);
-      // Navigate back to patient status page or show success message
+      setIsSaving(false);
+      // Navigate to success page or back to patient list
       navigate("/status");
     }, 1000);
+  };
+
+  const handleBack = () => {
+    navigate("/update");
   };
 
   if (loading) {
@@ -66,7 +76,7 @@ export default function UpdatePatientStatus() {
       <div className="min-h-screen bg-background font-nunito flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
-          <p className="text-lg text-text">Loading patient information...</p>
+          <p className="text-text">Loading patient information...</p>
         </div>
       </div>
     );
@@ -79,10 +89,10 @@ export default function UpdatePatientStatus() {
           <h2 className="text-2xl font-bold text-header-black mb-4">Patient Not Found</h2>
           <p className="text-text mb-6">The patient with ID {patientId} could not be found.</p>
           <button
-            onClick={() => navigate("/update")}
-            className="px-6 py-3 bg-primary text-white rounded-lg hover:bg-primary/90"
+            onClick={handleBack}
+            className="bg-primary text-white px-6 py-2 rounded-lg hover:bg-primary/90"
           >
-            Back to Update Status
+            Go Back
           </button>
         </div>
       </div>
@@ -91,95 +101,105 @@ export default function UpdatePatientStatus() {
 
   return (
     <div className="min-h-screen bg-background font-nunito">
-      <div className="mx-auto max-w-4xl px-6 py-12">
-        {/* Header */}
-        <div className="mb-8">
+      <div className="flex-1 flex flex-col bg-white">
+        <div className="max-w-4xl mx-auto px-6 py-8">
+          {/* Back Button */}
           <button
-            onClick={() => navigate("/update")}
-            className="mb-4 flex items-center text-primary hover:text-primary/80"
+            onClick={handleBack}
+            className="flex items-center text-text hover:text-primary mb-6 transition-colors"
           >
             <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
             </svg>
-            Back to Update Status
+            Back
           </button>
-          <h1 className="font-kaisei text-3xl font-bold text-header-black mb-2">
-            Update Patient Status
-          </h1>
-          <p className="text-lg text-text">
-            Update the status for Patient #{patient.id}
-          </p>
-        </div>
 
-        {/* Patient Information */}
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-8">
-          <h2 className="text-xl font-semibold text-header-black mb-4">Patient Information</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Patient ID</label>
-              <p className="text-lg font-semibold text-header-black">{patient.id}</p>
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Patient Name</label>
-              <p className="text-lg font-semibold text-header-black">{patient.name}</p>
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Current Status</label>
-              <span className={`inline-block px-3 py-1 rounded-full text-sm font-medium ${statusOptions.find(s => s.value === patient.currentStatus)?.color} text-black`}>
-                {statusOptions.find(s => s.value === patient.currentStatus)?.label}
-              </span>
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Surgery Type</label>
-              <p className="text-lg text-header-black">{patient.surgeryType}</p>
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Room Number</label>
-              <p className="text-lg text-header-black">{patient.roomNumber}</p>
-            </div>
-          </div>
-        </div>
-
-        {/* Status Update Form */}
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-          <h2 className="text-xl font-semibold text-header-black mb-6">Update Status</h2>
-          
-          <div className="mb-6">
-            <label className="block text-sm font-medium text-gray-700 mb-3">
-              Select New Status
-            </label>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
-              {statusOptions.map((status) => (
-                <button
-                  key={status.value}
-                  type="button"
-                  onClick={() => setSelectedStatus(status.value)}
-                  className={`p-4 rounded-lg border-2 text-left transition-all ${
-                    selectedStatus === status.value
-                      ? `border-primary ${status.color}`
-                      : "border-gray-200 hover:border-gray-300 bg-gray-50"
-                  }`}
-                >
-                  <div className="font-medium text-header-black">{status.label}</div>
-                </button>
-              ))}
-            </div>
+          {/* Page Title and Description */}
+          <div className="text-center mb-8">
+            <h1 className="font-kaisei text-4xl font-bold text-header-black mb-4">
+              Update Patient Status
+            </h1>
+            <p className="text-lg text-text">
+              Log and update their real-time status in surgery
+            </p>
           </div>
 
-          <div className="flex gap-4">
-            <button
-              onClick={() => navigate("/update")}
-              className="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50"
-            >
-              Cancel
-            </button>
-            <button
-              onClick={handleStatusUpdate}
-              disabled={!selectedStatus || isUpdating}
-              className="px-6 py-3 bg-primary text-white rounded-lg hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              {isUpdating ? "Updating..." : "Update Status"}
-            </button>
+          {/* Form */}
+          <div className="max-w-2xl mx-auto space-y-6">
+            {/* Patient Number Field */}
+            <div>
+              <label className="block text-sm font-medium text-header-black mb-2">
+                Patient Number
+              </label>
+              <input
+                type="text"
+                value={patient.id}
+                readOnly
+                className="w-full h-12 px-4 py-3 text-lg border border-gray-300 rounded-lg bg-yellow-50 text-header-black cursor-not-allowed"
+              />
+            </div>
+
+            {/* Current Status Field */}
+            <div>
+              <label className="block text-sm font-medium text-header-black mb-2">
+                Current Status
+              </label>
+              <input
+                type="text"
+                value={patient.currentStatus}
+                readOnly
+                className="w-full h-12 px-4 py-3 text-lg border border-gray-300 rounded-lg bg-gray-50 text-header-black cursor-not-allowed"
+              />
+            </div>
+
+            {/* New Status Field */}
+            <div>
+              <label className="block text-sm font-medium text-header-black mb-4">
+                New Status
+              </label>
+              <div className="grid grid-cols-3 gap-3">
+                {STATUS_OPTIONS.map((status) => {
+                  const isDisabled = isStatusDisabled(status);
+                  const isSelected = selectedStatus === status;
+                  
+                  return (
+                    <button
+                      key={status}
+                      onClick={() => handleStatusSelect(status)}
+                      disabled={isDisabled}
+                      className={`
+                        h-12 px-4 py-2 rounded-lg border-2 font-medium transition-all
+                        ${isSelected 
+                          ? 'bg-primary text-white border-primary' 
+                          : isDisabled 
+                            ? 'bg-gray-200 text-gray-500 border-gray-200 cursor-not-allowed' 
+                            : 'bg-white text-header-black border-gray-300 hover:border-primary hover:bg-gray-50'
+                        }
+                      `}
+                    >
+                      {status}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* Save Changes Button */}
+            <div className="pt-6">
+              <button
+                onClick={handleSaveChanges}
+                disabled={!selectedStatus || isSaving}
+                className={`
+                  w-full h-12 rounded-lg font-semibold text-lg transition-colors
+                  ${selectedStatus && !isSaving
+                    ? 'bg-primary text-white hover:bg-primary/90'
+                    : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                  }
+                `}
+              >
+                {isSaving ? "Saving..." : "Save Changes"}
+              </button>
+            </div>
           </div>
         </div>
       </div>
