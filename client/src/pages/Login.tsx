@@ -32,10 +32,7 @@ export default function Login({
 
       window.localStorage.setItem("accessToken", response.data.accessToken);
 
-      // Only saves refresh token if rememberMe checked
-      if (rememberMe) {
-        window.localStorage.setItem("refreshToken", response.data.refreshToken);
-      }
+      window.localStorage.setItem("refreshToken", response.data.refreshToken);
 
       // Sets App's logged in state and the role of the user
       setIsLoggedIn(true);
