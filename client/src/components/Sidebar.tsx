@@ -27,7 +27,7 @@ export default function Sidebar({
     return () => window.removeEventListener("keydown", handleEsc);
   }, [onClose]);
 
-  const sidebarPortal = document.getElementById("sidebar");
+  const sidebarPortal = document.getElementById("portal");
   if (!sidebarPortal) return null;
 
   return createPortal(

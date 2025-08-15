@@ -1,11 +1,13 @@
 import clsx from "clsx";
 import { useEffect, useState } from "react";
-import PatientFormModal from "../components/PatientFormModal";
+import PatientFormModal from "../components/PatientForm/PatientFormModal";
+import SuccessMessage from "../components/PatientForm/SuccessMessage";
 import Search from "../components/search";
 
 import DeleteConfirmModal from "../components/DeleteConfirmModal";
 import { getPatients } from "../lib/api";
 import type { Patient } from "../types/Patient";
+import cn from "../utils/cn";
 
 export default function PatientInfo() {
   const [patients, setPatients] = useState<Patient[]>([]);
@@ -14,15 +16,39 @@ export default function PatientInfo() {
   const [openPatientID, setOpenPatientID] = useState<string | null>(null);
   const [selectedPatient, setSelectedPatient] = useState<Patient | null>(null);
   const [deleteConfirmIsOpen, setDeleteConfirmIsOpen] = useState(false);
+  const [lastAddedPatientId, setLastAddedPatientId] = useState<string>("");
+  const [successIsOpen, setSuccessIsOpen] = useState(false);
+  const [successAction, setSuccessAction] = useState<
+    "add" | "edit" | "delete" | ""
+  >("");
 
   const fetchPatients = async () => {
-    const result = await getPatients();
-    const patients = result.data.patients;
-    setPatients(patients);
+    try {
+      const result = await getPatients();
+      const patients = result.data.patients;
+      setPatients(patients);
+      return true;
+    } catch (error) {
+      console.error(error);
+      return false;
+    }
   };
   useEffect(() => {
     fetchPatients();
   }, []);
+
+  useEffect(() => {
+    if (!lastAddedPatientId) return;
+    console.log("lastAddedPatientId: " + lastAddedPatientId);
+    setSuccessIsOpen(true);
+    setSuccessAction("add");
+    const t = setTimeout(() => {
+      setSuccessIsOpen(false);
+      setSuccessAction("");
+      setLastAddedPatientId("");
+    }, 40000);
+    return () => clearTimeout(t);
+  }, [lastAddedPatientId]);
 
   return (
     <>
@@ -123,7 +149,12 @@ export default function PatientInfo() {
             <tbody>
               {patients.map((patient: Patient) => (
                 <tr
-                  className="relative border-b border-gray-200"
+                  className={cn(
+                    "border-b-1 border-gray-200",
+                    successIsOpen && lastAddedPatientId !== patient.patientID
+                      ? "opacity-20"
+                      : "",
+                  )}
                   key={patient._id}
                 >
                   <td className="px-5 py-3 pr-50">
@@ -236,6 +267,7 @@ export default function PatientInfo() {
         fetchPatients={fetchPatients}
         selectedPatientID={selectedPatient?.patientID || ""}
       />
+      <SuccessMessage isOpen={successIsOpen} action={successAction} />
     </>
   );
 }

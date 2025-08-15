@@ -23,7 +23,7 @@ patientRoutes.get("/", async (req: any, res) => {
 
 // gets all patient records
 patientRoutes.get("/all", async (req: any, res) => {
-    const allPatients = await PatientModel.find({});
+    const allPatients = await PatientModel.find({}).sort({ createdAt: -1 });
 
     if (allPatients) {
         res.status(200).json({
@@ -105,7 +105,10 @@ patientRoutes.post("/create", async (req, res) => {
             phoneNumber: phoneNumber,
         });
 
-        res.status(201).json({ message: "patient successfully created" });
+        res.status(201).json({
+            message: "patient successfully created",
+            patient: patient,
+        });
     } catch (error) {
         console.log(error);
         res.status(500).json({

@@ -1,9 +1,9 @@
 import { useMemo, useState } from "react";
 import { Link } from "react-router-dom";
-import type { Role } from "../types/Role";
+import type { Role } from "../../types/Role";
+import Sidebar from "../Sidebar";
 import HeaderLinks from "./HeaderLinks";
 import ProfileIcon from "./ProfileIcon";
-import Sidebar from "./Sidebar";
 
 export default function Header({
   role,
