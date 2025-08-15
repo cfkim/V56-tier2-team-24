@@ -1,15 +1,18 @@
 import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import { addPatient, getNewPatientId } from "../lib/api";
+import type { Patient } from "../types/Patient";
 
 export default function PatientFormModal({
   isOpen,
   onClose,
   isEdit = false,
+  patient,
 }: {
   isOpen: boolean;
   onClose: () => void;
   isEdit?: boolean;
+  patient: Patient | null;
 }) {
   const [newPatientId, setNewPatientId] = useState<number>(0);
   const [errors, setErrors] = useState<{
