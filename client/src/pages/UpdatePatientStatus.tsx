@@ -6,7 +6,8 @@ import {
   type Patient, 
   type PatientStatus,
   isStatusDisabled, 
-  getStatusButtonClass
+  getStatusButtonClass,
+  transformPatientData
 } from "../utils/patientStatus";
 
 export default function UpdatePatientStatus() {
@@ -30,10 +31,14 @@ export default function UpdatePatientStatus() {
         setLoading(true);
         setError("");
         const response = await getPatientById(patientId);
-        setPatient(response.data.patient);
-      } catch (err: any) {
+        const transformedPatient = transformPatientData(response.data.patient);
+        setPatient(transformedPatient);
+      } catch (err: unknown) {
         console.error("Error fetching patient:", err);
-        setError(err.response?.data?.message || "Failed to fetch patient information");
+        const errorMessage = err instanceof Error 
+          ? err.message 
+          : "Failed to fetch patient information";
+        setError(errorMessage);
       } finally {
         setLoading(false);
       }
@@ -58,9 +63,12 @@ export default function UpdatePatientStatus() {
       
       // Navigate to confirmation page
       navigate("/update/confirmation");
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error("Error updating patient status:", err);
-      setError(err.response?.data?.message || "Failed to update patient status");
+      const errorMessage = err instanceof Error 
+        ? err.message 
+        : "Failed to update patient status";
+      setError(errorMessage);
     } finally {
       setIsSaving(false);
     }

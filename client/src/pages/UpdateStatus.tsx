@@ -25,9 +25,12 @@ export default function UpdateStatus() {
       
       // Navigate to the patient status update page
       navigate(`/update/patient/${patientId.trim()}`);
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error("Error validating patient:", err);
-      setError(err.response?.data?.message || "Patient not found. Please check the patient number.");
+      const errorMessage = err instanceof Error 
+        ? err.message 
+        : "Patient not found. Please check the patient number.";
+      setError(errorMessage);
     } finally {
       setIsSubmitting(false);
     }
