@@ -9,6 +9,13 @@ export default function Status() {
     const [statusList, setStatusList] = useState([])
     const searchTermRef = useRef("");
     const [progress, setProgress] = useState(0);
+    const [page, setPage] = useState(1);
+    const resultsPerPage = 10; // Number of results on each page
+    
+    // Gets the number of pages of results
+    const getNumPages = () => {
+        return Math.ceil(statusList.length / resultsPerPage);
+    }
 
     // Function to fetch list of patient and status
     const fetchStatusList = async (term: string = "") => {
@@ -46,7 +53,7 @@ export default function Status() {
 
         const intervalId = setInterval(() => {
             fetchStatusList(searchTermRef.current);       
-        }, 7000); // Refreshes every 20 seconds
+        }, 20000); // Refreshes every 20 seconds
 
         return () => {
             clearInterval(intervalId);} // Prevents memory leaks after component unmounts
@@ -76,7 +83,7 @@ export default function Status() {
     }
 
     return <>
-    <div id="progress-bar" className={clsx("h-2 bg-primary", progress === 0 ? "transition-none" : "transition-all")} style={{ width: `${progress}%` }}></div>
+    <div id="progress-bar" className={clsx("h-2 bg-primary sticky top-0 z-100", progress === 0 ? "transition-none" : "transition-all")} style={{ width: `${progress}%` }}></div>
     <div className="flex items-center overflow-x-auto h-screen flex-col gap-6 font-nunito m-10">   
         <h1 className="text-3xl font-kaisei">Surgery Status Board</h1>
         To track the progress of the patient, refer to the Patient # given to you at Check-In
@@ -109,7 +116,7 @@ export default function Status() {
                 </tr>
             </thead>
             <tbody>
-                {statusList.map((patient:Patient) => (
+                {statusList.slice(resultsPerPage * (page-1), resultsPerPage * page).map((patient:Patient) => (
                     <tr className="border-b-1 border-gray-200 last-child:border-bottom:0" key={patient._id}>
                         <td className="px-9 py-4 text-2xl">
                             #{patient.patientID}
@@ -134,7 +141,25 @@ export default function Status() {
             
         </table>
         
-        
+        {/* pagination */}
+        <div className="flex sticky bottom-0 font-nunito-bold mt-auto">
+            {Array.from({length:getNumPages()}, (_, i) => i + 1).map(num => (
+                <button key={num} onClick={()=> setPage(num)} className={clsx("px-4 mx-1 py-2 rounded-lg text-xl hover:cursor-pointer", page === num ? "bg-accent" : "")}>
+                    {num}
+                </button>
+            ))}
+            <button 
+                disabled={page >= getNumPages()} 
+                onClick={() => setPage(page + 1)} 
+                className="flex items-center gap-2 mx-5 text-xl disabled:opacity-50 disabled:cursor-default hover:cursor-pointer">
+                Next
+                <svg xmlns="http://www.w3.org/2000/svg" 
+                    height="24px" viewBox="0 -960 960 960" 
+                    width="20px" fill="#000000">
+                    <path d="m321-80-71-71 329-329-329-329 71-71 400 400L321-80Z"/>
+                </svg>
+            </button>
+        </div>
     </div>
     
     </>
