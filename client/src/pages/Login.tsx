@@ -107,8 +107,8 @@ export default function Login({
             </div>
             <button
               type="submit"
-              disabled={isPending}
-              className="mb-4 h-10 w-full rounded-[12px] bg-primary text-white font-semibold hover:bg-primary/90 disabled:opacity-50"
+              className="bg-primary mb-20 w-full cursor-pointer rounded-[12px] py-[13px] text-white disabled:opacity-50"
+              disabled={!email || password.length < 6}
             >
               {isPending ? "Signing In..." : "Sign In"}
             </button>
