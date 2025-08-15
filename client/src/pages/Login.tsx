@@ -45,27 +45,6 @@ export default function Login({
     },
   });
 
-  // Test login function for development
-  const handleTestLogin = (role: Role) => {
-    const testUser = {
-      _id: "test-id",
-      email: `${role}@test.com`,
-      role: role,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-      __v: 0
-    };
-
-    // Set test token
-    window.localStorage.setItem("accessToken", "test-token");
-    
-    // Set user state
-    setIsLoggedIn(true);
-    setUser(testUser);
-    setRole(role);
-    navigate("/", { replace: true });
-  };
-
   return (
     <>
       <div className="flex w-full flex-row justify-between">
@@ -134,25 +113,6 @@ export default function Login({
               {isPending ? "Signing In..." : "Sign In"}
             </button>
           </form>
-
-          {/* Test Login Buttons for Development */}
-          <div className="w-full mt-6 p-4 bg-gray-50 rounded-lg">
-            <h3 className="text-sm font-semibold text-gray-700 mb-3">Test Login (Development)</h3>
-            <div className="flex gap-2">
-              <button
-                onClick={() => handleTestLogin("admin")}
-                className="flex-1 h-8 rounded bg-blue-600 text-white text-sm font-medium hover:bg-blue-700"
-              >
-                Login as Admin
-              </button>
-              <button
-                onClick={() => handleTestLogin("surgeon")}
-                className="flex-1 h-8 rounded bg-green-600 text-white text-sm font-medium hover:bg-green-700"
-              >
-                Login as Surgeon
-              </button>
-            </div>
-          </div>
         </div>
       </div>
     </>
