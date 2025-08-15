@@ -8,24 +8,24 @@ export default function UpdateStatusConfirmation() {
   };
 
   return (
-    <div className="min-h-screen bg-background font-nunito">
-      <div className="flex-1 flex flex-col bg-white">
+    <div className="flex-1 bg-background font-nunito flex flex-col">
+      <div className="flex-1 flex items-center justify-center bg-white">
         <div className="max-w-4xl mx-auto px-6 py-8">
           {/* Page Title */}
           <div className="text-center mb-8">
-            <h1 className="font-kaisei text-4xl font-bold text-header-black mb-4">
+            <h1 className="font-kaisei text-5xl font-bold text-header-black mb-6">
               Update Patient Status
             </h1>
           </div>
 
           {/* Confirmation Content */}
-          <div className="max-w-2xl mx-auto text-center">
+          <div className="max-w-3xl mx-auto text-center">
             {/* Success Message */}
-            <div className="mb-8 p-4 bg-green-50 border border-green-200 rounded-lg">
-              <div className="flex items-center justify-center gap-3">
-                <div className="flex-shrink-0 w-6 h-6 bg-green-100 rounded-full flex items-center justify-center">
+            <div className="mb-8 p-6 bg-green-50 border border-green-200 rounded-lg">
+              <div className="flex items-center justify-center gap-4">
+                <div className="flex-shrink-0 w-8 h-8 bg-green-100 rounded-full flex items-center justify-center">
                   <svg 
-                    className="w-4 h-4 text-green-600" 
+                    className="w-5 h-5 text-green-600" 
                     fill="currentColor" 
                     viewBox="0 0 20 20"
                   >
@@ -36,7 +36,7 @@ export default function UpdateStatusConfirmation() {
                     />
                   </svg>
                 </div>
-                <p className="text-lg font-medium text-green-800">
+                <p className="text-xl font-medium text-green-800">
                   Patient changes saved successfully
                 </p>
               </div>
@@ -47,15 +47,15 @@ export default function UpdateStatusConfirmation() {
 
             {/* Update Another Patient Link */}
             <div className="text-center">
-              <p className="text-lg text-text mb-4">
-                Update Status of another patient
+              <p className="text-xl text-text mb-4">
+                Update Status of another patient{" "}
+                <button
+                  onClick={handleUpdateAnother}
+                  className="text-primary hover:text-primary/80 underline font-medium text-xl transition-colors"
+                >
+                  here
+                </button>
               </p>
-              <button
-                onClick={handleUpdateAnother}
-                className="text-primary hover:text-primary/80 underline font-medium text-lg transition-colors"
-              >
-                here
-              </button>
             </div>
           </div>
         </div>
