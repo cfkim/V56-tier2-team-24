@@ -247,7 +247,7 @@ export default function PatientFormModal({
                     placeholder="Checked-In"
                     readOnly
                     value={patient?.medicalStatus}
-                    className="bg-accent pointer-events-none w-full rounded-xl border-b border-[#C1C7CD] px-4 py-3 placeholder:text-[#B5B16F]"
+                    className="bg-accent pointer-events-none w-full rounded-xl border-b border-[#C1C7CD] px-4 py-3 text-[#B5B16F] placeholder:text-[#B5B16F]"
                   />
                 </div>
               )}
