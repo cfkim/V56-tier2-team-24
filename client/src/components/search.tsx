@@ -65,7 +65,11 @@ export function LargeSearch({
   );
 }
 
-export default function Search() {
+export default function Search({
+  handleChange,
+}: {
+  handleChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
+}) {
   return (
     <>
       <div className="flex w-60 items-center border-b-2 border-gray-200 p-2">
@@ -91,6 +95,8 @@ export default function Search() {
           type="text"
           placeholder="Search"
           className="pl-2 focus:outline-none"
+          onChange={handleChange}
+
         />
       </div>
     </>

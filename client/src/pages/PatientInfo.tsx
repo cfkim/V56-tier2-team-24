@@ -1,5 +1,5 @@
 import clsx from "clsx";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { getPatients } from "../lib/api";
 // import { SmallSearch } from "../components/search";
 import PatientFormModal from "../components/PatientForm/PatientFormModal";
@@ -12,6 +12,9 @@ import cn from "../utils/cn";
 
 export default function PatientInfo() {
   const [patients, setPatients] = useState<Patient[]>([]);
+  const [filteredPatients, setFilteredPatients] = useState<Patient[]>([]);
+  const searchTermRef = useRef("");
+  
   const [patientFormIsOpen, setPatientFormIsOpen] = useState(false);
   const [selectedStatus, setSelectedStatus] = useState<string>("All");
   const [openPatientID, setOpenPatientID] = useState<string | null>(null);
@@ -25,19 +28,39 @@ export default function PatientInfo() {
     "add" | "edit" | "delete" | ""
   >("");
 
-  const fetchPatients = async () => {
+  // Gets a filtered list based on search
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+      const value = e.target.value;
+      searchTermRef.current = value;
+      
+      fetchPatients(value);
+  }
+
+  const fetchPatients = async (term: String) => {
+    
     try {
       const result = await getPatients();
       const patients = result.data.patients;
-      setPatients(patients);
+      
+      // if there's a search term, then return the filtered list
+      if(term !== ""){
+          const filteredList = patients.filter((patient: Patient) =>
+              patient.patientID.toString().toLowerCase().includes(term.toLowerCase())
+          );
+          setPatients(filteredList);
+      }else{
+          setPatients(patients);
+      }
+      
       return true;
     } catch (error) {
       console.error(error);
       return false;
     }
   };
+
   useEffect(() => {
-    fetchPatients();
+    fetchPatients(searchTermRef.current);
   }, []);
 
   useEffect(() => {
@@ -158,11 +181,11 @@ export default function PatientInfo() {
                 After Procedure
               </button>
             </div>
-            <Search></Search>
+            <Search handleChange={handleInputChange}></Search>
           </div>
         </div>
 
-        <div className="relative overflow-visible">
+        <div className="relative overflow-visible h-screen">
           <table className="min-w-full rounded-2xl text-lg outline-2 outline-gray-100">
             <thead className="bg-accent font-nunito-bold h-12 text-left">
               <tr>
@@ -288,7 +311,7 @@ export default function PatientInfo() {
           setSelectedPatient(null);
         }}
         patient={selectedPatient}
-        fetchPatients={fetchPatients}
+        fetchPatients={()=> fetchPatients(searchTermRef.current)}
         setLastAddedPatientId={setLastAddedPatientId}
         setLastEditedPatientId={setLastEditedPatientId}
       />
@@ -298,7 +321,7 @@ export default function PatientInfo() {
           setDeleteConfirmIsOpen(false);
           setSelectedPatient(null);
         }}
-        fetchPatients={fetchPatients}
+        fetchPatients={()=> fetchPatients(searchTermRef.current)}
         selectedPatientID={selectedPatient?.patientID || ""}
         setLastDeletedPatientId={setLastDeletedPatientId}
       />
