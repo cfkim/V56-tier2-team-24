@@ -30,13 +30,13 @@ export default function PatientInfo() {
 
   // pagination
   const [page, setPage] = useState(1);
-  const resultsPerPage = 2; // Number of results on each page
+  const resultsPerPage = 10; // Number of results on each page
 
   const getNumPages = () => {
     return Math.ceil(patients.length / resultsPerPage);
   }
 
-  // gets the page navigation numbers
+  // gets the page navigation numbers to show at the bottom
   function getPageNav(current: number, total: number){
     const pages = []
     // if total pages less than or equal to 7, shows all pages
@@ -47,13 +47,16 @@ export default function PatientInfo() {
       return pages;
     }
 
+
+    // 0 means ... in the page nav
+
     // if current page is in the first 4, then shows first 4 pages
     if(current < 3){
-      pages.push(1, 2, 3, 4, "...", total)
+      pages.push(1, 2, 3, 4, 0, total)
     }else if(current > total - 2){ // if current page in last 4
-      pages.push(1, "...", total - 3, total - 2, total - 1, total)
+      pages.push(1, 0, total - 3, total - 2, total - 1, total)
     }else{ // if current page is in the middlee
-      pages.push(1, "...", current - 1, current, current + 1, "...", total)
+      pages.push(1, 0, current - 1, current, current + 1, 0, total)
     }
 
     return pages
@@ -379,9 +382,20 @@ export default function PatientInfo() {
 
         {/* pagination */}
         <div className="flex sticky bottom-0 font-nunito-bold mt-10">
-            {getPageNav(page, getNumPages()).map((num) => (
-                <button key={num} onClick={()=> setPage(num)} className={clsx("px-4 mx-1 py-2 rounded-lg text-xl hover:cursor-pointer", page === num ? "bg-accent" : "")}>
-                    {num}
+            <button 
+                disabled={page <= 1} 
+                onClick={() => setPage(page - 1)} 
+                className="flex items-center gap-2 mx-5 text-xl disabled:opacity-50 disabled:cursor-default hover:cursor-pointer">
+                <svg xmlns="http://www.w3.org/2000/svg" 
+                height="24px" viewBox="0 -960 960 960" 
+                width="20px" fill="#000000">
+                  <path d="M400-80 0-480l400-400 71 71-329 329 329 329-71 71Z"/>
+                </svg>
+                Prev
+            </button>
+            {getPageNav(page, getNumPages()).map((num, index) => (
+                <button key={index} onClick={()=> setPage(num)} disabled={num == 0}className={clsx("px-4 mx-1 py-2 rounded-lg text-xl hover:cursor-pointer disabled:pointer-events-none", page === num ? "bg-accent pointer-events-none" : "")}>
+                    {num == 0 ? "..." : num}
                 </button>
             ))}
             <button 
@@ -397,6 +411,7 @@ export default function PatientInfo() {
             </button>
         </div>
       </div>
+
       <PatientFormModal
         isEdit={selectedPatient !== null}
         isOpen={patientFormIsOpen}
