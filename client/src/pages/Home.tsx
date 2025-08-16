@@ -1,5 +1,6 @@
 import { Link, useNavigate } from "react-router-dom";
 import type { Role } from "../types/Role";
+import Chatbot from "../components/Chatbot";
 
 function capitalize(role: Role) {
   return role.charAt(0).toUpperCase() + role.slice(1);
@@ -44,6 +45,7 @@ export default function Home({
               happening.
             </p>
           </div>
+          <Chatbot></Chatbot>
           <div className="relative">
             {!isLoggedIn && (
               <div className="absolute inset-x-0 bottom-1/5 z-30 flex flex-col items-center gap-3 font-semibold sm:static sm:flex-row sm:text-sm md:text-base lg:text-lg xl:text-xl">
