@@ -1,12 +1,29 @@
 import {GoogleGenAI} from '@google/genai';
-import {useEffect, useState} from 'react';
+import {use, useEffect, useState} from 'react';
 
+interface Message{
+  author: string;
+  content: string;
+  
+}
 
 export default function Chatbot() {
   const [aiResponse, setAiResponse] = useState<any>();
+  const [messages, setMessages] = useState<Message[]>([]);
+  const [userInput, setUserInput] = useState<string>('');
+  
+  useEffect(() => {
+    // initializes message history with a welcome message
+    setMessages([{author: 'AI', content: 'Hey there, how can we help you?'}]);
+  }, []);
 
   const handleSubmit = async ()=> {
-    
+    if (userInput.trim() === '') return; // prevents submission of empty messages
+
+    // adds user input to message history
+    setMessages((prev) => [...prev, {author: 'User', content: userInput}]);
+    setUserInput(''); // clears input field after submission
+
     const ai = new GoogleGenAI({apiKey: import.meta.env.VITE_GEMINI_AI_KEY});
     const response = await ai.models.generateContent({
       model: 'gemini-1.5-flash',
@@ -14,8 +31,11 @@ export default function Chatbot() {
       
     })
     
-    setAiResponse(response.text);
-    
+    // setAiResponse(response.text);
+    setAiResponse("testing a response.")
+    // adds AI response to message history
+    // setMessages([...messages, {author: 'AI', content: response.text || 'Message failed. Try again.'}]);
+    setMessages((prev) => [...prev, {author: 'AI', content: "hey that was a great question!"}]);
   }
   return (
     <>
@@ -30,18 +50,26 @@ export default function Chatbot() {
             Online
           </p>
         </div>
-        <div id="chat-body" className="flex flex-col h-[800px] w-full overflow-y-auto">
-
+        <div id="chat-body" className="flex flex-col h-[800px] w-full overflow-y-auto p-6 text-lg">
+          {messages.map((message, index) => (
+            <div key={index} className={`flex ${message.author === 'AI' ? 'justify-start' : 'justify-end'}`}>
+              <div className={`${message.author === 'AI' ? 'bg-[#BEE4FF] rounded-bl-none' : 'bg-gray-200 rounded-br-none'} rounded-xl w-8/10 h-20 mb-10 p-5 drop-shadow-sm/25`}>
+                <p>{message.content}</p>
+              </div>
+            </div>
+          ))}
+          
         </div>
         <div id="chat-input" className="flex h-[112px] w-full items-center justify-center shadow-[0_-8px_16px_rgba(0,0,0,0.2)] p-3 rounded-b-xl">
           <div className="flex flex-row justify-between bg-gray-200 rounded-xl py-4 px-3 w-9/10">
             <input
               type="text"             
-              placeholder="Type your message here..."
+              placeholder={userInput !== "" ? userInput : "Type your message here..."}
               className="outline-none w-full"
+              onChange={(e) => setUserInput(e.target.value)}
             >
             </input>
-            <button className="hover:cursor-pointer" onClick={handleSubmit}>
+            <button disabled={userInput === ""} className="disabled:pointer-events-none hover:cursor-pointer" onClick={handleSubmit}>
               <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <g clip-path="url(#clip0_4418_9832)">
                 <path d="M9.51002 4.23062L18.07 8.51062C21.91 10.4306 21.91 13.5706 18.07 15.4906L9.51002 19.7706C3.75002 22.6506 1.40002 20.2906 4.28002 14.5406L5.15002 12.8106C5.37002 12.3706 5.37002 11.6406 5.15002 11.2006L4.28002 9.46062C1.40002 3.71062 3.76002 1.35062 9.51002 4.23062Z" stroke="#1c0000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
@@ -56,7 +84,6 @@ export default function Chatbot() {
             </button>
             
           </div>
-          
           
         </div>
         {/* <button onClick={handleSubmit} className="hover:cursor-pointer">click for response</button>
