@@ -12,8 +12,8 @@ import cn from "../utils/cn";
 
 export default function PatientInfo() {
   const [patients, setPatients] = useState<Patient[]>([]);
-  const [filteredPatients, setFilteredPatients] = useState<Patient[]>([]);
   const [options, setOptions] = useState([""])
+  const [category, setCategory] = useState("All")
   const searchTermRef = useRef("");
   const [patientFormIsOpen, setPatientFormIsOpen] = useState(false);
   const [selectedStatus, setSelectedStatus] = useState<string>("All");
@@ -42,23 +42,19 @@ export default function PatientInfo() {
       const result = await getPatients();
       const patients = result.data.patients;
       let categorized = patients;
-
-      if(selectedStatus == "All"){
-        categorized = patients;
-      }else if(selectedStatus == "checked-in"){
-        categorized = patients.filter((patient: Patient) => patient.medicalStatus == "checked-in");
-      }else if(selectedStatus == "pre-procedure"){
-        categorized = patients.filter((patient: Patient) => patient.medicalStatus == "pre-procedure");
-      }else if(selectedStatus == "in-progress"){
-        categorized = patients.filter((patient: Patient) => patient.medicalStatus == "in-progress");
-      }else if(selectedStatus == "closing"){
-        categorized = patients.filter((patient: Patient) => patient.medicalStatus == "closing");
-      }else if(selectedStatus == "recovery"){
-        categorized = patients.filter((patient: Patient) => patient.medicalStatus == "recovery");
-      }else if(selectedStatus == "complete"){
-        categorized = patients.filter((patient: Patient) => patient.medicalStatus == "complete");
-      }else if(selectedStatus == "dismissal"){
-        categorized = patients.filter((patient: Patient) => patient.medicalStatus == "dismissal");
+      
+      console.log(selectedStatus)
+      if(category == "Before"){
+        categorized = patients.filter((patient: Patient) => patient.medicalStatus == "checked-in" || patient.medicalStatus == "pre-procedure");
+      }else if(category == "During"){
+        categorized = patients.filter((patient: Patient) => patient.medicalStatus == "in-progress" || patient.medicalStatus == "closing");
+      }else if(category == "After"){
+        categorized = patients.filter((patient: Patient) => patient.medicalStatus == "recovery" || patient.medicalStatus == "complete" || patient.medicalStatus == "dismissal");
+      }
+      
+      // further filters if an option is selected
+      if(selectedStatus !== "All" && selectedStatus !== ""){
+        categorized = categorized.filter((patient: Patient) => patient.medicalStatus === selectedStatus);
       }
 
       console.log(categorized)
@@ -81,7 +77,7 @@ export default function PatientInfo() {
 
   useEffect(() => {
     fetchPatients(searchTermRef.current);
-  }, [selectedStatus]);
+  }, [selectedStatus, category]);
 
   useEffect(() => {
     if (!lastAddedPatientId) return;
@@ -159,54 +155,71 @@ export default function PatientInfo() {
           </div>
 
           <div className="mb-4 flex flex-row justify-between">
-            <div className="flex flex-row gap-8">
+            <div className="flex flex-row gap-8 text-gray-400">
               <button
                 className={clsx(
                   "h-12 rounded-2xl px-10",
-                  selectedStatus === "All" ? "outline-primary outline-2" : "",
+                  category === "All" ? "outline-primary outline-2 text-primary" : "",
                 )}
-                onClick={() => setSelectedStatus("All")}
+                onClick={() => {
+                  if(category !== "All") {
+                    setSelectedStatus("");
+                  }; 
+                  setCategory("All")}}
               >
                 All
               </button>
               <button
                 className={clsx(
                   "h-12 rounded-2xl px-4",
-                  selectedStatus === "Before"
-                    ? "outline-primary outline-2"
+                  category === "Before"
+                    ? "outline-primary outline-2 text-primary"
                     : "",
                 )}
-                onClick={() => {setOptions(["checked-in", "pre-procedure"])}}
+                onClick={() => {
+                  if(category !== "Before") {
+                    setSelectedStatus("");
+                  }
+                  setCategory("Before"); setOptions(["checked-in", "pre-procedure"])}}
               >
                 Before Procedure
               </button>
               <button
                 className={clsx(
                   "h-12 rounded-2xl px-4",
-                  selectedStatus === "During"
-                    ? "outline-primary outline-2"
+                  category === "During"
+                    ? "outline-primary outline-2 text-primary"
                     : "",
                 )}
-                onClick={() => setOptions(["in-progress", "closing"])}
+                onClick={() => {
+                  if(category !== "During") {
+                    setSelectedStatus("");
+                  }
+                  setCategory("During"); setOptions(["in-progress", "closing"])}}
               >
                 During Procedure
               </button>
               <button
                 className={clsx(
                   "h-12 rounded-2xl px-4",
-                  selectedStatus === "After" ? "outline-primary outline-2" : "",
+                  category === "After" ? "outline-primary outline-2 text-primary" : "",
                 )}
-                onClick={() => setOptions(["recovery", "complete", "dismissal"])}
+                onClick={() => {
+                  if(category !== "After") {
+                    setSelectedStatus("");
+                  }
+                  setCategory("After"); setOptions(["recovery", "complete", "dismissal"])}}
               >
                 After Procedure
               </button>
             </div>
             <Search handleChange={handleInputChange}></Search>
           </div>
-          {selectedStatus !== "All" && <div>
+          {category !== "All" && 
+          <div className="text-gray-400">
             {options.map(option => {
               return (
-                <button key={option} onClick={()=>setSelectedStatus(option)} className={clsx("px-5 mb-5 font-nunito-bold text-lg", option === selectedStatus ? "text-primary border-b-2 border-primary" : "")}>
+                <button key={option} onClick={()=>setSelectedStatus(option)} className={clsx("px-6 mb-5 font-nunito-bold text-lg", option === selectedStatus ? "text-primary border-b-2 border-primary" : "")}>
                   {option}
                 </button>
               )
