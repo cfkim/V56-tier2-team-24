@@ -1,5 +1,4 @@
-import {GoogleGenAI} from '@google/genai';
-import {use, useEffect, useRef, useState} from 'react';
+import {useEffect, useRef, useState} from 'react';
 import { getAIResponse } from '../lib/aiChatService';
 import ReactMarkdown from "react-markdown";
 
@@ -54,8 +53,8 @@ export default function Chatbot({currentPage, role}: {currentPage: string, role:
 
   return (
     <>
-      <div className="flex flex-col items-center justify-center h-[800px] bg-white z-100 rounded-xl drop-shadow-sm/25">
-        <div id="chat-header" className="flex flex-col gap-1 bg-accent h-[100px] w-full justify-center drop-shadow-sm/25 p-6 text-3xl rounded-t-xl">
+      <div className="flex flex-col items-center justify-center h-[700px] md:h-[800px] bg-white z-100 rounded-xl drop-shadow-sm/25">
+        <div id="chat-header" className="flex flex-col gap-1 bg-accent h-[100px] w-full justify-center drop-shadow-sm/25 p-6 text-2xl md:text-3xl rounded-t-xl">
           <p className="font-nunito-bold">Chat with Lumo</p>
           <p className="flex flex-row items-center gap-2 text-sm">
             <span className="relative flex size-3">
@@ -65,7 +64,7 @@ export default function Chatbot({currentPage, role}: {currentPage: string, role:
             Online
           </p>
         </div>
-        <div id="chat-body" className="flex flex-col h-[800px] w-full overflow-y-auto p-6 text-lg" style={{ scrollbarGutter: "stable" }} ref={chatEndRef}>
+        <div id="chat-body" className="flex flex-col h-[800px] w-full overflow-y-auto p-6 text-md md:text-lg" style={{ scrollbarGutter: "stable" }} ref={chatEndRef}>
           {messages.map((message, index) => (
             <div key={index} className={`flex ${message.author === 'AI' ? 'justify-start' : 'justify-end'}`}>
               <div className="flex flex-col mb-6">
@@ -92,7 +91,7 @@ export default function Chatbot({currentPage, role}: {currentPage: string, role:
           )
           }
         </div>
-        <div id="chat-input" className="flex flex-col w-full items-center justify-center shadow-[0_-8px_16px_rgba(0,0,0,0.2)] py-4 rounded-b-xl gap-3">
+        <div id="chat-input" className="flex flex-col w-full items-center justify-center shadow-[0_-8px_16px_rgba(0,0,0,0.2)] p-4 rounded-b-xl gap-3">
           <div id="input-suggestions" className="flex flex-row gap-2 drop-shadow-sm/25 z-30">
             <button className=" bg-gray-100 rounded-xl py-2 px-3 hover:cursor-pointer" onClick={()=> handleSubmit("How do I access patients?")}>
               <p className="text-sm">How do I access patients</p>
