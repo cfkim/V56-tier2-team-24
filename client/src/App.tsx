@@ -22,7 +22,7 @@ import type { Role } from "./types/Role";
 function App() {
   const [role, setRole] = useState<Role | undefined>();
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
-  const [user, setUser] = useState<User>();
+  const [, setUser] = useState<User>();
 
   const navigate = useNavigate();
   setNavigate(navigate);
