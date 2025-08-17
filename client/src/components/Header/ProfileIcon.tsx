@@ -74,10 +74,8 @@ export default function ProfileIcon({
           </div>
         ) : (
           <svg
-            className="text-primary"
+            className="text-primary h-8 w-10 sm:h-9 sm:w-11 md:h-10 md:w-12 lg:h-11 lg:w-14 xl:h-12 xl:w-16"
             onClick={() => setIsOpen(true)}
-            width="70"
-            height="50"
             viewBox="0 0 70 50"
             fill="none"
             xmlns="http://www.w3.org/2000/svg"

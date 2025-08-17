@@ -69,7 +69,7 @@ export default function Header({
           </button>
           <Link
             to="/"
-            className="mx-4 flex items-center gap-5 text-xl font-semibold sm:mx-16"
+            className="mx-4 flex items-center gap-2.5 text-base font-semibold sm:mx-7 sm:gap-3 md:mx-10 md:gap-3.5 lg:mx-13 lg:gap-4 lg:text-lg xl:mx-16 xl:gap-5 xl:text-xl"
           >
             <img
               className="hidden h-10 sm:inline-block"
@@ -79,7 +79,7 @@ export default function Header({
             Beacon
           </Link>
         </div>
-        <ul className="text-text hidden h-full items-center gap-2 sm:flex">
+        <ul className="text-text hidden h-full items-center text-xs sm:flex sm:gap-0.5 md:gap-1 md:text-sm lg:gap-1.5 xl:gap-2 xl:text-base">
           {isLoggedIn && (
             <>
               <HeaderLinks to="/" label="Home" />
@@ -97,7 +97,7 @@ export default function Header({
             </>
           )}
         </ul>
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-4 pt-1 text-xs md:text-sm xl:text-base">
           <p>{currentDate}</p>
           {isLoggedIn && (
             <ProfileIcon

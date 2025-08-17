@@ -14,7 +14,7 @@ export default function NotAllowed({ role }: { role?: Role }) {
             xmlns="http://www.w3.org/2000/svg"
             className="h-6 w-6 flex-shrink-0 sm:h-7 sm:w-7"
           >
-            <g clip-path="url(#clip0_328_5592)">
+            <g clipPath="url(#clip0_328_5592)">
               <path
                 d="M12.0001 14.6667C14.9456 14.6667 17.3334 12.2789 17.3334 9.33333C17.3334 6.38781 14.9456 4 12.0001 4C9.05456 4 6.66675 6.38781 6.66675 9.33333C6.66675 12.2789 9.05456 14.6667 12.0001 14.6667Z"
                 stroke="#CDA90C"

@@ -24,7 +24,7 @@ export default function Home({
   };
 
   return (
-    <section className="mb-[-0.5rem] px-1.5 sm:px-6">
+    <section className="px-1.5 sm:px-6">
       <div className="relative flex w-full flex-col items-center overflow-hidden sm:flex-row">
         <div className="absolute inset-0 z-0 hidden w-1/2 overflow-visible bg-white/60 blur-[80px] filter sm:block" />
         <div className="text-header-black font-nunito flex flex-col sm:absolute sm:inset-0 sm:w-1/2 sm:gap-2 sm:py-4 sm:pl-6 md:gap-4 md:py-10 md:pl-8 lg:gap-6 lg:py-14 lg:pl-10 xl:gap-10 xl:py-20 xl:pl-14">
@@ -79,7 +79,7 @@ export default function Home({
         <img
           src="/static/images/hero.svg"
           alt="Hero"
-          className="z-[-1] hidden h-auto w-full rounded-t-[3.125rem] object-top opacity-95 sm:block"
+          className="z-[-1] hidden aspect-[311/176] h-auto w-full rounded-t-[3.125rem] object-top opacity-95 sm:block"
         />
       </div>
     </section>
