@@ -50,7 +50,7 @@ export default function Header({
   ];
 
   return (
-    <header className="font-nunito bg-background text-header-text align-center flex h-14 px-6 text-xs sm:h-20 sm:text-base">
+    <header className="font-nunito bg-background text-header-text align-center flex h-14 flex-none px-6 text-xs sm:h-20 sm:text-base">
       <nav className="mx-auto flex w-full items-center justify-between">
         <div className="flex items-center">
           <button
