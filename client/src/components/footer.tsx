@@ -22,6 +22,16 @@ export default function Footer() {
                 <p className="font-nunito-bold">Shadow SM</p>
               </div>
             </div>
+            <div className="hidden flex-col gap-1 md:flex">
+              <div className="flex flex-col gap-1">
+                <p>Mikala</p>
+                <p className="font-nunito-bold">Scrum Master</p>
+              </div>
+              <div className="flex flex-col gap-1">
+                <p>Omowumi</p>
+                <p className="font-nunito-bold">Shadow SM</p>
+              </div>
+            </div>
             <div className="flex flex-col gap-1">
               <div className="flex flex-col gap-1">
                 <p>Vartika</p>
@@ -50,16 +60,6 @@ export default function Footer() {
               <div className="flex flex-col gap-1">
                 <p>Rel</p>
                 <p className="font-nunito-bold">Developer</p>
-              </div>
-            </div>
-            <div className="hidden flex-col gap-1 md:flex">
-              <div className="flex flex-col gap-1">
-                <p>Mikala</p>
-                <p className="font-nunito-bold">Scrum Master</p>
-              </div>
-              <div className="flex flex-col gap-1">
-                <p>Omowumi</p>
-                <p className="font-nunito-bold">Shadow SM</p>
               </div>
             </div>
           </div>
