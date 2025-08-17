@@ -1,6 +1,8 @@
 import { Link, useNavigate } from "react-router-dom";
 import type { Role } from "../types/Role";
 import Chatbot from "../components/Chatbot";
+import { useState } from "react";
+import { Chat } from "@google/genai";
 
 function capitalize(role: Role) {
   return role.charAt(0).toUpperCase() + role.slice(1);
@@ -23,6 +25,7 @@ export default function Home({
     setRole("guest");
     navigate("/");
   };
+  const [showChatbot, setShowChatbot] = useState(false);
 
   return (
     <section className="mb-[-0.5rem] px-1.5 sm:px-6">
@@ -45,7 +48,25 @@ export default function Home({
               happening.
             </p>
           </div>
-          <Chatbot></Chatbot>
+
+          <button className="w-20 h-20 flex items-center justify-center bg-accent rounded-l-2xl" onClick={() => setShowChatbot(!showChatbot)}>
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <g clip-path="url(#clip0_4418_5763)">
+            <path d="M8.5 19H8C4 19 2 18 2 13V8C2 4 4 2 8 2H16C20 2 22 4 22 8V13C22 17 20 19 16 19H15.5C15.19 19 14.89 19.15 14.7 19.4L13.2 21.4C12.54 22.28 11.46 22.28 10.8 21.4L9.3 19.4C9.14 19.18 8.77 19 8.5 19Z" stroke="#1c0000" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
+            <path opacity="0.4" d="M15.9965 11H16.0054" stroke="#1c0000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path opacity="0.4" d="M11.9955 11H12.0045" stroke="#1c0000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path opacity="0.4" d="M7.99451 11H8.00349" stroke="#1c0000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </g>
+            <defs>
+            <clipPath id="clip0_4418_5763">
+            <rect width="30" height="30" fill="none"/>
+            </clipPath>
+            </defs>
+          </svg>
+          </button>
+          
+          {showChatbot && (<Chatbot></Chatbot>)}
+          
           <div className="relative">
             {!isLoggedIn && (
               <div className="absolute inset-x-0 bottom-1/5 z-30 flex flex-col items-center gap-3 font-semibold sm:static sm:flex-row sm:text-sm md:text-base lg:text-lg xl:text-xl">
