@@ -62,7 +62,7 @@ export default function Chatbot() {
   }
   return (
     <>
-      <div className="flex flex-col items-center justify-center h-[1000px] w-[500px] bg-white z-30 position:absolute rounded-xl">
+      <div className="flex flex-col items-center justify-center h-[800px]  bg-white z-100 rounded-xl">
         <div id="chat-header" className="flex flex-col gap-1 bg-accent h-[100px] w-full justify-center drop-shadow-sm/25 p-6 text-3xl rounded-t-xl">
           <p className="font-nunito-bold">Chat with Lumo</p>
           <p className="flex flex-row items-center gap-2 text-sm">
@@ -97,7 +97,7 @@ export default function Chatbot() {
           )
           }
         </div>
-        <div id="chat-input" className="flex flex-col w-full items-center justify-center shadow-[0_-8px_16px_rgba(0,0,0,0.2)] p-3 m-2 rounded-b-xl gap-3">
+        <div id="chat-input" className="flex flex-col w-full items-center justify-center shadow-[0_-8px_16px_rgba(0,0,0,0.2)] py-4 rounded-b-xl gap-3">
           <div id="input-suggestions" className="flex flex-row gap-2 drop-shadow-sm/25 z-30">
             <button className=" bg-gray-100 rounded-xl py-2 px-3 hover:cursor-pointer" onClick={()=> handleSubmit("How do I access patients?")}>
               <p className="text-sm">How do I access patients</p>
