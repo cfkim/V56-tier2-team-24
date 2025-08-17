@@ -1,5 +1,7 @@
 import {GoogleGenAI} from '@google/genai';
 import {use, useEffect, useRef, useState} from 'react';
+import { getAIResponse } from '../lib/aiChatService';
+import ReactMarkdown from "react-markdown";
 
 interface Message{
   author: string;
@@ -7,43 +9,13 @@ interface Message{
   timeStamp: Date;
 }
 
-export default function Chatbot({currentPage, role}: {currentPage: string, role: string | undefined}) {
-  const [aiResponse, setAiResponse] = useState<any>();
+export default function Chatbot({currentPage, role}: {currentPage: string, role: string}) {
   const [messages, setMessages] = useState<Message[]>([]);
   const [userInput, setUserInput] = useState<string>('');
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   // get dynamic context
   const chatEndRef = useRef<HTMLDivElement | null>(null);
-  const ai = new GoogleGenAI({apiKey: import.meta.env.VITE_GEMINI_AI_KEY});
-  const dynamic_context = `
-      [User] role: ${role || "unknown"} 
-      current page: ${currentPage || "unknown"}`;
-  const context = `
-      [System]
-      You are Lumo, an AI assistant for Beacon, a surgery status tracking application. Provide clear and concise information, helping users find different parts of the app. Always maintain a friendly and helpful tone. Only show info relevant to the user’s role.
-
-      [Pages]
-      Home:  login or continue as guest
-      Patient Status: view surgery progress
-      Patient Information: (admins only) view and edit patient information
-      Update Patient Status: (admins/surgeons only) view surgery progress
-
-      [Roles]
-      Admin: can update status + edit/add/delete patient records
-      Surgeon: can update patient status
-      Guest: can only view patient status
-      If you are surgeon staff or an admin and do not have an account, you must ask the developers for your account to be created.
-
-      [Tools]
-      Patient Info: pagination, search, filters (“Before”, “During”, “After”)
-      Patient Status: search, auto-refresh (20s) + manual refresh
-      Login: Remember me (admins, surgeons)
-
-      [Features]
-      Surgery phases: checked-in, pre-procedure, in-progress, closing, recovery, complete, dismissal
-      Direct additional questions to front desk`
-  
   
   useEffect(() => {
     if(chatEndRef.current) {
@@ -62,7 +34,6 @@ export default function Chatbot({currentPage, role}: {currentPage: string, role:
 
     if (isLoading) return; // prevents multiple submissions while loading
     setIsLoading(true);
-
     let input = suggestion || userInput;
     console.log(input)
     if (!suggestion && userInput.trim() === '') return; // prevents submission of empty messages
@@ -71,31 +42,19 @@ export default function Chatbot({currentPage, role}: {currentPage: string, role:
     let currentTime = new Date();
     setMessages((prev) => [...prev, {author: 'User', content: input, timeStamp: currentTime}]);
     setUserInput(''); // clears input field after submission
-    
-    const response = await ai.models.generateContent({
-      model: 'gemini-1.5-flash',
-      contents: context + dynamic_context + input,
-    })
 
-    setAiResponse(response.text);
-    // setAiResponse("testing a response.")
+    const response = await getAIResponse(input, currentPage, role);
+
     // adds AI response to message history
-  
     currentTime = new Date();
-    // setMessages([...messages, {author: 'AI', content: response.text || 'Message failed.}]);
-    setMessages((prev) => [...prev, {author: 'AI', content: response.text || 'Message failed. Try again.', timeStamp: currentTime}]);
+    setMessages((prev) => [...prev, {author: 'AI', content: response || 'Message failed. Try again.', timeStamp: currentTime}]);
     
     setIsLoading(false);
-
-    // setTimeout(() => {
-      
-    // }, 3000);
-
   }
 
   return (
     <>
-      <div className="flex flex-col items-center justify-center h-[800px]  bg-white z-100 rounded-xl">
+      <div className="flex flex-col items-center justify-center h-[800px] bg-white z-100 rounded-xl drop-shadow-sm/25">
         <div id="chat-header" className="flex flex-col gap-1 bg-accent h-[100px] w-full justify-center drop-shadow-sm/25 p-6 text-3xl rounded-t-xl">
           <p className="font-nunito-bold">Chat with Lumo</p>
           <p className="flex flex-row items-center gap-2 text-sm">
@@ -111,7 +70,10 @@ export default function Chatbot({currentPage, role}: {currentPage: string, role:
             <div key={index} className={`flex ${message.author === 'AI' ? 'justify-start' : 'justify-end'}`}>
               <div className="flex flex-col mb-6">
                 <div className={`${message.author === 'AI' ? 'bg-[#BEE4FF] rounded-bl-none' : 'bg-gray-200 rounded-br-none'} rounded-xl mb-3 p-5 drop-shadow-sm/25 display:inline-block`}>
-                  <p>{message.content}</p>
+                  {/* renders markdown for ai chats */}
+                  {message.author === 'AI' ? (<ReactMarkdown>{message.content}</ReactMarkdown>): 
+                  (<p>{message.content}</p>)}
+                  <p></p>
                 </div>
                 <div className="flex flex-row items-center gap-1">
                   <p className={`text-xs text-gray-500 w-full ${message.author === 'AI' ? 'text-left' : 'text-right'}`}>{message.timeStamp.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</p>
