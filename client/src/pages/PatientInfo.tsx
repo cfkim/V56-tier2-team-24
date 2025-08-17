@@ -113,6 +113,8 @@ export default function PatientInfo() {
     fetchPatients(searchTermRef.current);
   }, [selectedStatus, category]);
 
+  const TIME_OUT = 1000;
+
   useEffect(() => {
     if (!lastAddedPatientId) return;
     console.log("lastAddedPatientId: " + lastAddedPatientId);
@@ -122,7 +124,7 @@ export default function PatientInfo() {
       setSuccessIsOpen(false);
       setSuccessAction("");
       setLastAddedPatientId("");
-    }, 4000);
+    }, TIME_OUT);
     return () => clearTimeout(t);
   }, [lastAddedPatientId]);
 
@@ -135,7 +137,7 @@ export default function PatientInfo() {
       setSuccessIsOpen(false);
       setSuccessAction("");
       setLastEditedPatientId("");
-    }, 4000);
+    }, TIME_OUT);
     return () => clearTimeout(t);
   });
   useEffect(() => {
@@ -147,7 +149,7 @@ export default function PatientInfo() {
       setSuccessIsOpen(false);
       setSuccessAction("");
       setLastDeletedPatientId("");
-    }, 4000);
+    }, TIME_OUT);
     return () => clearTimeout(t);
   });
 
