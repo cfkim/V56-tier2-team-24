@@ -1,8 +1,8 @@
 import { useMutation } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import LoginArt from "../assets/images/login.svg?react";
 import { login } from "../lib/api";
-// import type { LoginResponse } from "../types/LoginResponse";
 import type { Role } from "../types/Role";
 
 export default function Login({
@@ -24,7 +24,7 @@ export default function Login({
     // If user is already logged in, redirects to home page
     if (window.localStorage.getItem("accessToken")) {
       navigate("/", { replace: true });
-    }else{
+    } else {
       // sets is logged in to false
       setIsLoggedIn(false);
     }
@@ -57,11 +57,7 @@ export default function Login({
     <>
       <div className="flex w-full flex-row justify-between">
         <div className="flex h-full w-1/2 justify-center">
-          <img
-            src="static/images/login.svg"
-            alt=""
-            className="mb-8 h-auto rounded-t-[3.125rem]"
-          />
+          <LoginArt className="mb-8 h-auto rounded-t-[3.125rem]" />
         </div>
         <div className="font-nunito flex w-1/2 flex-col items-center justify-center bg-white px-30">
           <h1 className="font-kaisei mb-12 w-full text-xl font-bold sm:text-4xl">

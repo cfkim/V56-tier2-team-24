@@ -37,13 +37,15 @@ export default function PatientFormModal({
   };
 
   useEffect(() => {
-    fetchId();
-    const prev = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
-    return () => {
-      document.body.style.overflow = prev;
-    };
-  }, []);
+    if (isOpen) {
+      fetchId();
+      const prev = document.body.style.overflow;
+      document.body.style.overflow = "hidden";
+      return () => {
+        document.body.style.overflow = prev;
+      };
+    }
+  }, [isOpen]);
 
   const portal = document.getElementById("portal");
   if (!portal) return null;

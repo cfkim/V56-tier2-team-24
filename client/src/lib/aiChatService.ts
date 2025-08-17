@@ -29,16 +29,18 @@ const context = `
 
 export async function getAIResponse (input: string, currentPage: string, role: string) {
     // So response is based on user's role and current page
+    if(import.meta.env.VITE_GEMINI_AI_KEY == "development"){
+        return "This is for development. Test AI response.";
+    }
     
     const dynamic_context = `
     [User] role: ${role || "unknown"} 
     current page: ${currentPage || "unknown"}`;
 
-    // const response = await ai.models.generateContent({
-    //     model: 'gemini-1.5-flash',
-    //     contents: context + dynamic_context + input,
-    // })
+    const response = await ai.models.generateContent({
+        model: 'gemini-1.5-flash',
+        contents: context + dynamic_context + input,
+    })
 
-    return "This is for development. The service will be operating in the future.";
-    // return response.text || "Message failed. Try again.";
+    return response.text || "Message failed. Try again.";
 }

@@ -3,12 +3,13 @@ import { Route, Routes, useLocation, useNavigate } from "react-router-dom";
 import "./App.css";
 import Footer from "./components/footer";
 import Header from "./components/Header/Header";
+import ProtectedRoute from "./components/ProtectedRoute";
 import { getUser } from "./lib/api";
 import { setNavigate } from "./lib/navigation";
-import Account from "./pages/Account";
 import ForgotPassword from "./pages/ForgotPassword";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
+import NotAllowed from "./pages/NotAllowed";
 import PatientInfo from "./pages/PatientInfo";
 import Status from "./pages/PatientStatus";
 import ResetLinkSent from "./pages/ResetLinkSent";
@@ -36,11 +37,11 @@ function App() {
       setIsLoggedIn(false);
       return;
     }
-    
+
     // Skip authentication if no token is found. Becomes a guest.
-    if(window.localStorage.getItem("accessToken") == null){
+    if (window.localStorage.getItem("accessToken") == null) {
       setIsLoggedIn(true);
-      setRole("guest")
+      setRole("guest");
       return;
     }
 
@@ -69,7 +70,7 @@ function App() {
         setIsLoggedIn={setIsLoggedIn}
         setUser={setUser}
       />
-      <main className="font-nunito relative">
+      <main className="font-nunito flex-1 relative">
         <Routes>
           <Route
             path="/"
@@ -92,16 +93,50 @@ function App() {
               />
             }
           />
-          <Route path="/user" element={<Account user={user} />} />
+
+          {/* <Route path="/user" element={<Account user={user} />} /> */}
           <Route path="/status" element={<Status />} />
-          <Route path="/info" element={<PatientInfo />} />
-          <Route path="/update" element={<UpdateStatus />} />
+
+          <Route
+            path="/info"
+            element={
+              <ProtectedRoute
+                isAllowed={role === "admin"}
+                isLoggedIn={isLoggedIn}
+              >
+                <PatientInfo />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/update"
+            element={
+              <ProtectedRoute
+                isAllowed={role === "admin" || role === "surgeon"}
+                isLoggedIn={isLoggedIn}
+              >
+                <UpdateStatus />
+              </ProtectedRoute>
+            }
+          />
           <Route path="/password/forgot" element={<ForgotPassword />} />
           <Route path="/password/reset-link-sent" element={<ResetLinkSent />} />
           <Route path="/password/reset" element={<ResetPassword />} />
           <Route
             path="/password/reset-success"
             element={<ResetPasswordSuccess />}
+          />
+          <Route path="/not-allowed" element={<NotAllowed role={role} />} />
+          <Route
+            path="*"
+            element={
+              <Home
+                role={role}
+                isLoggedIn={isLoggedIn}
+                setIsLoggedIn={setIsLoggedIn}
+                setRole={setRole}
+              />
+            }
           />
         </Routes>
         <div className="absolute z-100 bottom-0 right-0 md:pr-5">
