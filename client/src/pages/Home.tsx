@@ -1,8 +1,7 @@
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import type { Role } from "../types/Role";
 import Chatbot from "../components/Chatbot";
 import { useState } from "react";
-import { Chat } from "@google/genai";
 
 function capitalize(role: Role) {
   return role.charAt(0).toUpperCase() + role.slice(1);
@@ -26,6 +25,7 @@ export default function Home({
     navigate("/");
   };
   const [showChatbot, setShowChatbot] = useState(false);
+  const location = useLocation() 
 
   return (
     <section className="mb-[-0.5rem] px-1.5 sm:px-6 relative">
@@ -90,7 +90,7 @@ export default function Home({
         <div className="absolute z-100 bottom-0 right-0">
           {showChatbot && (
             <div className="flex flex-col md:w-[600px] gap-2 px-5">
-              <Chatbot></Chatbot>
+              <Chatbot currentPage={location.pathname} role={isLoggedIn ? role : "not logged in"}></Chatbot>
               <div className="flex justify-end">
                 <button className="h-15 w-15 rounded-full bg-accent flex justify-center items-center hover:cursor-pointer" onClick={() => setShowChatbot(false)}>
                   <svg xmlns="http://www.w3.org/2000/svg" height="40px" viewBox="0 -960 960 960" width="40px" fill="#000000">

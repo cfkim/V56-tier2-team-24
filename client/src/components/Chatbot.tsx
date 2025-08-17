@@ -7,13 +7,43 @@ interface Message{
   timeStamp: Date;
 }
 
-export default function Chatbot() {
+export default function Chatbot({currentPage, role}: {currentPage: string, role: string | undefined}) {
   const [aiResponse, setAiResponse] = useState<any>();
   const [messages, setMessages] = useState<Message[]>([]);
   const [userInput, setUserInput] = useState<string>('');
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
+  // get dynamic context
   const chatEndRef = useRef<HTMLDivElement | null>(null);
+  const ai = new GoogleGenAI({apiKey: import.meta.env.VITE_GEMINI_AI_KEY});
+  const dynamic_context = `
+      [User] role: ${role || "unknown"} 
+      current page: ${currentPage || "unknown"}`;
+  const context = `
+      [System]
+      You are Lumo, an AI assistant for Beacon, a surgery status tracking application. Provide clear and concise information, helping users find different parts of the app. Always maintain a friendly and helpful tone. Only show info relevant to the user’s role.
+
+      [Pages]
+      Home:  login or continue as guest
+      Patient Status: view surgery progress
+      Patient Information: (admins only) view and edit patient information
+      Update Patient Status: (admins/surgeons only) view surgery progress
+
+      [Roles]
+      Admin: can update status + edit/add/delete patient records
+      Surgeon: can update patient status
+      Guest: can only view patient status
+      If you are surgeon staff or an admin and do not have an account, you must ask the developers for your account to be created.
+
+      [Tools]
+      Patient Info: pagination, search, filters (“Before”, “During”, “After”)
+      Patient Status: search, auto-refresh (20s) + manual refresh
+      Login: Remember me (admins, surgeons)
+
+      [Features]
+      Surgery phases: checked-in, pre-procedure, in-progress, closing, recovery, complete, dismissal
+      Direct additional questions to front desk`
+  
   
   useEffect(() => {
     if(chatEndRef.current) {
@@ -28,6 +58,8 @@ export default function Chatbot() {
   }, []);
 
   const handleSubmit = async (suggestion: string)=> {
+    console.log(currentPage, role)
+
     if (isLoading) return; // prevents multiple submissions while loading
     setIsLoading(true);
 
@@ -39,27 +71,28 @@ export default function Chatbot() {
     let currentTime = new Date();
     setMessages((prev) => [...prev, {author: 'User', content: input, timeStamp: currentTime}]);
     setUserInput(''); // clears input field after submission
-
-    // const ai = new GoogleGenAI({apiKey: import.meta.env.VITE_GEMINI_AI_KEY});
-    // const response = await ai.models.generateContent({
-    //   model: 'gemini-1.5-flash',
-    //   contents: "How does AI work?",
-      
-    // })
-
-    setTimeout(() => {
-      // setAiResponse(response.text);
-      setAiResponse("testing a response.")
-      // adds AI response to message history
     
-      currentTime = new Date();
-      // setMessages([...messages, {author: 'AI', content: response.text || 'Message failed. Try again.'}]);
-      setMessages((prev) => [...prev, {author: 'AI', content: "hey that was a great question!", timeStamp: currentTime}]);
-      console.log("Simulating AI response delay");
-      setIsLoading(false);
-    }, 3000);
+    const response = await ai.models.generateContent({
+      model: 'gemini-1.5-flash',
+      contents: context + dynamic_context + input,
+    })
+
+    setAiResponse(response.text);
+    // setAiResponse("testing a response.")
+    // adds AI response to message history
+  
+    currentTime = new Date();
+    // setMessages([...messages, {author: 'AI', content: response.text || 'Message failed.}]);
+    setMessages((prev) => [...prev, {author: 'AI', content: response.text || 'Message failed. Try again.', timeStamp: currentTime}]);
+    
+    setIsLoading(false);
+
+    // setTimeout(() => {
+      
+    // }, 3000);
 
   }
+
   return (
     <>
       <div className="flex flex-col items-center justify-center h-[800px]  bg-white z-100 rounded-xl">
