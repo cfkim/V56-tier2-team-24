@@ -92,15 +92,15 @@ export default function Chatbot({currentPage, role}: {currentPage: string, role:
           }
         </div>
         <div id="chat-input" className="flex flex-col w-full items-center justify-center shadow-[0_-8px_16px_rgba(0,0,0,0.2)] p-4 rounded-b-xl gap-3">
-          <div id="input-suggestions" className="flex flex-row gap-2 drop-shadow-sm/25 z-30">
+          <div id="input-suggestions" className="flex flex-row gap-2 drop-shadow-sm/25 z-30 text-sm md:text-md lg:text-lg">
             <button className=" bg-gray-100 rounded-xl py-2 px-3 hover:cursor-pointer" onClick={()=> handleSubmit("How do I access patients?")}>
-              <p className="text-sm">How do I access patients</p>
+              <p>How do I access patients</p>
             </button>
-            <button className="display:inline-block bg-gray-100 rounded-xl py-2 px-3 hover:cursor-pointer" onClick={()=> handleSubmit("Can you tell me more about surgery?")}>
-              <p className="text-sm">Surgery</p>
+            <button className="inline-block bg-gray-100 rounded-xl py-2 px-3 hover:cursor-pointer" onClick={()=> handleSubmit("Can you tell me more about surgery?")}>
+              <p>Surgery</p>
             </button>
-            <button className="display:inline-block bg-gray-100 rounded-xl py-2 px-3 hover:cursor-pointer" onClick={()=> handleSubmit("What's the FAQ?")}>
-              <p className="text-sm">FAQ</p>
+            <button className="inline-block bg-gray-100 rounded-xl py-2 px-3 hover:cursor-pointer" onClick={()=> handleSubmit("What's the FAQ?")}>
+              <p>FAQ</p>
             </button>
           </div>
           <div className="flex flex-row justify-between bg-gray-200 rounded-xl py-4 px-3 w-9/10">
