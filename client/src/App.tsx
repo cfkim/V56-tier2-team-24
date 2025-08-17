@@ -27,6 +27,7 @@ function App() {
   const [showChatbot, setShowChatbot] = useState(false);
   const location = useLocation() 
   
+
   const navigate = useNavigate();
   setNavigate(navigate);
 
