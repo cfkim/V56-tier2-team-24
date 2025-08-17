@@ -15,12 +15,14 @@ export default function DeleteConfirmModal({
   setLastDeletedPatientId: React.Dispatch<React.SetStateAction<string>>;
 }) {
   useEffect(() => {
-    const prev = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
-    return () => {
-      document.body.style.overflow = prev;
-    };
-  }, []);
+    if (isOpen) {
+      const prev = document.body.style.overflow;
+      document.body.style.overflow = "hidden";
+      return () => {
+        document.body.style.overflow = prev;
+      };
+    }
+  }, [isOpen]);
 
   const portal = document.getElementById("portal");
   if (!portal) return null;
