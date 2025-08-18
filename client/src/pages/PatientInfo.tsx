@@ -1,10 +1,9 @@
 import clsx from "clsx";
 import { useEffect, useState } from "react";
-import { getPatients } from "../lib/api";
-// import { SmallSearch } from "../components/search";
 import PatientFormModal from "../components/PatientForm/PatientFormModal";
 import SuccessMessage from "../components/PatientForm/SuccessMessage";
 import Search from "../components/search";
+import { getPatients } from "../lib/api";
 
 import DeleteConfirmModal from "../components/DeleteConfirmModal";
 import type { Patient } from "../types/Patient";

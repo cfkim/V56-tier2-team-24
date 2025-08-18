@@ -95,12 +95,6 @@ export default function PatientFormModal({
 
     try {
       await addPatient(formData);
-      //   const addedPatientID = addedPatient.data.patient.patientID;
-      //   if (!addedPatientID) {
-      //     console.error("Missing Patient ID from added patient.");
-      //     return;
-      //   }
-      //   setLastAddedPatientId(addedPatientID);
       if (patientIdVal) {
         setLastAddedPatientId(patientIdVal.toString());
       }
