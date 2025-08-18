@@ -36,7 +36,7 @@ export function LargeSearch({
 }) {
   return (
     <>
-      <div className="flex w-100 flex-row items-center rounded-xl bg-gray-200 p-2 drop-shadow-sm/25">
+      <div className="flex w-3/4 md:w-100 flex-row items-center rounded-xl bg-gray-200 p-2 drop-shadow-sm/25">
         <label htmlFor="search" className="sr-only">
           Search
         </label>

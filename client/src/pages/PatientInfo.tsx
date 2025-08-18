@@ -271,7 +271,7 @@ export default function PatientInfo() {
         </div>
 
         <div className="relative overflow-visible">
-          <table className="min-w-full rounded-2xl text-lg outline-2 outline-gray-100">
+          <table className="min-w-full rounded-2xl text-lg outline-2 outline-gray-100 overflow-hidden">
             <thead className="bg-accent font-nunito-bold h-12 text-left">
               <tr>
                 <th className="pl-5" scope="col">

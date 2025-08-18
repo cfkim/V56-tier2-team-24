@@ -64,65 +64,52 @@ export default function Status() {
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const value = e.target.value;
         searchTermRef.current = value;
-        // This is code for searching based purely on recently fetched data
-        // if (value === "") {
-        //     // If the search term is empty, gets the full status list
-        //     getStatusList().then(result => {
-        //         setStatusList(result.data.statusList);
-        //     });
-        // } else {
-        //     // Gets the list filtered by search term
-        //     const filteredStatusList = statusList.filter((patient: Patient) =>
-        //         patient.patientID.toString().toLowerCase().includes(value.toLowerCase())
-        //     );
-        //     setStatusList(filteredStatusList);
-        // }
-
+        
         // This is refreshes the code first and then does the search
         fetchStatusList(value);
     }
 
     return <>
-    <div id="progress-bar" className={clsx("h-2 bg-primary sticky top-0 z-100", progress === 0 ? "transition-none" : "transition-all")} style={{ width: `${progress}%` }}></div>
-    <div className="flex items-center overflow-x-auto h-screen flex-col gap-6 font-nunito m-10">   
-        <h1 className="text-3xl font-kaisei">Surgery Status Board</h1>
-        To track the progress of the patient, refer to the Patient # given to you at Check-In
+    <div id="progress-bar" className={clsx("md:h-2 h-1 bg-primary sticky top-0 z-100", progress === 0 ? "transition-none" : "transition-all")} style={{ width: `${progress}%` }}></div>
+    <div className="flex items-center overflow-visible flex-col gap-6 font-nunito m-3 md:m-10">   
+        <h1 className="text-xl md:text-3xl font-kaisei">Surgery Status Board</h1>
+        <p className="text-center text-sm md:text-lg md:text-left">To track the progress of the patient, refer to the Patient # given to you at Check-In</p>
         <LargeSearch handleChange={handleInputChange}/>
         
-        <div className="bg-accent w-2/3 h-16 mt-3 rounded-lg flex">
-            <div className="flex w-full flex-row justify-between items-center">
-                <div className="flex flex-col p-5 justify-center">
-                    <p className="text-lg">This page is automatically updated every 20 seconds</p>
-                    <p className="text-sm">You can also click on the refresh icon to update manually</p>
+        <div className="bg-accent md:w-2/3 md:h-18 md:mt-3 rounded-lg flex">
+            <div className="flex w-full flex-row justify-between items-center px-3 py-2">
+                <div className="flex flex-col md:p-5 justify-center">
+                    <p className="text-xs md:text-xl">This page is automatically updated every 20 seconds</p>
+                    <p className="text-[10px] md:text-lg pr-10">You can also click on the refresh icon to update manually</p>
                 </div>
-                <p className="pr-4">
-                <svg 
-                    onClick={() => fetchStatusList(searchTermRef.current)}
-                    className="cursor-pointer"
-                    xmlns="http://www.w3.org/2000/svg" 
-                    height="26px" viewBox="0 -960 960 960" 
-                    width="26px" fill="#000000">
-                        <path d="M480-160q-134 0-227-93t-93-227q0-134 93-227t227-93q69 0 132 28.5T720-690v-110h80v280H520v-80h168q-32-56-87.5-88T480-720q-100 0-170 70t-70 170q0 100 70 170t170 70q77 0 139-44t87-116h84q-28 106-114 173t-196 67Z"/>
-                </svg>
+                <p className="md:pr-4">
+                    <svg 
+                        onClick={() => fetchStatusList(searchTermRef.current)}
+                        className="hover:cursor-pointer size-5 md:size-8"
+                        xmlns="http://www.w3.org/2000/svg" 
+                        viewBox="0 -960 960 960" 
+                        fill="#000000">
+                            <path d="M480-160q-134 0-227-93t-93-227q0-134 93-227t227-93q69 0 132 28.5T720-690v-110h80v280H520v-80h168q-32-56-87.5-88T480-720q-100 0-170 70t-70 170q0 100 70 170t170 70q77 0 139-44t87-116h84q-28 106-114 173t-196 67Z"/>
+                    </svg>
                 </p>
                 
             </div>
         </div>
-        <table className="w-3/4 outline outline-gray-200 rounded-lg">
-            <thead className="text-left bg-gray-200 text-2xl">
+        <table className="mx-3 md:w-3/4 outline outline-gray-200 rounded-lg overflow-hidden">
+            <thead className="text-left bg-gray-200 text-md md:text-2xl">
                 <tr>
-                    <th scope="col" className="py-3 px-9 w-3/4">Patient</th>
+                    <th scope="col" className="py-3 px-5 md:px-9 w-3/4">Patient</th>
                     <th scope="col">Medical Status</th>
                 </tr>
             </thead>
             <tbody>
                 {statusList.slice(resultsPerPage * (page-1), resultsPerPage * page).map((patient:Patient) => (
                     <tr className="border-b-1 border-gray-200 last:border-b-0" key={patient._id}>
-                        <td className="px-9 py-4 text-2xl">
+                        <td className="px-5 md:px-9 py-4 text-md md:text-2xl">
                             #{patient.patientID}
                         </td>
-                        <td className="py-4">
-                            <div className={clsx("rounded-xl inline-block px-6 py-2 text-center text-white text-xl", 
+                        <td className="py-2 px-3 md:py-4 whitespace-nowrap ">
+                            <div className={clsx("rounded-md md:rounded-xl inline-block px-3 md:px-6 md:py-2 text-center text-white text-md md:text-xl", 
                                 patient.medicalStatus == "checked-in" ? "bg-checked-in" : 
                                 patient.medicalStatus == "pre-procedure" ? "bg-pre-procedure" : 
                                 patient.medicalStatus == "in-progress" ? "bg-in-progress" : 
@@ -142,16 +129,16 @@ export default function Status() {
         </table>
         
         {/* pagination */}
-        <div className="flex sticky bottom-0 font-nunito-bold mt-auto">
+        <div className="flex font-nunito-bold md:mt-5 text-xs md:text-xl">
             {Array.from({length:getNumPages()}, (_, i) => i + 1).map(num => (
-                <button key={num} onClick={()=> setPage(num)} className={clsx("px-4 mx-1 py-2 rounded-lg text-xl hover:cursor-pointer", page === num ? "bg-accent" : "")}>
+                <button key={num} onClick={()=> setPage(num)} className={clsx("px-4 mx-1 py-2 rounded-lg hover:cursor-pointer", page === num ? "bg-accent" : "")}>
                     {num}
                 </button>
             ))}
             <button 
                 disabled={page >= getNumPages()} 
                 onClick={() => setPage(page + 1)} 
-                className="flex items-center gap-2 mx-5 text-xl disabled:opacity-50 disabled:cursor-default hover:cursor-pointer">
+                className="flex items-center gap-2 mx-5 disabled:opacity-50 disabled:cursor-default hover:cursor-pointer">
                 Next
                 <svg xmlns="http://www.w3.org/2000/svg" 
                     height="24px" viewBox="0 -960 960 960" 
