@@ -70,7 +70,7 @@ export default function Status() {
     }
 
     return <>
-    <div id="progress-bar" className={clsx("md:h-2 h-1 bg-primary sticky top-0 z-100", progress === 0 ? "transition-none" : "transition-all")} style={{ width: `${progress}%` }}></div>
+    <div id="progress-bar" className={clsx("md:h-2 h-1 bg-primary sticky top-0 z-30", progress === 0 ? "transition-none" : "transition-all")} style={{ width: `${progress}%` }}></div>
     <div className="flex items-center overflow-visible flex-col gap-6 font-nunito m-3 md:m-10">   
         <h1 className="text-xl md:text-3xl font-kaisei">Surgery Status Board</h1>
         <p className="text-center text-sm md:text-lg md:text-left">To track the progress of the patient, refer to the Patient # given to you at Check-In</p>
