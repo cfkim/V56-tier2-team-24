@@ -1,16 +1,17 @@
 import { useEffect, useState } from "react";
 import { Route, Routes, useNavigate } from "react-router-dom";
 import "./App.css";
-import Footer from "./components/footer";
-import Header from "./components/Header";
+import Footer from "./components/Footer";
+import Header from "./components/Header/Header";
+import ProtectedRoute from "./components/ProtectedRoute";
 import { getUser } from "./lib/api";
 import { setNavigate } from "./lib/navigation";
-import Account from "./pages/Account";
 import ForgotPassword from "./pages/ForgotPassword";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
+import NotAllowed from "./pages/NotAllowed";
 import PatientInfo from "./pages/PatientInfo";
-import PatientStatus from "./pages/PatientStatus";
+import Status from "./pages/PatientStatus";
 import ResetLinkSent from "./pages/ResetLinkSent";
 import ResetPassword from "./pages/ResetPassword";
 import ResetPasswordSuccess from "./pages/ResetPasswordSuccess";
@@ -23,7 +24,7 @@ import type { Role } from "./types/Role";
 function App() {
   const [role, setRole] = useState<Role | undefined>();
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
-  const [user, setUser] = useState<User>();
+  const [, setUser] = useState<User>();
 
   const navigate = useNavigate();
   setNavigate(navigate);
@@ -33,6 +34,13 @@ function App() {
     const currentPath = window.location.pathname;
     if (currentPath.startsWith("/password/")) {
       setIsLoggedIn(false);
+      return;
+    }
+
+    // Skip authentication if no token is found. Becomes a guest.
+    if (window.localStorage.getItem("accessToken") == null) {
+      setIsLoggedIn(true);
+      setRole("guest");
       return;
     }
 
@@ -59,7 +67,7 @@ function App() {
         setIsLoggedIn={setIsLoggedIn}
         setUser={setUser}
       />
-      <main>
+      <main className="font-nunito flex-1">
         <Routes>
           <Route
             path="/"
@@ -82,18 +90,59 @@ function App() {
               />
             }
           />
+<<<<<<< HEAD
           <Route path="/user" element={<Account user={user} />} />
           <Route path="/status" element={<PatientStatus />} />
           <Route path="/info" element={<PatientInfo />} />
           <Route path="/update" element={<UpdateStatus />} />
           <Route path="/update/patient/:patientId" element={<UpdatePatientStatus />} />
           <Route path="/update/confirmation" element={<UpdateStatusConfirmation />} />
+=======
+
+          {/* <Route path="/user" element={<Account user={user} />} /> */}
+          <Route path="/status" element={<Status />} />
+
+          <Route
+            path="/info"
+            element={
+              <ProtectedRoute
+                isAllowed={role === "admin"}
+                isLoggedIn={isLoggedIn}
+              >
+                <PatientInfo />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/update"
+            element={
+              <ProtectedRoute
+                isAllowed={role === "admin" || role === "surgeon"}
+                isLoggedIn={isLoggedIn}
+              >
+                <UpdateStatus />
+              </ProtectedRoute>
+            }
+          />
+>>>>>>> develop
           <Route path="/password/forgot" element={<ForgotPassword />} />
           <Route path="/password/reset-link-sent" element={<ResetLinkSent />} />
           <Route path="/password/reset" element={<ResetPassword />} />
           <Route
             path="/password/reset-success"
             element={<ResetPasswordSuccess />}
+          />
+          <Route path="/not-allowed" element={<NotAllowed role={role} />} />
+          <Route
+            path="*"
+            element={
+              <Home
+                role={role}
+                isLoggedIn={isLoggedIn}
+                setIsLoggedIn={setIsLoggedIn}
+                setRole={setRole}
+              />
+            }
           />
         </Routes>
       </main>

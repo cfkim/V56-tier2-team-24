@@ -13,12 +13,15 @@ export default function Sidebar({
   if (!isOpen) return null;
 
   useEffect(() => {
-    const prev = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
-    return () => {
-      document.body.style.overflow = prev;
-    };
-  }, []);
+    if (isOpen) {
+      const prev = document.body.style.overflow;
+      document.body.style.overflow = "hidden";
+      return () => {
+        document.body.style.overflow = prev;
+      };
+    }
+  }, [isOpen]);
+
   useEffect(() => {
     const handleEsc = (e: KeyboardEvent) => e.key === "Escape" && onClose();
 
@@ -27,7 +30,7 @@ export default function Sidebar({
     return () => window.removeEventListener("keydown", handleEsc);
   }, [onClose]);
 
-  const sidebarPortal = document.getElementById("sidebar");
+  const sidebarPortal = document.getElementById("portal");
   if (!sidebarPortal) return null;
 
   return createPortal(

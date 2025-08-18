@@ -47,6 +47,12 @@ export const logout = async () => {
   return res;
 };
 
+export const getStatusList = async () => {
+  console.log("getting status list for patients");
+  const res = await API.get("/status");
+  return res;
+};
+
 // gets all patients
 export const getPatients = async () => {
   const token = localStorage.getItem("accessToken");
@@ -67,6 +73,23 @@ export const addPatient = async (formData: FormData) => {
 
   try {
     const res = await API.post("/patient/create", formObj, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return res;
+  } catch (error) {
+    console.error("Failed to add patient", error);
+    throw error;
+  }
+};
+
+export const editPatient = async (formData: FormData) => {
+  const token = localStorage.getItem("accessToken");
+  if (!token) throw new Error("No access token");
+  const formObj = Object.fromEntries(formData.entries());
+  try {
+    const res = await API.post("/patient/update", formObj, {
       headers: {
         Authorization: `Bearer ${token}`,
       },

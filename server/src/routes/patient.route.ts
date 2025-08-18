@@ -110,7 +110,7 @@ patientRoutes.get("/:patientId", validatePatientId, async (req: CustomRequest, r
 
 // gets all patient records
 patientRoutes.get("/all", async (req: any, res) => {
-    const allPatients = await PatientModel.find({});
+    const allPatients = await PatientModel.find({}).sort({ createdAt: -1 });
 
     if (allPatients) {
         res.status(200).json({
@@ -192,7 +192,10 @@ patientRoutes.post("/create", async (req, res) => {
             phoneNumber: phoneNumber,
         });
 
-        res.status(201).json({ message: "patient successfully created" });
+        res.status(201).json({
+            message: "patient successfully created",
+            patient: patient,
+        });
     } catch (error) {
         console.log(error);
         res.status(500).json({
@@ -224,11 +227,10 @@ patientRoutes.delete("/delete", async (req, res) => {
 
 // updates patient record
 patientRoutes.post("/update", async (req, res) => {
-    const updatedInfo = req.body.updates;
-    const id = req.body.id;
+    const { _id: id, ...updatedInfo } = req.body;
     const patient = await PatientModel.findById(id);
 
-    if (patient == null) {
+    if (!patient) {
         return res.status(401).send("could not find user");
     }
 
