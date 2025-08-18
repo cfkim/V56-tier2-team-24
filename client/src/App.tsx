@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Route, Routes, useLocation, useNavigate } from "react-router-dom";
 import "./App.css";
 import Chatbot from "./components/Chatbot";
-import Footer from "./components/footer";
+import Footer from "./components/Footer";
 import Header from "./components/Header/Header";
 import ProtectedRoute from "./components/ProtectedRoute";
 import { getUser } from "./lib/api";
@@ -17,7 +17,7 @@ import ResetLinkSent from "./pages/ResetLinkSent";
 import ResetPassword from "./pages/ResetPassword";
 import ResetPasswordSuccess from "./pages/ResetPasswordSuccess";
 import UpdateStatus from "./pages/UpdateStatus";
-import { useAuthActions, useRole } from "./stores/authStore";
+import { useAuthActions, useIsLoggedIn, useRole } from "./stores/authStore";
 
 function App() {
   const [showChatbot, setShowChatbot] = useState(false);
@@ -28,6 +28,7 @@ function App() {
 
   const { setIsLoggedIn, setRole, setUser } = useAuthActions();
   const role = useRole();
+  const isLoggedIn = useIsLoggedIn();
 
   useEffect(() => {
     // Skip authentication check for password reset pages
@@ -59,12 +60,7 @@ function App() {
         <div className="fixed inset-0 z-75 bg-black opacity-50 md:hidden lg:hidden"></div>
       )}
 
-      <Header
-        role={role}
-        isLoggedIn={isLoggedIn}
-        setIsLoggedIn={setIsLoggedIn}
-        setUser={setUser}
-      />
+      <Header />
       <main className="font-nunito relative flex-1">
         <Routes>
           <Route path="/" element={<Home />} />
@@ -107,7 +103,7 @@ function App() {
               <Chatbot
                 currentPage={location.pathname}
                 role={isLoggedIn && role ? role : "not logged in"}
-              ></Chatbot>
+              />
               <div className="flex justify-end">
                 <button
                   className="bg-accent flex h-10 w-10 items-center justify-center rounded-full hover:cursor-pointer md:h-15 md:w-15"
