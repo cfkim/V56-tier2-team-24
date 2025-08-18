@@ -1,6 +1,12 @@
 import type { AxiosRequestConfig } from "axios";
 import axios from "axios";
 import { navigate } from "../lib/navigation";
+import {
+  getAuthHeader,
+  getRefreshToken,
+  performLogout,
+  setAccessToken,
+} from "../stores/authStore";
 
 const options = {
   baseURL: import.meta.env.VITE_API_URL,
@@ -14,23 +20,24 @@ const TokenRefreshClient = axios.create(options);
 TokenRefreshClient.interceptors.response.use((response) => response);
 
 API.interceptors.request.use((config) => {
-  const token = localStorage.getItem("accessToken");
+  const token = getAuthHeader();
   if (token) {
     config.headers = config.headers || {};
-    config.headers.Authorization = `Bearer ${token}`;
+    config.headers.Authorization = token;
   }
   return config;
 });
 
 const refreshToken = async () => {
-  const refreshToken = localStorage.getItem("refreshToken");
+  const refreshToken = getRefreshToken();
   const response = await TokenRefreshClient.get("/auth/refresh", {
     headers: {
       Authorization: `Bearer ${refreshToken}`,
     },
   });
+
   const newAccessToken = response.data.accessToken;
-  localStorage.setItem("accessToken", newAccessToken);
+  setAccessToken(newAccessToken);
   return newAccessToken;
 };
 
@@ -70,9 +77,7 @@ API.interceptors.response.use(
           refreshAndRetryQueue.length = 0;
           return API(config);
         } catch (error) {
-          // If token refresh fails remove local storage and navigate back to login
-          localStorage.removeItem("accessToken");
-          localStorage.removeItem("refreshToken");
+          performLogout();
           if (window.location.pathname !== "/") {
             navigate("/login", {
               state: { redirectUrl: window.location.pathname },

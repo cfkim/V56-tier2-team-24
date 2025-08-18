@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { Route, Routes, useNavigate } from "react-router-dom";
 import "./App.css";
 import Footer from "./components/Footer";
@@ -16,29 +16,21 @@ import ResetLinkSent from "./pages/ResetLinkSent";
 import ResetPassword from "./pages/ResetPassword";
 import ResetPasswordSuccess from "./pages/ResetPasswordSuccess";
 import UpdateStatus from "./pages/UpdateStatus";
-import type { User } from "./types/LoginResponse";
-import type { Role } from "./types/Role";
+import { useAuthActions, useRole } from "./stores/authStore";
 
 function App() {
-  const [role, setRole] = useState<Role | undefined>();
-  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
-  const [, setUser] = useState<User>();
-
   const navigate = useNavigate();
   setNavigate(navigate);
+
+  const { setIsLoggedIn, setRole, setUser } = useAuthActions();
+  const role = useRole();
 
   useEffect(() => {
     // Skip authentication check for password reset pages
     const currentPath = window.location.pathname;
     if (currentPath.startsWith("/password/")) {
       setIsLoggedIn(false);
-      return;
-    }
-
-    // Skip authentication if no token is found. Becomes a guest.
-    if (window.localStorage.getItem("accessToken") == null) {
-      setIsLoggedIn(true);
-      setRole("guest");
+      setRole(null);
       return;
     }
 
@@ -50,7 +42,7 @@ function App() {
         setIsLoggedIn(true);
       } catch (err) {
         console.log("auth failed to fetch data: ", err);
-        setIsLoggedIn(false);
+        setRole(null);
       }
     };
 
@@ -59,35 +51,11 @@ function App() {
 
   return (
     <>
-      <Header
-        role={role}
-        isLoggedIn={isLoggedIn}
-        setIsLoggedIn={setIsLoggedIn}
-        setUser={setUser}
-      />
+      <Header />
       <main className="font-nunito flex-1">
         <Routes>
-          <Route
-            path="/"
-            element={
-              <Home
-                role={role}
-                isLoggedIn={isLoggedIn}
-                setIsLoggedIn={setIsLoggedIn}
-                setRole={setRole}
-              />
-            }
-          />
-          <Route
-            path="/login"
-            element={
-              <Login
-                setIsLoggedIn={setIsLoggedIn}
-                setRole={setRole}
-                setUser={setUser}
-              />
-            }
-          />
+          <Route path="/" element={<Home />} />
+          <Route path="/login" element={<Login />} />
 
           {/* <Route path="/user" element={<Account user={user} />} /> */}
           <Route path="/status" element={<Status />} />
@@ -95,10 +63,7 @@ function App() {
           <Route
             path="/info"
             element={
-              <ProtectedRoute
-                isAllowed={role === "admin"}
-                isLoggedIn={isLoggedIn}
-              >
+              <ProtectedRoute isAllowed={role === "admin"}>
                 <PatientInfo />
               </ProtectedRoute>
             }
@@ -108,7 +73,6 @@ function App() {
             element={
               <ProtectedRoute
                 isAllowed={role === "admin" || role === "surgeon"}
-                isLoggedIn={isLoggedIn}
               >
                 <UpdateStatus />
               </ProtectedRoute>
@@ -121,18 +85,8 @@ function App() {
             path="/password/reset-success"
             element={<ResetPasswordSuccess />}
           />
-          <Route path="/not-allowed" element={<NotAllowed role={role} />} />
-          <Route
-            path="*"
-            element={
-              <Home
-                role={role}
-                isLoggedIn={isLoggedIn}
-                setIsLoggedIn={setIsLoggedIn}
-                setRole={setRole}
-              />
-            }
-          />
+          <Route path="/not-allowed" element={<NotAllowed />} />
+          <Route path="*" element={<Home />} />
         </Routes>
       </main>
       <Footer />

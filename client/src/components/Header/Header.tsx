@@ -1,23 +1,17 @@
 import { useMemo, useState } from "react";
 import { Link } from "react-router-dom";
+import { useIsLoggedIn, useRole } from "../../stores/authStore";
 import type { Role } from "../../types/Role";
 import Sidebar from "../Sidebar";
 import HeaderLinks from "./HeaderLinks";
 import ProfileIcon from "./ProfileIcon";
 
-export default function Header({
-  role,
-  isLoggedIn,
-  setIsLoggedIn,
-  setUser,
-}: {
-  role: Role | undefined;
-  isLoggedIn: boolean;
-  setIsLoggedIn: React.Dispatch<React.SetStateAction<boolean>>;
-  setUser: React.Dispatch<React.SetStateAction<any>>;
-}) {
+export default function Header() {
   const date = useMemo(() => new Date(), []);
   const [isOpen, setIsOpen] = useState(false);
+
+  const isLoggedIn = useIsLoggedIn();
+  const role = useRole();
 
   const currentDate = date.toLocaleDateString(undefined, {
     month: "long",
@@ -99,13 +93,7 @@ export default function Header({
         </ul>
         <div className="flex items-center gap-4 pt-1 text-xs md:text-sm xl:text-base">
           <p>{currentDate}</p>
-          {isLoggedIn && (
-            <ProfileIcon
-              role={role}
-              setIsLoggedIn={setIsLoggedIn}
-              setUser={setUser}
-            />
-          )}
+          {isLoggedIn && <ProfileIcon />}
         </div>
         <Sidebar isOpen={isOpen} onClose={() => setIsOpen(false)}>
           <nav className="flex h-full flex-col">
@@ -143,12 +131,7 @@ export default function Header({
             </ul>
             {isLoggedIn && (
               <div className="border-t border-[#D3D3D3] py-5">
-                <ProfileIcon
-                  role={role}
-                  setIsLoggedIn={setIsLoggedIn}
-                  setUser={setUser}
-                  forSidebar={true}
-                />
+                <ProfileIcon forSidebar={true} />
               </div>
             )}
           </nav>

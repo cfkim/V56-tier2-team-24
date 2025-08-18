@@ -1,31 +1,28 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { logout } from "../../lib/api";
-import type { Role } from "../../types/Role";
+import { useAuthActions, useRole } from "../../stores/authStore";
 
 export default function ProfileIcon({
-  setIsLoggedIn,
-  setUser,
-  role,
   forSidebar = false,
 }: {
-  setIsLoggedIn: React.Dispatch<React.SetStateAction<boolean>>;
-  setUser: React.Dispatch<React.SetStateAction<any>>;
-  role: Role | undefined;
   forSidebar?: boolean;
 }) {
   const [isOpen, setIsOpen] = useState(false);
 
   const navigate = useNavigate();
 
+  const role = useRole();
+  const { logout: logoutAction } = useAuthActions();
+
   const handleLogout = () => {
-    setIsLoggedIn(false);
     setIsOpen(!isOpen);
-    setUser(null);
-    // clears session tokens
+
     if (role === "guest") {
+      logoutAction();
       navigate("/");
     } else {
+      logoutAction();
       logout();
     }
   };
