@@ -207,7 +207,9 @@ export default function PatientInfo() {
                   if(category !== "All") {
                     setSelectedStatus("");
                   }; 
-                  setCategory("All")}}
+                  setCategory("All");
+                  setSelectedStatus("All");
+                }}
               >
                 All
               </button>
@@ -319,7 +321,7 @@ export default function PatientInfo() {
                   <td className="py-3 md:table-cell hidden">{patient.phoneNumber}</td>
                   <td className="py-3 md:table-cell hidden">{patient.email}</td>
                   
-                  <td className="py-3 text-xs md:text-md">
+                  <td className="py-3 text-xs md:text-lg">
                     <div className={clsx("rounded-full inline-block px-2 py-1 md:px-6 md:py-2 text-center text-white", 
                       patient.medicalStatus == "checked-in" ? "bg-checked-in" : 
                       patient.medicalStatus == "pre-procedure" ? "bg-pre-procedure" : 
