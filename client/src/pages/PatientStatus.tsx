@@ -117,7 +117,7 @@ export default function Status() {
             </thead>
             <tbody>
                 {statusList.slice(resultsPerPage * (page-1), resultsPerPage * page).map((patient:Patient) => (
-                    <tr className="border-b-1 border-gray-200 last-child:border-bottom:0" key={patient._id}>
+                    <tr className="border-b-1 border-gray-200 last:border-b-0" key={patient._id}>
                         <td className="px-9 py-4 text-2xl">
                             #{patient.patientID}
                         </td>
