@@ -9,6 +9,7 @@ import Search from "../components/search";
 import DeleteConfirmModal from "../components/DeleteConfirmModal";
 import type { Patient } from "../types/Patient";
 import cn from "../utils/cn";
+import FilterSheet from "../components/Filter";
 
 export default function PatientInfo() {
   const [patients, setPatients] = useState<Patient[]>([]);
@@ -24,6 +25,7 @@ export default function PatientInfo() {
   const [lastEditedPatientId, setLastEditedPatientId] = useState<string>("");
   const [lastDeletedPatientId, setLastDeletedPatientId] = useState<string>("");
   const [successIsOpen, setSuccessIsOpen] = useState(false);
+  const [filterSheetIsOpen, setFilterSheetIsOpen] = useState(false);
   const [successAction, setSuccessAction] = useState<
     "add" | "edit" | "delete" | ""
   >("");
@@ -155,11 +157,14 @@ export default function PatientInfo() {
 
   return (
     <>
-      <div className="font-nunito m-20">
+    
+    {filterSheetIsOpen && (<div className="bg-black opacity-50 fixed inset-0 z-75"></div>)}
+
+      <div className="font-nunito m-5 md:m-20">
         <div className="flex flex-col">
-          <div className="mb-10 flex flex-row justify-between">
-            <div className="mx-4">
-              <h1 className="font-kaisei mb-5 text-3xl font-bold">
+          <div className="mb-10 flex flex-col md:flex-row justify-between">
+            <div className="md:mx-4">
+              <h1 className="font-kaisei mb-5 text-xl md:text-3xl font-bold">
                 Patient Information Dashboard
               </h1>
               <p>
@@ -168,21 +173,25 @@ export default function PatientInfo() {
                 and respectful of patient privacy.
               </p>
             </div>
+            
+            <div className="md:hidden">
+              <Search handleChange={handleInputChange}></Search>
+            </div>
+            
             <div className="flex items-end">
               <button
                 onClick={() => {
                   setPatientFormIsOpen(true);
                   setOpenPatientID(null);
                 }}
-                className="bg-primary flex h-12 cursor-pointer items-center gap-1 rounded-2xl px-4 text-white"
+                className="bg-primary flex mt-3 h-12 md:h-12 cursor-pointer items-center gap-2 rounded-xl md:text-xl text-sm md:rounded-2xl px-4 text-white"
               >
                 Add a New Patient
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
-                  height="24px"
                   viewBox="0 -960 960 960"
-                  width="24px"
                   fill="#FFFFFF"
+                  className="md:size-4 size-6"
                 >
                   <path d="M440-440H200v-80h240v-240h80v240h240v80H520v240h-80v-240Z" />
                 </svg>
@@ -190,7 +199,7 @@ export default function PatientInfo() {
             </div>
           </div>
 
-          <div className="mb-4 flex flex-row justify-between">
+          <div className="mb-4 flex-row justify-between hidden md:flex">
             <div className="flex flex-row gap-8 text-gray-400">
               <button
                 className={clsx(
@@ -271,26 +280,34 @@ export default function PatientInfo() {
                 <th className="pl-5" scope="col">
                   Patient
                 </th>
-                <th scope="col">Street Address</th>
-                <th scope="col">Country</th>
-                <th scope="col">Phone Number</th>
-                <th scope="col">Email Address</th>
-                <th scope="col">Medical Status</th>
-                <th scope="col"> </th>
+                <th scope="col" className="md:table-cell hidden">Street Address</th>
+                <th scope="col" className="md:table-cell hidden">Country</th>
+                <th scope="col" className="md:table-cell hidden">Phone Number</th>
+                <th scope="col" className="md:table-cell hidden">Email Address</th>
+                <th scope="col" className="md:hidden"></th>
+                <th scope="col" className="md:table-cell hidden">Medical Status</th>
+                <th scope="col" className="md:table-cell hidden"></th>
+                <th scope="col" className="md:hidden">
+                  <button className="flex justify-center items-center" onClick={() => setFilterSheetIsOpen(true)}>
+                    <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#000000">
+                    <path d="M400-240v-80h160v80H400ZM240-440v-80h480v80H240ZM120-640v-80h720v80H120Z"/></svg>
+                  </button>
+                  
+                </th>
               </tr>
             </thead>
-            <tbody>
+            <tbody className="md:text-lg text-sm">
               {patients.slice(resultsPerPage * (page-1), resultsPerPage * page).map((patient: Patient) => (
                 <tr
                   className={cn(
-                    "border-b-1 border-gray-200",
+                    "border-b-1 border-gray-200 last:border-b-0",
                     successIsOpen && lastAddedPatientId !== patient.patientID
                       ? "opacity-20"
                       : "",
                   )}
                   key={patient._id}
                 >
-                  <td className="px-5 py-3 pr-50">
+                  <td className="px-5 py-3 pr-10 md:pr-50">
                     <div className="flex flex-col">
                       <div className="font-nunito-bold">
                         {patient.firstName} {patient.lastName}
@@ -300,14 +317,26 @@ export default function PatientInfo() {
                       </div>
                     </div>
                   </td>
-                  <td className="py-3">{patient.streetAddress}</td>
-                  <td className="py-3 pr-15">{patient.country}</td>
-                  <td className="py-3">{patient.phoneNumber}</td>
-                  <td className="py-3">{patient.email}</td>
-                  <td className="py-3">{patient.medicalStatus}</td>
+                  <td className="py-3 md:table-cell hidden">{patient.streetAddress}</td>
+                  <td className="py-3 pr-15 md:table-cell hidden">{patient.country}</td>
+                  <td className="py-3 md:table-cell hidden">{patient.phoneNumber}</td>
+                  <td className="py-3 md:table-cell hidden">{patient.email}</td>
+                  
+                  <td className="py-3 text-xs md:text-md">
+                    <div className={clsx("rounded-full inline-block px-2 py-1 md:px-6 md:py-2 text-center text-white", 
+                      patient.medicalStatus == "checked-in" ? "bg-checked-in" : 
+                      patient.medicalStatus == "pre-procedure" ? "bg-pre-procedure" : 
+                      patient.medicalStatus == "in-progress" ? "bg-in-progress" : 
+                      patient.medicalStatus == "closing" ? "bg-closing" : 
+                      patient.medicalStatus == "recovery" ? "bg-recovery" : 
+                      patient.medicalStatus == "complete" ? "bg-complete" : 
+                      patient.medicalStatus == "dismissal" ? "bg-dismissal" : "")}>
+                      {patient.medicalStatus}
+                    </div>
+                  </td>
                   <td className="py-3">
                     <button
-                      className="cursor-pointer"
+                      className="cursor-pointer pr-5 md:pr-2"
                       onClick={() => {
                         const next =
                           openPatientID === patient.patientID
@@ -383,11 +412,11 @@ export default function PatientInfo() {
         </div>
 
         {/* pagination */}
-        <div className="flex sticky bottom-0 font-nunito-bold mt-10">
+        <div className="flex bottom-0 font-nunito-bold mt-5 text-sm md:text-xl md:mt-10">
             <button 
                 disabled={page <= 1} 
                 onClick={() => setPage(page - 1)} 
-                className="flex items-center gap-2 mx-5 text-xl disabled:opacity-50 disabled:cursor-default hover:cursor-pointer">
+                className="flex items-center gap-2 mx-5 disabled:opacity-50 disabled:cursor-default hover:cursor-pointer">
                 <svg xmlns="http://www.w3.org/2000/svg" 
                 height="24px" viewBox="0 -960 960 960" 
                 width="20px" fill="#000000">
@@ -396,14 +425,14 @@ export default function PatientInfo() {
                 Prev
             </button>
             {getPageNav(page, getNumPages()).map((num, index) => (
-                <button key={index} onClick={()=> setPage(num)} disabled={num == 0}className={clsx("px-4 mx-1 py-2 rounded-lg text-xl hover:cursor-pointer disabled:pointer-events-none", page === num ? "bg-accent pointer-events-none" : "")}>
+                <button key={index} onClick={()=> setPage(num)} disabled={num == 0}className={clsx("px-4 mx-1 py-2 rounded-lg hover:cursor-pointer disabled:pointer-events-none", page === num ? "bg-accent pointer-events-none" : "")}>
                     {num == 0 ? "..." : num}
                 </button>
             ))}
             <button 
                 disabled={page >= getNumPages()} 
                 onClick={() => setPage(page + 1)} 
-                className="flex items-center gap-2 mx-5 text-xl disabled:opacity-50 disabled:cursor-default hover:cursor-pointer">
+                className="flex items-center gap-2 mx-5 disabled:opacity-50 disabled:cursor-default hover:cursor-pointer">
                 Next
                 <svg xmlns="http://www.w3.org/2000/svg" 
                     height="24px" viewBox="0 -960 960 960" 
@@ -413,7 +442,7 @@ export default function PatientInfo() {
             </button>
         </div>
       </div>
-
+      <FilterSheet selectedStatus={selectedStatus} setSelectedStatus={setSelectedStatus} isOpen={filterSheetIsOpen} setIsOpen={setFilterSheetIsOpen}></FilterSheet>
       <PatientFormModal
         isEdit={selectedPatient !== null}
         isOpen={patientFormIsOpen}
