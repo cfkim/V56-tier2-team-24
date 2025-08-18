@@ -105,6 +105,12 @@ function App() {
               </ProtectedRoute>
             }
           />
+          
+          <Route path="/password/forgot" element={<ForgotPassword />} />
+          <Route path="/password/reset-link-sent" element={<ResetLinkSent />} />
+          <Route path="/password/reset" element={<ResetPassword />} />
+          <Route path="/password/reset-success" element={<ResetPasswordSuccess />}/>
+
           <Route
             path="/update"
             element={
@@ -116,17 +122,27 @@ function App() {
               </ProtectedRoute>
             }
           />
-          <Route path="/password/forgot" element={<ForgotPassword />} />
-          <Route path="/password/reset-link-sent" element={<ResetLinkSent />} />
-          <Route path="/password/reset" element={<ResetPassword />} />
           
-          <Route path="/update/patient/:patientId" element={<UpdatePatientStatus />} />
-          <Route path="/update/confirmation" element={<UpdateStatusConfirmation />} />
-
-          <Route
-            path="/password/reset-success"
-            element={<ResetPasswordSuccess />}
+          <Route path="/update/patient/:patientId" element={
+              <ProtectedRoute
+                isAllowed={role === "admin" || role === "surgeon"}
+                isLoggedIn={isLoggedIn}
+              >
+                <UpdatePatientStatus />
+              </ProtectedRoute>
+            } 
           />
+
+          <Route path="/update/confirmation" element={
+              <ProtectedRoute
+                isAllowed={role === "admin" || role === "surgeon"}
+                isLoggedIn={isLoggedIn}
+              >
+                <UpdateStatusConfirmation />
+              </ProtectedRoute>
+            } 
+          />
+
           <Route path="/not-allowed" element={<NotAllowed role={role} />} />
           <Route
             path="*"
