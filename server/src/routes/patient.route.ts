@@ -25,7 +25,7 @@ const validatePatientId = (req: CustomRequest, res: Response, next: NextFunction
 
 const validateStatusUpdate = (req: CustomRequest, res: Response, next: NextFunction) => {
   const { patientId, newStatus } = req.body;
-  console.log(newStatus)
+  
   if (!patientId || typeof patientId !== 'string' || patientId.trim().length === 0) {
     return res.status(400).json({
       message: "Valid patient ID is required"
@@ -46,7 +46,7 @@ const validateStatusUpdate = (req: CustomRequest, res: Response, next: NextFunct
     "closing",
     "recovery",
     "complete",
-    "dissmissal"
+    "dismissal"
   ];
 
   if (!validStatuses.includes(newStatus)) {
