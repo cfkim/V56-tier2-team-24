@@ -4,8 +4,8 @@ export default function FilterSheet({isOpen, setIsOpen, setSelectedStatus, selec
     if (isOpen) {
         return (
             <div className="fixed inset-0 z-30 bg-black/40">
-                <div className="fixed bottom-0 h-2/3 left-0 right-0 bg-white p-4 rounded-t-lg shadow-lg z-110">
-                    <div className="flex flex-col">
+                <div className="fixed bottom-0 h-2/3 left-0 right-0 bg-white p-4 rounded-t-4xl shadow-lg z-110">
+                    <div className="flex flex-col mx-3 mt-5">
                         <div className="flex flex-row justify-between">
                             <div className="flex flex-row gap-2">
                                 <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#000000">
