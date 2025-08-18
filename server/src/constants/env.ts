@@ -2,23 +2,6 @@ const getEnv = (key: string, defaultValue?: string): string => {
     const value = process.env[key] || defaultValue;
 
     if (value === undefined) {
-        // In development mode, provide default values for optional variables
-        if (process.env.NODE_ENV === "development") {
-            switch (key) {
-                case "RESEND_API_KEY":
-                    return "test-key";
-                case "EMAIL_SENDER":
-                    return "noreply@beacon.com";
-                case "MONGO_URI":
-                    return "mongodb://localhost:27017/beacon";
-                case "JWT_SECRET":
-                    return "dev-secret-key";
-                case "JWT_REFRESH_SECRET":
-                    return "dev-refresh-secret-key";
-                default:
-                    break;
-            }
-        }
         throw Error(`Missing String environment variable for ${key}`);
     }
 
