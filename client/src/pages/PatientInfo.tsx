@@ -157,9 +157,6 @@ export default function PatientInfo() {
 
   return (
     <>
-    
-    {filterSheetIsOpen && (<div className="bg-black opacity-50 fixed inset-0 z-75"></div>)}
-
       <div className="font-nunito m-5 md:m-20">
         <div className="flex flex-col">
           <div className="mb-10 flex flex-col md:flex-row justify-between">
@@ -184,7 +181,7 @@ export default function PatientInfo() {
                   setPatientFormIsOpen(true);
                   setOpenPatientID(null);
                 }}
-                className="bg-primary flex mt-3 h-12 md:h-12 cursor-pointer items-center gap-2 rounded-xl md:text-xl text-sm md:rounded-2xl px-4 text-white"
+                className="bg-primary flex mt-3 h-12 md:h-12 cursor-pointer items-center gap-2 rounded-xl md:text-lg text-sm md:rounded-2xl px-4 text-white"
               >
                 Add a New Patient
                 <svg
