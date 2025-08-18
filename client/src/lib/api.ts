@@ -55,7 +55,6 @@ export const getStatusList = async () => {
 
 // gets all patients
 export const getPatients = async () => {
-  console.log("client api for all patients")
   const token = localStorage.getItem("accessToken");
   const res = await API.get("/patient/all", {
     headers: {

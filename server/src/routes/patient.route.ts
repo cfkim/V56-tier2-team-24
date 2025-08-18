@@ -80,7 +80,6 @@ patientRoutes.get("/", async (req: any, res) => {
 
 // gets all patient records
 patientRoutes.get("/all", async (req: any, res) => {
-  console.log("made it here")
     const allPatients = await PatientModel.find({}).sort({ createdAt: -1 });
 
     if (allPatients) {
