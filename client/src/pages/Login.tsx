@@ -1,8 +1,8 @@
 import { useMutation } from "@tanstack/react-query";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import LoginArt from "../assets/images/login.svg?react";
 import { login } from "../lib/api";
-// import type { LoginResponse } from "../types/LoginResponse";
 import type { Role } from "../types/Role";
 
 export default function Login({
@@ -19,6 +19,17 @@ export default function Login({
   const [password, setPassword] = useState("");
   const [rememberMe, setRememberMe] = useState(Boolean);
 
+  // added to handle navigation to login page under different auth states
+  useEffect(() => {
+    // If user is already logged in, redirects to home page
+    if (window.localStorage.getItem("accessToken")) {
+      navigate("/", { replace: true });
+    } else {
+      // sets is logged in to false
+      setIsLoggedIn(false);
+    }
+  }, []);
+
   // Handles the function call to sign in
   const {
     mutate: signIn,
@@ -32,10 +43,7 @@ export default function Login({
 
       window.localStorage.setItem("accessToken", response.data.accessToken);
 
-      // Only saves refresh token if rememberMe checked
-      if (rememberMe) {
-        window.localStorage.setItem("refreshToken", response.data.refreshToken);
-      }
+      window.localStorage.setItem("refreshToken", response.data.refreshToken);
 
       // Sets App's logged in state and the role of the user
       setIsLoggedIn(true);
@@ -49,14 +57,10 @@ export default function Login({
     <>
       <div className="flex w-full flex-row justify-between">
         <div className="flex h-full w-1/2 justify-center">
-          <img
-            src="static/images/login.svg"
-            alt=""
-            className="mb-8 h-auto rounded-t-[3.125rem]"
-          />
+          <LoginArt className="mb-8 h-auto rounded-t-[3.125rem]" />
         </div>
         <div className="font-nunito flex w-1/2 flex-col items-center justify-center bg-white px-30">
-          <h1 className="font-kaisei mb-12 w-full cursor-pointer text-xl font-bold sm:text-4xl">
+          <h1 className="font-kaisei mb-12 w-full text-xl font-bold sm:text-4xl">
             Log In
           </h1>
           {isError && (
@@ -98,21 +102,22 @@ export default function Login({
                 <label htmlFor="remember">Remember Me</label>
               </div>
 
-              <Link
-                to="/password/forgot"
-                className="text-primary hover:text-primary/80"
-              >
-                Forgot Password?
-              </Link>
+              <Link to="/password/forgot">Forgot Password?</Link>
             </div>
             <button
               type="submit"
               className="bg-primary mb-20 w-full cursor-pointer rounded-[12px] py-[13px] text-white disabled:opacity-50"
               disabled={!email || password.length < 6}
             >
-              {isPending ? "Signing In..." : "Sign In"}
+              {isPending ? <p>...</p> : <p>Log In</p>}
             </button>
           </form>
+          <hr className="mb-10 w-full border-[#DDE1E6]" />
+          <div className="flex w-full">
+            <p>
+              No account yet? Please visit the <strong>reception area</strong>
+            </p>
+          </div>
         </div>
       </div>
     </>
