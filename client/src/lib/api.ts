@@ -55,6 +55,7 @@ export const getStatusList = async () => {
 
 // gets all patients
 export const getPatients = async () => {
+  console.log("client api for all patients")
   const token = localStorage.getItem("accessToken");
   const res = await API.get("/patient/all", {
     headers: {
@@ -112,6 +113,7 @@ export const getNewPatientId = async () => {
   return res;
 };
 
+// ------
 // gets patient by ID
 export const getPatientById = async (patientId: string) => {
   const token = localStorage.getItem("accessToken");
@@ -136,6 +138,7 @@ export const updatePatientStatus = async (patientId: string, newStatus: string) 
   );
   return res;
 };
+// ------
 
 // for forgot password
 // sends email to forgot password endpoint

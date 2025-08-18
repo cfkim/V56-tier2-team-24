@@ -1,12 +1,12 @@
 // Patient status constants and utilities
 export const STATUS_OPTIONS = [
-  "Checked-In",
-  "Pre-Procedure", 
-  "In Progress",
-  "Closing",
-  "Recovery",
-  "Complete",
-  "Dismissal"
+  "checked-in",
+  "pre-procedure", 
+  "in-progress",
+  "closing",
+  "recovery",
+  "complete",
+  "dismissal"
 ] as const;
 
 export type PatientStatus = typeof STATUS_OPTIONS[number];
