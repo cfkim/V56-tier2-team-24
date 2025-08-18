@@ -90,14 +90,6 @@ function App() {
               />
             }
           />
-<<<<<<< HEAD
-          <Route path="/user" element={<Account user={user} />} />
-          <Route path="/status" element={<PatientStatus />} />
-          <Route path="/info" element={<PatientInfo />} />
-          <Route path="/update" element={<UpdateStatus />} />
-          <Route path="/update/patient/:patientId" element={<UpdatePatientStatus />} />
-          <Route path="/update/confirmation" element={<UpdateStatusConfirmation />} />
-=======
 
           {/* <Route path="/user" element={<Account user={user} />} /> */}
           <Route path="/status" element={<Status />} />
@@ -124,10 +116,13 @@ function App() {
               </ProtectedRoute>
             }
           />
->>>>>>> develop
           <Route path="/password/forgot" element={<ForgotPassword />} />
           <Route path="/password/reset-link-sent" element={<ResetLinkSent />} />
           <Route path="/password/reset" element={<ResetPassword />} />
+          
+          <Route path="/update/patient/:patientId" element={<UpdatePatientStatus />} />
+          <Route path="/update/confirmation" element={<UpdateStatusConfirmation />} />
+
           <Route
             path="/password/reset-success"
             element={<ResetPasswordSuccess />}
