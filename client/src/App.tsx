@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Route, Routes, useLocation, useNavigate } from "react-router-dom";
 import "./App.css";
-import Footer from "./components/footer";
+import Footer from "./components/Footer";
 import Header from "./components/Header/Header";
 import ProtectedRoute from "./components/ProtectedRoute";
 import { getUser } from "./lib/api";
