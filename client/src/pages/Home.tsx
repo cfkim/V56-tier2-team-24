@@ -44,6 +44,7 @@ export default function Home({
               happening.
             </p>
           </div>
+
           <div className="relative">
             {!isLoggedIn && (
               <div className="absolute inset-x-0 bottom-1/5 z-30 flex flex-col items-center gap-3 font-semibold sm:static sm:flex-row sm:text-sm md:text-base lg:text-lg xl:text-xl">
