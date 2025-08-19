@@ -1,7 +1,64 @@
-import { Router } from "express";
+import { Router, Request, Response, NextFunction } from "express";
 import PatientModel from "../models/patient.model";
 
 const patientRoutes = Router();
+
+// Extend Request interface for our custom properties
+interface CustomRequest extends Request {
+  patientId?: string;
+  newStatus?: string;
+}
+
+// Validation middleware
+const validatePatientId = (req: CustomRequest, res: Response, next: NextFunction) => {
+  const { patientId } = req.params;
+  
+  if (!patientId || typeof patientId !== 'string' || patientId.trim().length === 0) {
+    return res.status(400).json({
+      message: "Valid patient ID is required"
+    });
+  }
+  
+  req.patientId = patientId.trim();
+  next();
+};
+
+const validateStatusUpdate = (req: CustomRequest, res: Response, next: NextFunction) => {
+  const { patientId, newStatus } = req.body;
+  
+  if (!patientId || typeof patientId !== 'string' || patientId.trim().length === 0) {
+    return res.status(400).json({
+      message: "Valid patient ID is required"
+    });
+  }
+
+  if (!newStatus || typeof newStatus !== 'string') {
+    return res.status(400).json({
+      message: "Valid new status is required"
+    });
+  }
+
+  // Validate status values
+  const validStatuses = [
+    "checked-in",
+    "pre-procedure", 
+    "in-progress",
+    "closing",
+    "recovery",
+    "complete",
+    "dismissal"
+  ];
+
+  if (!validStatuses.includes(newStatus)) {
+    return res.status(400).json({
+      message: "Invalid status value"
+    });
+  }
+
+  req.patientId = patientId.trim();
+  req.newStatus = newStatus;
+  next();
+};
 
 // gets a specific patient records
 patientRoutes.get("/", async (req: any, res) => {
@@ -156,6 +213,66 @@ patientRoutes.post("/update", async (req, res) => {
     }
 });
 
-// updates patient status
+// updates patient status. specifically
+patientRoutes.post("/update-status", validateStatusUpdate, async (req: CustomRequest, res: Response) => {
+  try {
+    // Find and update the patient
+    const patient = await PatientModel.findOneAndUpdate(
+      { patientID: req.patientId },
+      { medicalStatus: req.newStatus },
+      { new: true }
+    );
+
+    if (!patient) {
+      return res.status(404).json({
+        message: "Patient not found"
+      });
+    }
+
+    res.status(200).json({
+      message: "Patient status updated successfully",
+      patient: {
+        id: patient.patientID,
+        currentStatus: patient.medicalStatus
+      }
+    });
+  } catch (error) {
+    console.error("Error updating patient status:", error);
+    res.status(500).json({
+      message: "Failed to update patient status",
+      error: error instanceof Error ? error.message : error
+    });
+  }
+});
+
+// gets patient by ID from URL params
+patientRoutes.get("/:patientId", validatePatientId, async (req: CustomRequest, res: Response) => {
+  try {
+    const patient = await PatientModel.findOne({
+      patientID: req.patientId,
+    });
+
+    if (patient) {
+      res.status(200).json({
+        message: "Patient found",
+        patient: {
+          id: patient.patientID,
+          currentStatus: patient.medicalStatus,
+          firstName: patient.firstName,
+          lastName: patient.lastName
+        },
+      });
+    } else {
+      res.status(404).json({
+        message: "Patient not found",
+      });
+    }
+  } catch (error) {
+    console.error("Error fetching patient:", error);
+    res.status(500).json({
+      message: "Error occurred while fetching patient data",
+    });
+  }
+});
 
 export default patientRoutes;

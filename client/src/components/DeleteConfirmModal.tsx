@@ -58,7 +58,7 @@ export default function DeleteConfirmModal({
       />
       <div
         aria-modal="true"
-        className="bg-background font-nunito no-scrollbar fixed top-50 right-0 left-0 z-50 mx-auto flex max-h-[calc(100vh-5rem)] w-10/12 max-w-3xl flex-col gap-4 overflow-y-auto rounded-xl px-7 py-6 pb-10 text-[#303030] shadow-xl sm:px-8 sm:py-7 sm:pb-12 sm:pl-12 md:px-9 md:py-8 md:pb-12 md:pl-14 lg:px-10 lg:py-9 lg:pb-12 lg:pl-16 xl:px-11 xl:py-10 xl:pb-12 xl:pl-20"
+        className="bg-background font-nunito no-scrollbar fixed top-35 md:top-50 right-0 left-0 z-50 mx-auto flex max-h-[calc(100vh-5rem)] w-10/12 max-w-3xl flex-col gap-4 overflow-y-auto rounded-xl px-7 py-6 pb-10 text-[#303030] shadow-xl sm:px-8 sm:py-7 sm:pb-12 sm:pl-12 md:px-9 md:py-8 md:pb-12 md:pl-14 lg:px-10 lg:py-9 lg:pb-12 lg:pl-16 xl:px-11 xl:py-10 xl:pb-12 xl:pl-20"
       >
         <button
           className="text-primary flex w-full cursor-pointer items-center justify-end"
@@ -133,7 +133,7 @@ export default function DeleteConfirmModal({
             <div className="mb-2 flex gap-3.5 text-sm sm:gap-6">
               <div
                 onClick={onClose}
-                className="text-primary outline-primary flex w-full max-w-32 cursor-pointer items-center justify-center rounded-xl py-2.5 font-semibold outline outline-2 sm:py-3 md:py-3.5 lg:py-4"
+                className="text-primary outline-primary flex w-1/2 md:w-full max-w-32 cursor-pointer items-center justify-center rounded-xl py-2.5 font-semibold outline-2 sm:py-3 md:py-3.5 lg:py-4"
               >
                 Cancel
               </div>

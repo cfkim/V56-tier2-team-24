@@ -16,7 +16,9 @@ import Status from "./pages/PatientStatus";
 import ResetLinkSent from "./pages/ResetLinkSent";
 import ResetPassword from "./pages/ResetPassword";
 import ResetPasswordSuccess from "./pages/ResetPasswordSuccess";
-import UpdateStatus from "./pages/UpdateStatus";
+import UpdatePatientStatus from "./pages/UpdatePatientForm";
+import UpdateStatusConfirmation from "./pages/UpdateStatusConfirmation";
+import UpdateStatus from "./pages/UpdateStatusLanding";
 import { useAuthActions, useIsLoggedIn, useRole } from "./stores/authStore";
 
 function App() {
@@ -77,6 +79,15 @@ function App() {
               </ProtectedRoute>
             }
           />
+
+          <Route path="/password/forgot" element={<ForgotPassword />} />
+          <Route path="/password/reset-link-sent" element={<ResetLinkSent />} />
+          <Route path="/password/reset" element={<ResetPassword />} />
+          <Route
+            path="/password/reset-success"
+            element={<ResetPasswordSuccess />}
+          />
+
           <Route
             path="/update"
             element={
@@ -87,13 +98,29 @@ function App() {
               </ProtectedRoute>
             }
           />
-          <Route path="/password/forgot" element={<ForgotPassword />} />
-          <Route path="/password/reset-link-sent" element={<ResetLinkSent />} />
-          <Route path="/password/reset" element={<ResetPassword />} />
+
           <Route
-            path="/password/reset-success"
-            element={<ResetPasswordSuccess />}
+            path="/update/patient/:patientId"
+            element={
+              <ProtectedRoute
+                isAllowed={role === "admin" || role === "surgeon"}
+              >
+                <UpdatePatientStatus />
+              </ProtectedRoute>
+            }
           />
+
+          <Route
+            path="/update/confirmation"
+            element={
+              <ProtectedRoute
+                isAllowed={role === "admin" || role === "surgeon"}
+              >
+                <UpdateStatusConfirmation />
+              </ProtectedRoute>
+            }
+          />
+
           <Route path="/not-allowed" element={<NotAllowed />} />
           <Route path="*" element={<Home />} />
         </Routes>

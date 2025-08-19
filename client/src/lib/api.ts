@@ -50,6 +50,26 @@ export const editPatient = async (formData: FormData) => {
 // gets a new patient number
 export const getNewPatientId = async () => API.get("/patient/patientId");
 
+// ------
+// gets patient by ID
+export const getPatientById = async (patientId: string) => {
+  const res = await API.get(`/patient/${patientId}`);
+  return res;
+};
+
+// updates patient status
+export const updatePatientStatus = async (
+  patientId: string,
+  newStatus: string,
+) => {
+  const res = await API.post("/patient/update-status", {
+    patientId,
+    newStatus,
+  });
+  return res;
+};
+// ------
+
 // for forgot password
 // sends email to forgot password endpoint
 export const forgotPassword = async (email: string) => {
