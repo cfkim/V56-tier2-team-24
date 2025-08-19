@@ -3,31 +3,26 @@ import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import LoginArt from "../assets/images/login.svg?react";
 import { login } from "../lib/api";
-import type { Role } from "../types/Role";
+import {
+  useAuthActions,
+  useIsHydrated,
+  useIsLoggedIn,
+} from "../stores/authStore";
 
-export default function Login({
-  setUser,
-  setIsLoggedIn,
-  setRole,
-}: {
-  setUser: React.Dispatch<React.SetStateAction<any>>;
-  setIsLoggedIn: React.Dispatch<React.SetStateAction<boolean>>;
-  setRole: React.Dispatch<React.SetStateAction<Role | undefined>>;
-}) {
+export default function Login() {
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [rememberMe, setRememberMe] = useState(Boolean);
 
+  const { login: loginAction } = useAuthActions();
+  const isHydrated = useIsHydrated();
+  const isLoggedIn = useIsLoggedIn();
+
   // added to handle navigation to login page under different auth states
   useEffect(() => {
-    // If user is already logged in, redirects to home page
-    if (window.localStorage.getItem("accessToken")) {
-      navigate("/", { replace: true });
-    } else {
-      // sets is logged in to false
-      setIsLoggedIn(false);
-    }
+    if (!isHydrated) return;
+    if (isLoggedIn) navigate("/", { replace: true });
   }, []);
 
   // Handles the function call to sign in
@@ -39,16 +34,13 @@ export default function Login({
     mutationFn: login,
 
     onSuccess: (response) => {
-      // Saves tokens to storage
+      loginAction({
+        accessToken: response.data.accessToken,
+        refreshToken: response.data.refreshToken,
+        user: response.data.user,
+        rememberMe,
+      });
 
-      window.localStorage.setItem("accessToken", response.data.accessToken);
-
-      window.localStorage.setItem("refreshToken", response.data.refreshToken);
-
-      // Sets App's logged in state and the role of the user
-      setIsLoggedIn(true);
-      setUser(response.data.user);
-      setRole(response.data.user.role);
       navigate("/", { replace: true });
     },
   });

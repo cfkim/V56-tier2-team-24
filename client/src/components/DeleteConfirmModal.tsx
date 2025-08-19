@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { createPortal } from "react-dom";
 import API from "../config/apiClient";
+import { getAuthHeader } from "../stores/authStore";
 export default function DeleteConfirmModal({
   isOpen,
   onClose,
@@ -30,12 +31,12 @@ export default function DeleteConfirmModal({
 
   const deletePatient = async (patientID: string) => {
     console.log("deleting user attempt: " + patientID);
-    const token = localStorage.getItem("accessToken");
+    const token = getAuthHeader();
 
     try {
       await API.delete("/patient/delete", {
         headers: {
-          Authorization: `Bearer ${token}`,
+          Authorization: token,
         },
         data: { id: patientID },
       });

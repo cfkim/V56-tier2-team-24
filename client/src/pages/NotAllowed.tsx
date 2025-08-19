@@ -1,7 +1,8 @@
 import { Link, Navigate } from "react-router-dom";
-import type { Role } from "../types/Role";
+import { useRole } from "../stores/authStore";
 
-export default function NotAllowed({ role }: { role?: Role }) {
+export default function NotAllowed() {
+  const role = useRole();
   if (role === "admin") return <Navigate to="/" />;
 
   return (

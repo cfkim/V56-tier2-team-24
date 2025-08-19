@@ -30,13 +30,13 @@ export default function PatientFormModal({
     phoneNumber?: string;
     email?: string;
   }>({});
-
   const fetchId = async () => {
     const res = await getNewPatientId();
     setNewPatientId(res.data.patientID);
   };
 
   useEffect(() => {
+    console.log("isEdit: ", isEdit);
     if (isOpen) {
       fetchId();
       const prev = document.body.style.overflow;
@@ -84,6 +84,7 @@ export default function PatientFormModal({
 
   const handleAddPatient = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (isEdit) return;
     const formData = new FormData(e.target as HTMLFormElement);
     const patientIdVal = formData.get("patientID");
     if (typeof patientIdVal === "string" && patientIdVal.startsWith("#")) {
@@ -94,18 +95,12 @@ export default function PatientFormModal({
 
     try {
       await addPatient(formData);
-      //   const addedPatientID = addedPatient.data.patient.patientID;
-      //   if (!addedPatientID) {
-      //     console.error("Missing Patient ID from added patient.");
-      //     return;
-      //   }
-      //   setLastAddedPatientId(addedPatientID);
       if (patientIdVal) {
         setLastAddedPatientId(patientIdVal.toString());
       }
-      fetchPatients();
-      fetchId();
       onClose();
+      fetchId();
+      fetchPatients();
     } catch (error) {
       console.log(error);
     }
@@ -113,6 +108,7 @@ export default function PatientFormModal({
 
   const handleEditPatient = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!isEdit) return;
     const formData = new FormData(e.target as HTMLFormElement);
     const patientIdVal = formData.get("patientID");
     if (typeof patientIdVal === "string" && patientIdVal.startsWith("#")) {
@@ -131,8 +127,8 @@ export default function PatientFormModal({
       if (patientIdVal) {
         setLastEditedPatientId(patientIdVal.toString());
       }
-      fetchPatients();
       onClose();
+      fetchPatients();
     } catch (error) {
       console.log(error);
     }

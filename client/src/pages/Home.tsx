@@ -1,21 +1,16 @@
 import { Link, useNavigate } from "react-router-dom";
+import { useAuthActions, useIsLoggedIn, useRole } from "../stores/authStore";
 import type { Role } from "../types/Role";
 
 function capitalize(role: Role) {
   return role.charAt(0).toUpperCase() + role.slice(1);
 }
 
-export default function Home({
-  role,
-  isLoggedIn,
-  setIsLoggedIn,
-  setRole,
-}: {
-  role: Role | undefined;
-  isLoggedIn: boolean;
-  setIsLoggedIn: React.Dispatch<React.SetStateAction<boolean>>;
-  setRole: React.Dispatch<React.SetStateAction<Role | undefined>>;
-}) {
+export default function Home() {
+  const isLoggedIn = useIsLoggedIn();
+  const role = useRole();
+  const { setIsLoggedIn, setRole } = useAuthActions();
+
   const navigate = useNavigate();
   const guestLogin = () => {
     setIsLoggedIn(true);
