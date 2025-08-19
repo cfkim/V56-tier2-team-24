@@ -1,5 +1,5 @@
 import clsx from "clsx";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { getPatients } from "../lib/api";
 // import { SmallSearch } from "../components/search";
 import PatientFormModal from "../components/PatientForm/PatientFormModal";
@@ -9,9 +9,13 @@ import Search from "../components/search";
 import DeleteConfirmModal from "../components/DeleteConfirmModal";
 import type { Patient } from "../types/Patient";
 import cn from "../utils/cn";
+import FilterSheet from "../components/Filter";
 
 export default function PatientInfo() {
   const [patients, setPatients] = useState<Patient[]>([]);
+  const [options, setOptions] = useState([""])
+  const [category, setCategory] = useState("All")
+  const searchTermRef = useRef("");
   const [patientFormIsOpen, setPatientFormIsOpen] = useState(false);
   const [selectedStatus, setSelectedStatus] = useState<string>("All");
   const [openPatientID, setOpenPatientID] = useState<string | null>(null);
@@ -21,24 +25,95 @@ export default function PatientInfo() {
   const [lastEditedPatientId, setLastEditedPatientId] = useState<string>("");
   const [lastDeletedPatientId, setLastDeletedPatientId] = useState<string>("");
   const [successIsOpen, setSuccessIsOpen] = useState(false);
+  const [filterSheetIsOpen, setFilterSheetIsOpen] = useState(false);
   const [successAction, setSuccessAction] = useState<
     "add" | "edit" | "delete" | ""
   >("");
 
-  const fetchPatients = async () => {
+  // pagination
+  const [page, setPage] = useState(1);
+  const resultsPerPage = 10; // Number of results on each page
+
+  const getNumPages = () => {
+    return Math.ceil(patients.length / resultsPerPage);
+  }
+
+  // gets the page navigation numbers to show at the bottom
+  function getPageNav(current: number, total: number){
+    const pages = []
+    // if total pages less than or equal to 7, shows all pages
+    if(total <= 7){
+      for(let i = 1; i <= total; i++){
+        pages.push(i)
+      }
+      return pages;
+    }
+
+
+    // 0 means ... in the page nav
+
+    // if current page is in the first 4, then shows first 4 pages
+    if(current < 3){
+      pages.push(1, 2, 3, 4, 0, total)
+    }else if(current > total - 2){ // if current page in last 4
+      pages.push(1, 0, total - 3, total - 2, total - 1, total)
+    }else{ // if current page is in the middlee
+      pages.push(1, 0, current - 1, current, current + 1, 0, total)
+    }
+
+    return pages
+  }
+
+  // Gets a filtered list based on search
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+      const value = e.target.value;
+      searchTermRef.current = value;
+      
+      fetchPatients(value);
+  }
+
+  const fetchPatients = async (term: String) => {
+    
     try {
       const result = await getPatients();
       const patients = result.data.patients;
-      setPatients(patients);
+      let categorized = patients;
+      
+      console.log(selectedStatus)
+      if(category == "Before"){
+        categorized = patients.filter((patient: Patient) => patient.medicalStatus == "checked-in" || patient.medicalStatus == "pre-procedure");
+      }else if(category == "During"){
+        categorized = patients.filter((patient: Patient) => patient.medicalStatus == "in-progress" || patient.medicalStatus == "closing");
+      }else if(category == "After"){
+        categorized = patients.filter((patient: Patient) => patient.medicalStatus == "recovery" || patient.medicalStatus == "complete" || patient.medicalStatus == "dismissal");
+      }
+      
+      // further filters if an option is selected
+      if(selectedStatus !== "All" && selectedStatus !== ""){
+        categorized = categorized.filter((patient: Patient) => patient.medicalStatus === selectedStatus);
+      }
+
+      console.log(categorized)
+      // if there's a search term, then return the filtered list
+      if(term !== ""){
+          const filteredList = categorized.filter((patient: Patient) =>
+              patient.patientID.toString().toLowerCase().includes(term.toLowerCase())
+          );
+          setPatients(filteredList);
+      }else{
+          setPatients(categorized);
+      }
+      
       return true;
     } catch (error) {
       console.error(error);
       return false;
     }
   };
+
   useEffect(() => {
-    fetchPatients();
-  }, []);
+    fetchPatients(searchTermRef.current);
+  }, [selectedStatus, category]);
 
   const TIME_OUT = 1000;
 
@@ -82,11 +157,11 @@ export default function PatientInfo() {
 
   return (
     <>
-      <div className="font-nunito m-20">
+      <div className="font-nunito m-5 md:m-20">
         <div className="flex flex-col">
-          <div className="mb-10 flex flex-row justify-between">
-            <div className="mx-4">
-              <h1 className="font-kaisei mb-5 text-3xl font-bold">
+          <div className="mb-10 flex flex-col md:flex-row justify-between">
+            <div className="md:mx-4">
+              <h1 className="font-kaisei mb-5 text-xl md:text-3xl font-bold">
                 Patient Information Dashboard
               </h1>
               <p>
@@ -95,21 +170,25 @@ export default function PatientInfo() {
                 and respectful of patient privacy.
               </p>
             </div>
+            
+            <div className="md:hidden">
+              <Search handleChange={handleInputChange}></Search>
+            </div>
+            
             <div className="flex items-end">
               <button
                 onClick={() => {
                   setPatientFormIsOpen(true);
                   setOpenPatientID(null);
                 }}
-                className="bg-primary flex h-12 cursor-pointer items-center gap-1 rounded-2xl px-4 text-white"
+                className="bg-primary flex mt-3 h-12 md:h-12 cursor-pointer items-center gap-2 rounded-xl md:text-lg text-sm md:rounded-2xl px-4 text-white"
               >
                 Add a New Patient
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
-                  height="24px"
                   viewBox="0 -960 960 960"
-                  width="24px"
                   fill="#FFFFFF"
+                  className="md:size-4 size-6"
                 >
                   <path d="M440-440H200v-80h240v-240h80v240h240v80H520v240h-80v-240Z" />
                 </svg>
@@ -117,80 +196,117 @@ export default function PatientInfo() {
             </div>
           </div>
 
-          <div className="mb-4 flex flex-row justify-between">
-            <div className="flex flex-row gap-8">
+          <div className="mb-4 flex-row justify-between hidden md:flex">
+            <div className="flex flex-row gap-8 text-gray-400">
               <button
                 className={clsx(
                   "h-12 rounded-2xl px-10",
-                  selectedStatus === "All" ? "outline-primary outline-2" : "",
+                  category === "All" ? "outline-primary outline-2 text-primary" : "",
                 )}
-                onClick={() => setSelectedStatus("All")}
+                onClick={() => {
+                  if(category !== "All") {
+                    setSelectedStatus("");
+                  }; 
+                  setCategory("All");
+                  setSelectedStatus("All");
+                }}
               >
                 All
               </button>
               <button
                 className={clsx(
                   "h-12 rounded-2xl px-4",
-                  selectedStatus === "Before"
-                    ? "outline-primary outline-2"
+                  category === "Before"
+                    ? "outline-primary outline-2 text-primary"
                     : "",
                 )}
-                onClick={() => setSelectedStatus("Before")}
+                onClick={() => {
+                  if(category !== "Before") {
+                    setSelectedStatus("");
+                  }
+                  setCategory("Before"); setOptions(["checked-in", "pre-procedure"])}}
               >
                 Before Procedure
               </button>
               <button
                 className={clsx(
                   "h-12 rounded-2xl px-4",
-                  selectedStatus === "During"
-                    ? "outline-primary outline-2"
+                  category === "During"
+                    ? "outline-primary outline-2 text-primary"
                     : "",
                 )}
-                onClick={() => setSelectedStatus("During")}
+                onClick={() => {
+                  if(category !== "During") {
+                    setSelectedStatus("");
+                  }
+                  setCategory("During"); setOptions(["in-progress", "closing"])}}
               >
                 During Procedure
               </button>
               <button
                 className={clsx(
                   "h-12 rounded-2xl px-4",
-                  selectedStatus === "After" ? "outline-primary outline-2" : "",
+                  category === "After" ? "outline-primary outline-2 text-primary" : "",
                 )}
-                onClick={() => setSelectedStatus("After")}
+                onClick={() => {
+                  if(category !== "After") {
+                    setSelectedStatus("");
+                  }
+                  setCategory("After"); setOptions(["recovery", "complete", "dismissal"])}}
               >
                 After Procedure
               </button>
             </div>
-            <Search></Search>
+            <Search handleChange={handleInputChange}></Search>
           </div>
+          {category !== "All" && 
+          <div className="text-gray-400">
+            {options.map(option => {
+              return (
+                <button key={option} onClick={()=>setSelectedStatus(option)} className={clsx("px-6 mb-5 font-nunito-bold text-lg", option === selectedStatus ? "text-primary border-b-2 border-primary" : "")}>
+                  {option}
+                </button>
+              )
+            })}
+          </div>}
+          
         </div>
 
         <div className="relative overflow-visible">
-          <table className="min-w-full rounded-2xl text-lg outline-2 outline-gray-100">
+          <table className="min-w-full rounded-2xl text-lg outline-2 outline-gray-100 overflow-hidden">
             <thead className="bg-accent font-nunito-bold h-12 text-left">
               <tr>
                 <th className="pl-5" scope="col">
                   Patient
                 </th>
-                <th scope="col">Street Address</th>
-                <th scope="col">Country</th>
-                <th scope="col">Phone Number</th>
-                <th scope="col">Email Address</th>
-                <th scope="col">Medical Status</th>
-                <th scope="col"> </th>
+                <th scope="col" className="md:table-cell hidden">Street Address</th>
+                <th scope="col" className="md:table-cell hidden">Country</th>
+                <th scope="col" className="md:table-cell hidden">Phone Number</th>
+                <th scope="col" className="md:table-cell hidden">Email Address</th>
+                <th scope="col" className="md:hidden"></th>
+                <th scope="col" className="md:table-cell hidden">Medical Status</th>
+                <th scope="col" className="md:table-cell hidden"></th>
+                <th scope="col" className="md:hidden">
+                  <button className="flex justify-center items-center" onClick={() => setFilterSheetIsOpen(true)}>
+                    <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#000000">
+                    <path d="M400-240v-80h160v80H400ZM240-440v-80h480v80H240ZM120-640v-80h720v80H120Z"/></svg>
+                  </button>
+                  
+                </th>
               </tr>
             </thead>
-            <tbody>
-              {patients.map((patient: Patient) => (
+            <tbody className="md:text-lg text-sm">
+              {patients.slice(resultsPerPage * (page-1), resultsPerPage * page).map((patient: Patient) => (
                 <tr
                   className={cn(
-                    "border-b-1 border-gray-200",
+                    "border-b-1 border-gray-200 last:border-b-0",
                     successIsOpen && lastAddedPatientId !== patient.patientID
                       ? "opacity-20"
                       : "",
                   )}
                   key={patient._id}
                 >
-                  <td className="px-5 py-3 pr-50">
+                  <td className="px-5 py-3 pr-10 md:pr-50">
                     <div className="flex flex-col">
                       <div className="font-nunito-bold">
                         {patient.firstName} {patient.lastName}
@@ -200,14 +316,26 @@ export default function PatientInfo() {
                       </div>
                     </div>
                   </td>
-                  <td className="py-3">{patient.streetAddress}</td>
-                  <td className="py-3 pr-15">{patient.country}</td>
-                  <td className="py-3">{patient.phoneNumber}</td>
-                  <td className="py-3">{patient.email}</td>
-                  <td className="py-3">{patient.medicalStatus}</td>
+                  <td className="py-3 md:table-cell hidden">{patient.streetAddress}</td>
+                  <td className="py-3 pr-15 md:table-cell hidden">{patient.country}</td>
+                  <td className="py-3 md:table-cell hidden">{patient.phoneNumber}</td>
+                  <td className="py-3 md:table-cell hidden">{patient.email}</td>
+                  
+                  <td className="py-3 text-xs md:text-lg">
+                    <div className={clsx("rounded-full inline-block px-2 py-1 md:px-6 md:py-2 text-center text-white", 
+                      patient.medicalStatus == "checked-in" ? "bg-checked-in" : 
+                      patient.medicalStatus == "pre-procedure" ? "bg-pre-procedure" : 
+                      patient.medicalStatus == "in-progress" ? "bg-in-progress" : 
+                      patient.medicalStatus == "closing" ? "bg-closing" : 
+                      patient.medicalStatus == "recovery" ? "bg-recovery" : 
+                      patient.medicalStatus == "complete" ? "bg-complete" : 
+                      patient.medicalStatus == "dismissal" ? "bg-dismissal" : "")}>
+                      {patient.medicalStatus}
+                    </div>
+                  </td>
                   <td className="py-3">
                     <button
-                      className="cursor-pointer"
+                      className="cursor-pointer pr-5 md:pr-2"
                       onClick={() => {
                         const next =
                           openPatientID === patient.patientID
@@ -281,7 +409,39 @@ export default function PatientInfo() {
             </tbody>
           </table>
         </div>
+
+        {/* pagination */}
+        <div className="flex bottom-0 font-nunito-bold mt-5 text-sm md:text-xl md:mt-10">
+            <button 
+                disabled={page <= 1} 
+                onClick={() => setPage(page - 1)} 
+                className="flex items-center gap-2 mx-5 disabled:opacity-50 disabled:cursor-default hover:cursor-pointer">
+                <svg xmlns="http://www.w3.org/2000/svg" 
+                height="24px" viewBox="0 -960 960 960" 
+                width="20px" fill="#000000">
+                  <path d="M400-80 0-480l400-400 71 71-329 329 329 329-71 71Z"/>
+                </svg>
+                Prev
+            </button>
+            {getPageNav(page, getNumPages()).map((num, index) => (
+                <button key={index} onClick={()=> setPage(num)} disabled={num == 0}className={clsx("px-4 mx-1 py-2 rounded-lg hover:cursor-pointer disabled:pointer-events-none", page === num ? "bg-accent pointer-events-none" : "")}>
+                    {num == 0 ? "..." : num}
+                </button>
+            ))}
+            <button 
+                disabled={page >= getNumPages()} 
+                onClick={() => setPage(page + 1)} 
+                className="flex items-center gap-2 mx-5 disabled:opacity-50 disabled:cursor-default hover:cursor-pointer">
+                Next
+                <svg xmlns="http://www.w3.org/2000/svg" 
+                    height="24px" viewBox="0 -960 960 960" 
+                    width="20px" fill="#000000">
+                    <path d="m321-80-71-71 329-329-329-329 71-71 400 400L321-80Z"/>
+                </svg>
+            </button>
+        </div>
       </div>
+      <FilterSheet selectedStatus={selectedStatus} setSelectedStatus={setSelectedStatus} isOpen={filterSheetIsOpen} setIsOpen={setFilterSheetIsOpen}></FilterSheet>
       <PatientFormModal
         isEdit={selectedPatient !== null}
         isOpen={patientFormIsOpen}
@@ -290,7 +450,7 @@ export default function PatientInfo() {
           setSelectedPatient(null);
         }}
         patient={selectedPatient}
-        fetchPatients={fetchPatients}
+        fetchPatients={()=> fetchPatients(searchTermRef.current)}
         setLastAddedPatientId={setLastAddedPatientId}
         setLastEditedPatientId={setLastEditedPatientId}
       />
@@ -300,7 +460,7 @@ export default function PatientInfo() {
           setDeleteConfirmIsOpen(false);
           setSelectedPatient(null);
         }}
-        fetchPatients={fetchPatients}
+        fetchPatients={()=> fetchPatients(searchTermRef.current)}
         selectedPatientID={selectedPatient?.patientID || ""}
         setLastDeletedPatientId={setLastDeletedPatientId}
       />

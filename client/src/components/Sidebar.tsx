@@ -38,11 +38,11 @@ export default function Sidebar({
       <div
         aria-hidden="true"
         onClick={onClose}
-        className="fixed inset-0 z-30 bg-black/40 sm:hidden"
+        className="fixed inset-0 z-40 bg-black/40 sm:hidden"
       />
       <aside
         aria-modal="true"
-        className="bg-background fixed top-0 left-0 z-50 h-full w-3/4 overflow-y-auto p-4 shadow-xl sm:hidden"
+        className="bg-background fixed top-0 left-0 z-60 h-full w-3/4 overflow-y-auto p-4 shadow-xl sm:hidden"
       >
         {children}
       </aside>
