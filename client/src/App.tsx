@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Route, Routes, useLocation, useNavigate } from "react-router-dom";
 import "./App.css";
-import Footer from "./components/footer";
+import Footer from "./components/Footer";
 import Header from "./components/Header/Header";
 import ProtectedRoute from "./components/ProtectedRoute";
 import { getUser } from "./lib/api";
@@ -15,7 +15,9 @@ import Status from "./pages/PatientStatus";
 import ResetLinkSent from "./pages/ResetLinkSent";
 import ResetPassword from "./pages/ResetPassword";
 import ResetPasswordSuccess from "./pages/ResetPasswordSuccess";
-import UpdateStatus from "./pages/UpdateStatus";
+import UpdateStatus from "./pages/UpdateStatusLanding";
+import UpdatePatientStatus from "./pages/UpdatePatientForm";
+import UpdateStatusConfirmation from "./pages/UpdateStatusConfirmation";
 import type { User } from "./types/LoginResponse";
 import type { Role } from "./types/Role";
 import Chatbot from "./components/Chatbot";
@@ -109,6 +111,12 @@ function App() {
               </ProtectedRoute>
             }
           />
+          
+          <Route path="/password/forgot" element={<ForgotPassword />} />
+          <Route path="/password/reset-link-sent" element={<ResetLinkSent />} />
+          <Route path="/password/reset" element={<ResetPassword />} />
+          <Route path="/password/reset-success" element={<ResetPasswordSuccess />}/>
+
           <Route
             path="/update"
             element={
@@ -120,13 +128,27 @@ function App() {
               </ProtectedRoute>
             }
           />
-          <Route path="/password/forgot" element={<ForgotPassword />} />
-          <Route path="/password/reset-link-sent" element={<ResetLinkSent />} />
-          <Route path="/password/reset" element={<ResetPassword />} />
-          <Route
-            path="/password/reset-success"
-            element={<ResetPasswordSuccess />}
+          
+          <Route path="/update/patient/:patientId" element={
+              <ProtectedRoute
+                isAllowed={role === "admin" || role === "surgeon"}
+                isLoggedIn={isLoggedIn}
+              >
+                <UpdatePatientStatus />
+              </ProtectedRoute>
+            } 
           />
+
+          <Route path="/update/confirmation" element={
+              <ProtectedRoute
+                isAllowed={role === "admin" || role === "surgeon"}
+                isLoggedIn={isLoggedIn}
+              >
+                <UpdateStatusConfirmation />
+              </ProtectedRoute>
+            } 
+          />
+
           <Route path="/not-allowed" element={<NotAllowed role={role} />} />
           <Route
             path="*"

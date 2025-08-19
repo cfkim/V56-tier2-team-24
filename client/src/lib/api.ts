@@ -48,7 +48,6 @@ export const logout = async () => {
 };
 
 export const getStatusList = async () => {
-  console.log("getting status list for patients");
   const res = await API.get("/status");
   return res;
 };
@@ -111,6 +110,33 @@ export const getNewPatientId = async () => {
   });
   return res;
 };
+
+// ------
+// gets patient by ID
+export const getPatientById = async (patientId: string) => {
+  const token = localStorage.getItem("accessToken");
+  const res = await API.get(`/patient/${patientId}`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  return res;
+};
+
+// updates patient status
+export const updatePatientStatus = async (patientId: string, newStatus: string) => {
+  const token = localStorage.getItem("accessToken");
+  const res = await API.post("/patient/update-status", 
+    { patientId, newStatus },
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+  return res;
+};
+// ------
 
 // for forgot password
 // sends email to forgot password endpoint
