@@ -11,6 +11,7 @@ This app displays the status of ongoing surgeries from check-in to recovery so t
 -   Surgical Team Members can update the status of ongoing surgeries (i.e. Checked-in, In-progress, etc.)
 -   Guests can view a status board of all ongoing operations without needing to create an account
 -   Patient information is protected, to ensure anonymity and HIPAA compliance (guests for the patient will know their patient #, which is displayed on the board)
+-   Users can talk with an AI chatbot to get tailored and prompt help on navigating the website
 
 ## 📦 Dependencies
 
@@ -39,7 +40,7 @@ This project follows a typical MERN stack setup:
 
 ## 🛠️ How to Run the Project
 
-View the live site [here](https://melodious-liberation-production.up.railway.app/)
+View the live site [here](https://beacon-production-2944.up.railway.app/)
 
 1. Prerequisites
    Node.js version **18.17.0** or higher
