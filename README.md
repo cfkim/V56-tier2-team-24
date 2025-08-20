@@ -39,7 +39,7 @@ This project follows a typical MERN stack setup:
 
 ## 🛠️ How to Run the Project
 
-View the live site [here]
+View the live site [here](https://melodious-liberation-production.up.railway.app/)
 
 1. Prerequisites
    Node.js version **18.17.0** or higher
