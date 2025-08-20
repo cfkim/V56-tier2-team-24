@@ -58,7 +58,7 @@ export default function ForgotPassword() {
       <div className="flex min-h-0 flex-1 items-center justify-center px-4 py-4">
         <div className="flex w-full max-w-7xl flex-col overflow-hidden rounded-lg bg-white lg:flex-row">
           {/* Left Image */}
-          <div className="flex w-full items-center justify-center p-6 pr-16 lg:w-2/3">
+          <div className="hidden w-full items-center justify-center p-6 pr-16 md:flex lg:w-2/3">
             <img
               src="/static/images/login.svg"
               alt="Login image"
