@@ -71,7 +71,7 @@ export default function Login() {
                 <input
                   type="email"
                   autoFocus
-                  placeholder="user@chinguhospital.org"
+                  placeholder="user@beaconhospital.org"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   className="h-10 rounded-[12px] bg-gray-100 p-3 drop-shadow-sm/25 focus:outline-blue-500"
