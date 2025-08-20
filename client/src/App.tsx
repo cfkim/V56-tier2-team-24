@@ -124,7 +124,7 @@ function App() {
           <Route path="/not-allowed" element={<NotAllowed />} />
           <Route path="*" element={<Home />} />
         </Routes>
-        <div className="absolute right-0 bottom-0 z-100 md:pr-5">
+        <div className="fixed right-0 bottom-10 z-100 md:pr-5">
           {showChatbot && (
             <div className="flex flex-col gap-2 px-5 md:w-[600px]">
               <Chatbot
@@ -153,11 +153,11 @@ function App() {
 
       {!showChatbot && (
         <button
-          className="bg-accent absolute right-0 bottom-30 z-100 flex h-15 w-15 items-center justify-center rounded-l-2xl hover:cursor-pointer md:h-30 md:w-30"
+          className="bg-accent fixed right-0 bottom-10 z-100 flex h-12 w-12 items-center justify-center rounded-l-2xl hover:cursor-pointer md:h-25 md:w-25"
           onClick={() => setShowChatbot(!showChatbot)}
         >
           <svg
-            className="h-8 w-8 md:h-18 md:w-18"
+            className="h-6 w-6 md:h-15 md:w-15"
             viewBox="0 0 24 24"
             fill="none"
             xmlns="http://www.w3.org/2000/svg"
