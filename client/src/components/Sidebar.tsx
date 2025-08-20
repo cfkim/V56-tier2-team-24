@@ -15,6 +15,7 @@ export default function Sidebar({
   useEffect(() => {
     if (isOpen) {
       const prev = document.body.style.overflow;
+      console.log(prev);
       document.body.style.overflow = "hidden";
       return () => {
         document.body.style.overflow = prev;

@@ -4,12 +4,21 @@ import cn from "../../utils/cn";
 export default function HeaderLinks({
   to,
   label,
+  onClose,
 }: {
   to: string;
   label: string;
+  onClose?: () => void;
 }) {
   return (
-    <li className="flex items-center sm:h-full">
+    <li
+      className="flex items-center sm:h-full"
+      onClick={() => {
+        onClose?.();
+        window.scrollTo({ top: 0, behavior: "smooth" });
+        document.body.style.overflow = "";
+      }}
+    >
       <NavLink
         to={to}
         className={({ isActive }) =>
