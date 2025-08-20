@@ -49,7 +49,11 @@ export default function Header() {
         <div className="flex items-center">
           <button
             className="text-bg-text z-10 block cursor-pointer sm:hidden"
-            onClick={() => setIsOpen(!isOpen)}
+            onClick={() => {
+              setIsOpen(!isOpen);
+              window.scrollTo({ top: 0, behavior: "smooth" });
+              document.body.style.overflow = "";
+            }}
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -95,11 +99,22 @@ export default function Header() {
           <p>{currentDate}</p>
           {isLoggedIn && <ProfileIcon />}
         </div>
-        <Sidebar isOpen={isOpen} onClose={() => setIsOpen(false)}>
+        <Sidebar
+          isOpen={isOpen}
+          onClose={() => {
+            setIsOpen(false);
+            console.log("closing sidebar");
+            document.body.style.overflow = "";
+          }}
+        >
           <nav className="flex h-full flex-col">
             <button
               className="text-header-black mb-7 cursor-pointer"
-              onClick={() => setIsOpen(false)}
+              onClick={() => {
+                setIsOpen(false);
+                window.scrollTo({ top: 0, behavior: "smooth" });
+                document.body.style.overflow = "";
+              }}
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -114,7 +129,11 @@ export default function Header() {
             <ul className="text-text flex flex-1 flex-col gap-2">
               {isLoggedIn && (
                 <>
-                  <HeaderLinks to="/" label="Home" />
+                  <HeaderLinks
+                    to="/"
+                    label="Home"
+                    onClose={() => setIsOpen(false)}
+                  />
                   {navLinks
                     .filter((link) => link.roles.includes(role!))
                     .map((link) => {
@@ -123,6 +142,7 @@ export default function Header() {
                           key={link.to}
                           to={link.to}
                           label={link.label}
+                          onClose={() => setIsOpen(false)}
                         />
                       );
                     })}
@@ -130,7 +150,14 @@ export default function Header() {
               )}
             </ul>
             {isLoggedIn && (
-              <div className="border-t border-[#D3D3D3] py-5">
+              <div
+                className="border-t border-[#D3D3D3] py-5"
+                onClick={() => {
+                  setIsOpen(false);
+                  window.scrollTo({ top: 0, behavior: "smooth" });
+                  document.body.style.overflow = "";
+                }}
+              >
                 <ProfileIcon forSidebar={true} />
               </div>
             )}
