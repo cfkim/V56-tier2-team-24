@@ -126,7 +126,7 @@ function App() {
         </Routes>
         <div className="fixed right-0 bottom-10 z-100 md:pr-5">
           {showChatbot && (
-            <div className="flex flex-col gap-2 px-5 md:w-[600px]">
+            <div className="flex flex-col gap-2 px-5 w-screen md:w-[600px]">
               <Chatbot
                 currentPage={location.pathname}
                 role={isLoggedIn && role ? role : "not logged in"}
