@@ -75,13 +75,13 @@ export default function Chatbot({
 
   return (
     <>
-      <div className="z-100 flex h-[700px] flex-col items-center justify-center rounded-xl bg-white drop-shadow-sm/25 md:h-[800px]">
+      <div className="z-100 flex h-[80vh] max-h-[80vh] flex-col items-center justify-center rounded-xl bg-white drop-shadow-sm/25 ">
         <div
           id="chat-header"
-          className="bg-accent flex h-[100px] w-full flex-col justify-center gap-1 rounded-t-xl p-6 text-2xl drop-shadow-sm/25 md:text-3xl"
+          className="bg-accent flex h-[80px] md:h-[100px] w-full flex-col justify-center md:gap-1 rounded-t-xl p-6 text-lg drop-shadow-sm/25 md:text-3xl"
         >
           <p className="font-nunito-bold">Chat with Lumo</p>
-          <p className="flex flex-row items-center gap-2 text-sm">
+          <p className="flex flex-row items-center gap-2 text-xs md:text-sm text-green-500">
             <span className="relative flex size-3">
               <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-green-400 opacity-75"></span>
               <span className="relative inline-flex size-3 rounded-full bg-green-500"></span>
@@ -91,7 +91,7 @@ export default function Chatbot({
         </div>
         <div
           id="chat-body"
-          className="text-md flex h-[800px] w-full flex-col overflow-y-auto p-6 md:text-lg"
+          className="text-sm flex-1 w-full flex-col overflow-y-auto p-6 md:text-lg"
           style={{ scrollbarGutter: "stable" }}
           ref={chatEndRef}
         >
@@ -137,7 +137,7 @@ export default function Chatbot({
             </div>
           ))}
           {isLoading && (
-            <div className="h-8 w-8 animate-spin rounded-full border-b-2 border-gray-900"></div>
+            <p className="animate-pulse opacity-25">typing...</p>
           )}
         </div>
         <div
@@ -146,7 +146,7 @@ export default function Chatbot({
         >
           <div
             id="input-suggestions"
-            className="md:text-md z-30 flex flex-row gap-2 text-sm drop-shadow-sm/25 lg:text-lg"
+            className="md:text-md z-30 flex flex-row gap-2 text-xs drop-shadow-sm/25 lg:text-lg"
           >
             <button
               className="rounded-xl bg-gray-100 px-3 py-2 hover:cursor-pointer"
