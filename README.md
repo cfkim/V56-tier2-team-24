@@ -37,7 +37,7 @@ This project follows a typical MERN stack setup:
     react@19.1.0
     tailwindcss@4.1.11
 
-## 🛠️ How to Run the Project
+## How to Run the Project
 
 View the live site [here]
 
