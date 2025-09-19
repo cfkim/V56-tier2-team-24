@@ -1,4 +1,4 @@
-# Beacon ☀️
+# Beacon 🌟
 
 Supporting your loved ones in every step of the surgery process, made easier.
 
